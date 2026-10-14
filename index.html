@@ -3,26 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Where Tiruppur's Water Breaks First — Two-Map Groundwater Depletion &amp; Salinity Analytics</title>
-  <meta name="description" content="Hydrological analytics comparing projected drought scenario against observed May 2024 baseline across Tiruppur and the Noyyal basin.">
+  <title>Where Tiruppur's Water Breaks First — Taluk Groundwater Analytics &amp; Drought Scenario</title>
+  <meta name="description" content="Two-panel taluk map comparison evaluating projected 2026 drought scenario against observed May 2024 ground truth depths across Tiruppur district.">
 
-  <!-- Google Fonts: Inter (body & labels) & JetBrains Mono (numbers & tables) -->
+  <!-- Google Fonts: Inter (labels & body) & JetBrains Mono (numbers & tables) with system-ui fallback -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-  <!-- Chart.js 4.4.1 -->
+  <!-- Chart.js 4.4.1 for analytical validation charts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
     /* ==========================================================================
-       SECTION C: VISUAL THEME ("MONSOON INK")
+       SECTION 8: MONSOON INK DESIGN TOKENS (STRICT SPEC)
        ========================================================================== */
     :root {
       --bg: #0b1220;
@@ -37,8 +31,8 @@
       --medium: #f59e0b;
       --routine: #22c55e;
 
-      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
     }
 
     *, *::before, *::after {
@@ -62,13 +56,13 @@
       overflow-x: hidden;
     }
 
-    /* Subtle top header gradient at 8% opacity */
+    /* Subtle single header gradient in the header at 8% opacity */
     .header-gradient-bg {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 280px;
+      height: 260px;
       background: radial-gradient(ellipse at 50% 0%, rgba(45, 212, 191, 0.08) 0%, transparent 75%);
       pointer-events: none;
       z-index: 0;
@@ -82,7 +76,7 @@
       padding: 0 24px;
     }
 
-    /* ── A. HEADER ── */
+    /* ── 1. HEADER ── */
     .site-header {
       padding: 24px 0 20px;
       border-bottom: 1px solid var(--border);
@@ -97,83 +91,101 @@
     .header-left {
       display: flex;
       align-items: center;
-      gap: 16px;
-    }
-
-    .logo-badge {
-      width: 44px;
-      height: 44px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-    }
-
-    .logo-svg {
-      width: 22px;
-      height: 22px;
-      fill: none;
-      stroke: var(--water);
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .header-text {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      gap: 14px;
     }
 
     .site-title {
-      font-family: var(--font-body);
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 700;
-      color: var(--text);
       letter-spacing: -0.02em;
-      line-height: 1.2;
+      color: var(--text);
+      white-space: nowrap;
     }
 
     .site-sub {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--muted);
-      font-weight: 400;
+      margin-top: 3px;
     }
 
     .header-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
     .status-tag {
       font-family: var(--font-mono);
-      font-size: 12px;
-      letter-spacing: 0.08em;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
-      font-weight: 500;
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: var(--surface);
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .tag-drought {
-      border-color: rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid var(--drought);
       color: var(--drought);
-      background: rgba(245, 158, 11, 0.08);
     }
 
     .tag-sdg {
-      border-color: rgba(45, 212, 191, 0.35);
+      background: rgba(45, 212, 191, 0.1);
+      border: 1px solid var(--border);
       color: var(--water);
-      background: rgba(45, 212, 191, 0.08);
     }
 
-    /* ── B. KPI STRIP (5 CARDS) ── */
+    .btn-control {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      user-select: none;
+    }
+
+    .btn-control:hover {
+      background: #1c2a46;
+      border-color: var(--water);
+      color: #ffffff;
+    }
+
+    .btn-control:focus-visible {
+      outline: 2px solid var(--water);
+      outline-offset: 2px;
+    }
+
+    .btn-pres {
+      background: rgba(45, 212, 191, 0.12);
+      border-color: var(--water);
+      color: var(--water);
+    }
+
+    .btn-pres:hover {
+      background: rgba(45, 212, 191, 0.22);
+    }
+
+    .btn-pres.active {
+      background: var(--drought);
+      border-color: var(--drought);
+      color: #0b1220;
+      font-weight: 600;
+    }
+
+    /* ── 2. KPI STRIP (SECTION 8 SPEC: --surface, 12px radius, 12px uppercase, 32px mono, 13px muted, NO EMOJIS) ── */
     .hero-kpi-strip {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -185,31 +197,21 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 20px;
+      padding: 18px 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 130px;
+      min-height: 120px;
     }
 
     .kpi-label {
       font-family: var(--font-body);
       font-size: 12px;
+      font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--muted);
-      font-weight: 600;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .kpi-icon-svg {
-      width: 14px;
-      height: 14px;
-      stroke: var(--muted);
-      stroke-width: 2;
-      fill: none;
+      line-height: 1.2;
     }
 
     .kpi-val {
@@ -227,7 +229,7 @@
       line-height: 1.3;
     }
 
-    /* ── C. TWO-MAP SECTION ── */
+    /* ── 3. TWO-PANEL TALUK COMPARISON SECTION (TOP OF PAGE, MOST IMPORTANT) ── */
     .map-section {
       margin-bottom: 32px;
     }
@@ -253,87 +255,7 @@
       margin-top: 2px;
     }
 
-    .btn-control {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 12px;
-      letter-spacing: 0.04em;
-      font-weight: 500;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: border-color 0.15s ease, background-color 0.15s ease;
-    }
-
-    .btn-control:hover {
-      border-color: var(--water);
-      background: #1c2b48;
-    }
-
-    .btn-control:focus-visible {
-      outline: 2px solid var(--water);
-      outline-offset: 2px;
-    }
-
-    .btn-control.active {
-      background: rgba(245, 158, 11, 0.15);
-      border-color: var(--drought);
-      color: var(--drought);
-    }
-
-    /* El Niño Alert Banner */
-    .el-nino-banner {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--drought);
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin-bottom: 16px;
-    }
-
-    .el-nino-banner-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--drought);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-family: var(--font-mono);
-      margin-bottom: 8px;
-    }
-
-    .el-nino-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .en-metric-label {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .en-metric-val {
-      font-family: var(--font-mono);
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text);
-      margin: 2px 0;
-    }
-
-    .en-metric-sub {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* Dual Map Panels Grid */
+    /* Dual Panels Grid: Desktop (>900px) two columns, 16px gap */
     .dual-maps-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -345,22 +267,22 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      overflow: hidden;
+      padding: 16px;
       display: flex;
       flex-direction: column;
     }
 
     .panel-header {
-      padding: 12px 18px;
-      background: var(--surface-2);
+      padding: 0 0 14px 0;
       border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 14px;
     }
 
     .panel-title {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
       color: var(--text);
     }
@@ -391,161 +313,227 @@
       color: var(--water);
     }
 
-    .map-container {
-      height: 460px;
-      width: 100%;
+    /* Taluk Image Container */
+    .taluk-image-wrapper {
       position: relative;
-      background: #080d17;
-    }
-
-    /* Dark Styling applied ONLY to the Leaflet tile pane per Section B requirement */
-    .leaflet-tile-pane {
-      filter: grayscale(1) invert(0.92) contrast(1.05) brightness(0.9);
-    }
-
-    /* Left Map Floating Overlay */
-    .map-overlay-card {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      z-index: 1000;
-      background: var(--surface);
+      width: 100%;
+      border-radius: 8px;
+      background: #090e18;
       border: 1px solid var(--border);
-      border-left: 3px solid var(--drought);
-      border-radius: 6px;
-      padding: 10px 14px;
-      width: 240px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+      overflow: visible;
     }
 
-    .map-overlay-title {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--drought);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 6px;
+    .taluk-ref-img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 8px;
+      filter: brightness(0.85) contrast(1.05);
     }
 
-    .map-overlay-line {
+    /* Taluk Chips (Percentage Absolute Positioning: Section 4 spec) */
+    .taluk-chip {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background: rgba(17, 26, 43, 0.92);
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
       display: flex;
-      justify-content: space-between;
-      font-size: 11.5px;
-      color: var(--muted);
-      margin-bottom: 3px;
-    }
-
-    .map-overlay-line span:last-child {
-      font-family: var(--font-mono);
-      color: var(--text);
-    }
-
-    /* City marker and place labels */
-    .map-city-label {
-      display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 4px;
-      pointer-events: none;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease, outline 0.15s ease, box-shadow 0.15s ease;
+      z-index: 10;
+      white-space: nowrap;
     }
 
-    .city-pin {
-      color: var(--water);
-      font-size: 14px;
-      line-height: 1;
+    .taluk-chip:hover {
+      transform: translate(-50%, -50%) scale(1.04);
+      background: rgba(22, 34, 58, 0.98);
+      z-index: 20;
     }
 
-    .city-text {
+    .taluk-chip:focus-visible {
+      outline: 2px solid var(--water);
+      outline-offset: 2px;
+      z-index: 25;
+    }
+
+    .taluk-chip.chip-active {
+      outline: 2px solid var(--water) !important;
+      outline-offset: 2px;
+      box-shadow: 0 0 12px rgba(45, 212, 191, 0.4);
+      z-index: 22;
+    }
+
+    .chip-name {
       font-family: var(--font-body);
       font-size: 12px;
       font-weight: 600;
-      color: #ffffff;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 6px rgba(0,0,0,0.9);
-      letter-spacing: 0.02em;
-    }
-
-    .taluk-label-marker {
-      pointer-events: none;
-    }
-
-    .taluk-label-text {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--muted);
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+      color: var(--text);
+      line-height: 1.2;
     }
 
-    /* Scale bar control style */
-    .leaflet-control-scale-line {
-      background: var(--surface-2) !important;
-      border: 1px solid var(--border) !important;
-      color: var(--text) !important;
-      font-family: var(--font-mono) !important;
-      font-size: 10px !important;
-      padding: 2px 6px !important;
-      box-shadow: none !important;
+    .chip-val {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 2px 0;
     }
 
-    /* Custom Leaflet Tooltip */
-    .leaflet-tooltip.custom-map-tooltip {
-      background: var(--surface) !important;
-      border: 1px solid var(--border) !important;
-      border-radius: 6px !important;
-      padding: 8px 12px !important;
-      color: var(--text) !important;
-      font-family: var(--font-body) !important;
-      font-size: 12px !important;
-      line-height: 1.4 !important;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    .chip-count {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1;
     }
 
-    .leaflet-tooltip.custom-map-tooltip::before {
-      border-top-color: var(--surface) !important;
+    /* Chip Tier Border Colors */
+    .chip-tier-high {
+      border-color: var(--high);
+    }
+    .chip-tier-high .chip-val {
+      color: var(--high);
     }
 
-    .tooltip-title {
+    .chip-tier-medium {
+      border-color: var(--medium);
+    }
+    .chip-tier-medium .chip-val {
+      color: var(--medium);
+    }
+
+    .chip-tier-routine {
+      border-color: var(--routine);
+    }
+    .chip-tier-routine .chip-val {
+      color: var(--routine);
+    }
+
+    .chip-tier-insufficient {
+      border-color: var(--muted);
+    }
+    .chip-tier-insufficient .chip-val {
+      color: var(--muted);
+    }
+
+    .chip-tier-unmeasured {
+      border-style: dashed;
+      border-color: var(--muted);
+    }
+    .chip-tier-unmeasured .chip-val {
+      color: var(--muted);
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    /* Custom Tooltip on Chip Hover */
+    .chip-tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.4;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s ease, visibility 0.15s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+      width: 230px;
+      z-index: 100;
+      text-align: left;
+    }
+
+    /* Positioning adjustment for chips near top border */
+    .taluk-chip.tooltip-below .chip-tooltip {
+      bottom: auto;
+      top: calc(100% + 8px);
+    }
+
+    .taluk-chip:hover .chip-tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .chip-tt-title {
       font-weight: 600;
       color: #ffffff;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
+      font-size: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
     }
 
-    .tooltip-row {
-      color: var(--muted);
-      font-size: 11.5px;
-    }
-
-    .tooltip-row strong {
-      color: var(--text);
-      font-family: var(--font-mono);
-    }
-
-    /* Panel Footer Legends */
-    .panel-footer {
-      padding: 12px 18px;
-      background: var(--surface-2);
-      border-top: 1px solid var(--border);
+    .chip-tt-list {
+      max-height: 140px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 3px;
     }
 
-    .legend-row {
+    .chip-tt-item {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      font-size: 12px;
+      color: var(--muted);
+      font-size: 11px;
     }
 
-    .legend-items {
+    .chip-tt-item span:last-child {
+      font-family: var(--font-mono);
+      color: var(--text);
+    }
+
+    /* Captions & Footnotes */
+    .panel-caption {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    .panel-footnote {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    .outside-taluks-note {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--border);
+      line-height: 1.4;
+    }
+
+    /* Panel Legend */
+    .panel-legend {
       display: flex;
       align-items: center;
-      gap: 14px;
+      justify-content: space-between;
       flex-wrap: wrap;
+      gap: 10px;
+      font-size: 12px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
     }
 
     .legend-item {
@@ -555,54 +543,43 @@
       color: var(--muted);
     }
 
-    .marker-dot {
+    .legend-dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      border: 1.5px solid #0b1220;
       display: inline-block;
     }
 
     .dot-high { background: var(--high); }
     .dot-medium { background: var(--medium); }
     .dot-routine { background: var(--routine); }
+    .dot-insufficient { background: var(--muted); }
     .dot-unmeasured {
       background: transparent;
       border: 1.5px dashed var(--muted);
     }
 
-    .legend-scale-sizes {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .scale-circle {
-      border: 1.5px solid var(--muted);
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    .panel-footnote {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.4;
-      border-top: 1px solid var(--border);
-      padding-top: 6px;
-    }
-
-    /* Map Action Bar Below Maps (Reset View & Status) */
-    .map-bottom-bar {
+    /* Interaction Bar Below Panels */
+    .map-interaction-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-top: 6px;
       padding: 0 4px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    /* ── D. FILTER BAR ── */
+    .filter-indicator {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .filter-indicator strong {
+      color: var(--water);
+    }
+
+    /* ── 4. FILTER BAR ── */
     .filter-bar {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -652,7 +629,7 @@
       outline-offset: 1px;
     }
 
-    /* ── E. CHARTS GRID (2x2) ── */
+    /* ── 5. CHARTS GRID (2x2) ── */
     .charts-grid-2x2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -698,7 +675,7 @@
       padding-top: 8px;
     }
 
-    /* ── F. PRIORITY TABLE ── */
+    /* ── 6. PRIORITY TABLE ── */
     .table-section {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -788,96 +765,73 @@
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.04em;
+      text-transform: uppercase;
       padding: 3px 8px;
       border-radius: 4px;
       display: inline-block;
     }
 
-    .tier-high {
+    .pill-high {
       background: rgba(239, 68, 68, 0.15);
       border: 1px solid var(--high);
       color: var(--high);
     }
 
-    .tier-medium {
+    .pill-medium {
       background: rgba(245, 158, 11, 0.15);
       border: 1px solid var(--medium);
       color: var(--medium);
     }
 
-    .tier-routine {
+    .pill-routine {
       background: rgba(34, 197, 94, 0.15);
       border: 1px solid var(--routine);
       color: var(--routine);
     }
 
-    .btn-ghost-inspect {
-      background: transparent;
-      border: 1px solid var(--water);
-      color: var(--water);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.15s ease, color 0.15s ease;
-    }
-
-    .btn-ghost-inspect:hover {
-      background: var(--water);
-      color: var(--bg);
-    }
-
-    .btn-ghost-inspect:focus-visible {
-      outline: 2px solid var(--water);
-      outline-offset: 2px;
-    }
-
-    /* ── G. COLLAPSIBLE METHODS & PROVENANCE ── */
+    /* ── 7. COLLAPSIBLE METHODS & PROVENANCE ── */
     .collapsible-stack {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
       margin-bottom: 32px;
     }
 
     .collapsible-panel {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
     }
 
     .collapsible-trigger {
       padding: 14px 20px;
-      background: var(--surface-2);
-      color: var(--text);
       font-size: 14px;
       font-weight: 600;
+      color: var(--text);
       cursor: pointer;
-      user-select: none;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      user-select: none;
     }
 
     .collapsible-trigger:hover {
-      background: #1b2842;
+      background: var(--surface-2);
     }
 
     .collapsible-content {
-      padding: 18px 20px;
-      border-top: 1px solid var(--border);
-      font-size: 13.5px;
-      line-height: 1.6;
+      padding: 0 20px 18px;
       color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
     }
 
     .provenance-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12.5px;
-      margin: 12px 0 6px;
+      margin-top: 10px;
+      font-size: 12px;
     }
 
     .provenance-table th, .provenance-table td {
@@ -889,69 +843,65 @@
     .provenance-table th {
       background: var(--surface-2);
       color: var(--text);
-      font-family: var(--font-body);
-      font-size: 11.5px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
       font-weight: 600;
     }
 
-    /* ── H. QR DOCK & UNIFIED FOOTNOTE ── */
+    /* ── 8. QR DOCK & FOOTER ── */
     .qr-dock {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 20px 24px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 16px;
       margin-bottom: 32px;
     }
 
     .qr-left {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 16px;
     }
 
     .qr-img {
-      width: 80px;
-      height: 80px;
+      width: 72px;
+      height: 72px;
+      border-radius: 6px;
       background: #ffffff;
-      padding: 5px;
-      border-radius: 8px;
-      display: block;
+      padding: 4px;
     }
 
     .qr-title {
       font-size: 15px;
       font-weight: 600;
       color: var(--text);
+      margin-bottom: 2px;
     }
 
     .qr-desc {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--muted);
-      margin-top: 4px;
+      max-width: 440px;
     }
 
     .qr-url-code {
       font-family: var(--font-mono);
       font-size: 12px;
       color: var(--water);
-      background: rgba(45, 212, 191, 0.08);
-      border: 1px solid rgba(45, 212, 191, 0.25);
-      padding: 8px 14px;
-      border-radius: 6px;
-      display: inline-block;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 4px;
+      user-select: all;
     }
 
     .site-footer {
       border-top: 1px solid var(--border);
-      padding: 24px 0 48px;
-      font-size: 13px;
+      padding: 24px 0 40px;
+      font-size: 12px;
       color: var(--muted);
       line-height: 1.6;
     }
@@ -959,31 +909,37 @@
     .unified-footnote {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-left: 3px solid var(--water);
-      border-radius: 6px;
-      padding: 14px 18px;
+      border-radius: 8px;
+      padding: 12px 16px;
       margin-bottom: 16px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
     }
 
-    /* Modal Inspection Dossier */
+    /* Modal Inspection */
     .modal-veil {
       position: fixed;
-      inset: 0;
-      z-index: 2000;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(11, 18, 32, 0.85);
       backdrop-filter: blur(4px);
       display: none;
-      place-items: center;
-      padding: 20px;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
     }
 
     .modal-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      width: 100%;
-      max-width: 560px;
       padding: 24px;
+      width: 100%;
+      max-width: 540px;
       position: relative;
     }
 
@@ -1001,6 +957,35 @@
     .modal-close-btn:hover { color: #ffffff; }
 
     /* ==========================================================================
+       SECTION 9: PRESENTATION MODE (FOR 2-MINUTE PITCH)
+       ========================================================================== */
+    body.presentation-mode .hero-kpi-strip,
+    body.presentation-mode .filter-bar,
+    body.presentation-mode .charts-grid-2x2,
+    body.presentation-mode .table-section,
+    body.presentation-mode .collapsible-stack,
+    body.presentation-mode .site-footer {
+      display: none !important;
+    }
+
+    body.presentation-mode .site-wrapper {
+      max-width: 100%;
+      padding: 0 32px;
+    }
+
+    body.presentation-mode .map-section {
+      margin-bottom: 24px;
+    }
+
+    body.presentation-mode .qr-dock {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    /* ==========================================================================
        RESPONSIVENESS (390PX, 768PX, 900PX, 1440PX)
        ========================================================================== */
     @media (max-width: 1100px) {
@@ -1013,20 +998,27 @@
     }
 
     @media (max-width: 900px) {
+      .site-title {
+        white-space: normal;
+        font-size: 22px;
+      }
       .dual-maps-grid {
-        grid-template-columns: 1fr;
-      }
-      .map-container {
-        height: 340px;
-      }
-      .el-nino-grid {
         grid-template-columns: 1fr;
       }
       .filter-grid {
         grid-template-columns: repeat(2, 1fr);
       }
-      .site-title {
-        font-size: 24px;
+      .taluk-chip {
+        padding: 5px 8px;
+      }
+      .chip-name {
+        font-size: 11px;
+      }
+      .chip-val {
+        font-size: 14px;
+      }
+      .chip-count {
+        font-size: 12px;
       }
     }
 
@@ -1044,6 +1036,10 @@
         flex-direction: column;
         align-items: flex-start;
       }
+      .panel-legend {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -1053,15 +1049,10 @@
 
   <div class="site-wrapper">
 
-    <!-- ═══ SECTION A: HEADER ═══ -->
+    <!-- ═══ 1. HEADER ═══ -->
     <header class="site-header" role="banner">
       <div class="header-left">
-        <div class="logo-badge" aria-hidden="true">
-          <svg class="logo-svg" viewBox="0 0 24 24">
-            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-          </svg>
-        </div>
-        <div class="header-text">
+        <div>
           <h1 class="site-title">Where Tiruppur's Water Breaks First</h1>
           <p class="site-sub">Which wells fail first in a dry year? Ground truth depths vs. projected drought stress</p>
         </div>
@@ -1070,191 +1061,155 @@
         <span class="status-tag tag-drought">2026 Drought Scenario</span>
         <span class="status-tag tag-sdg">SDG 6 Clean Water</span>
         <span class="status-tag tag-sdg">SDG 3 Good Health</span>
+        <button type="button" id="btnPresentationView" class="btn-control btn-pres" title="Toggle 2-minute pitch presentation layout">Presentation view</button>
       </div>
     </header>
 
-    <!-- ═══ SECTION B: KPI STRIP (5 METRIC CARDS) ═══ -->
+    <!-- ═══ 2. KPI STRIP (SECTION 8 SPEC: 12px uppercase, 32px mono, 13px muted, no emojis) ═══ -->
     <section class="hero-kpi-strip" aria-label="Key Performance Indicators">
       <!-- 1. Stations Tracked -->
-      <div class="kpi-card" id="cardStations">
-        <div class="kpi-label">
-          <span>Stations Tracked</span>
-          <svg class="kpi-icon-svg" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Stations Tracked</div>
         <div class="kpi-val" id="kpiStationsTracked">—</div>
         <div class="kpi-unit-line">Distinct monitoring stations &bull; CGWB 2023–25</div>
       </div>
 
       <!-- 2. Median Depth -->
-      <div class="kpi-card" id="cardDepth">
-        <div class="kpi-label">
-          <span>Median Depth (m bgl)</span>
-          <svg class="kpi-icon-svg" viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"></line><polyline points="19 15 12 22 5 15"></polyline></svg>
-        </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Median Depth (m bgl)</div>
         <div class="kpi-val" id="kpiMedianDepth">—</div>
         <div class="kpi-unit-line">m bgl &bull; Pre-monsoon May baseline</div>
       </div>
 
       <!-- 3. Wells Above 2,000 mg/L TDS -->
-      <div class="kpi-card" id="cardTds">
-        <div class="kpi-label">
-          <span>Wells &gt; 2,000 mg/L TDS</span>
-          <svg class="kpi-icon-svg" viewBox="0 0 24 24"><path d="M10 2v7.31L4.69 17.5A2 2 0 0 0 6.38 20.5h11.24a2 2 0 0 0 1.69-3L14 9.31V2"></path></svg>
-        </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Wells &gt; 2,000 mg/L TDS</div>
         <div class="kpi-val" id="kpiHighTdsCount">—</div>
         <div class="kpi-unit-line">mg/L &bull; Exceeds BIS IS 10500:2012 permissible limit</div>
       </div>
 
       <!-- 4. Annual Rainfall -->
-      <div class="kpi-card" id="cardRainfall">
-        <div class="kpi-label">
-          <span>Annual Rainfall (2024)</span>
-          <svg class="kpi-icon-svg" viewBox="0 0 24 24"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path><line x1="8" y1="19" x2="8" y2="21"></line><line x1="12" y1="17" x2="12" y2="23"></line><line x1="16" y1="19" x2="16" y2="21"></line></svg>
-        </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Annual Rainfall (2024)</div>
         <div class="kpi-val" id="kpiAnnualRainfall">—</div>
         <div class="kpi-unit-line">NASA POWER point estimate, 11.1085 N, 77.3411 E</div>
       </div>
 
       <!-- 5. High-Priority Count -->
-      <div class="kpi-card" id="cardUrgent">
-        <div class="kpi-label">
-          <span>High-Priority Wells</span>
-          <svg class="kpi-icon-svg" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-        </div>
+      <div class="kpi-card">
+        <div class="kpi-label">High-Priority Wells</div>
         <div class="kpi-val" id="kpiHighPriorityCount">—</div>
         <div class="kpi-unit-line">Composite score &ge; 70 &bull; 40 / 40 / 20 weighting</div>
       </div>
     </section>
 
-    <!-- ═══ SECTION C: TWO-MAP COMPARISON ═══ -->
-    <section class="map-section" aria-label="Two-Map Comparison">
+    <!-- ═══ 3. TWO-PANEL COMPARISON (TOP OF PAGE, MOST IMPORTANT) ═══ -->
+    <section class="map-section" aria-label="Taluk Map Two-Panel Comparison">
       <div class="map-controls-header">
         <div>
-          <h2 class="section-heading">Two-Map Spatial Comparison</h2>
-          <p class="section-sub">Synchronized spatial view: Projected drought scenario vs. observed May 2024 ground truth</p>
+          <h2 class="section-heading">Taluk Groundwater Vulnerability Comparison</h2>
+          <p class="section-sub">Synchronized two-panel analysis: projected drought scenario vs. observed May 2024 ground truth</p>
         </div>
-        <button type="button" id="btnToggleElNino" class="btn-control" aria-pressed="false">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-          <span id="elNinoBtnText">Show current El Niño effect</span>
-        </button>
+        <button type="button" id="btnClearTalukFilter" class="btn-control" title="Clear taluk selection">Clear filter</button>
       </div>
 
-      <!-- Toggleable El Niño Banner -->
-      <div id="elNinoBanner" class="el-nino-banner" style="display: none;">
-        <div class="el-nino-banner-title">Climate Anomaly Alert: Relative Oceanic Niño Index (RONI)</div>
-        <div class="el-nino-grid">
-          <div>
-            <div class="en-metric-label">Latest RONI Status</div>
-            <div class="en-metric-val" id="enRoniStatus">El Niño (+1.69°C Anomaly)</div>
-            <div class="en-metric-sub">Forecast JAS 2026 &bull; Source: NOAA Climate Prediction Center</div>
-          </div>
-          <div>
-            <div class="en-metric-label">2026 Annual Rainfall</div>
-            <div class="en-metric-val" id="enRainfall2026" style="color: var(--drought); font-style: italic;">not in data file</div>
-            <div class="en-metric-sub">NASA POWER observed records terminate in Dec 2024</div>
-          </div>
-          <div>
-            <div class="en-metric-label">Scenario Model Assumption</div>
-            <div class="en-metric-val">+3.2 m Drawdown Offset</div>
-            <div class="en-metric-sub">Empirical drought drawdown applied to pre-monsoon baseline</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Dual Maps Grid -->
+      <!-- Dual Panels Grid -->
       <div class="dual-maps-grid">
-        <!-- LEFT MAP: Scenario 2026 -->
-        <div class="map-panel">
+        <!-- ── LEFT PANEL: Expected Summer 2026 (Scenario) ── -->
+        <div class="map-panel" id="panelScenario">
           <div class="panel-header">
             <h3 class="panel-title">Expected summer 2026 (scenario)</h3>
             <span class="badge-scenario">SCENARIO</span>
           </div>
 
-          <div class="map-container" id="mapScenario">
-            <!-- Left Map Floating Overlay -->
-            <div id="leftMapElNinoOverlay" class="map-overlay-card" style="display: none;">
-              <div class="map-overlay-title">El Niño Drought Scenario</div>
-              <div class="map-overlay-line">
-                <span>RONI Anomaly:</span>
-                <span id="overlayRoniVal">+1.69°C (El Niño)</span>
-              </div>
-              <div class="map-overlay-line">
-                <span>2026 Rainfall:</span>
-                <span id="overlayRainVal" style="color: var(--drought);">not in data file</span>
-              </div>
-              <div class="map-overlay-line">
-                <span>Offset:</span>
-                <span>+3.2 m bgl</span>
-              </div>
+          <div class="taluk-image-wrapper">
+            <img src="assets/tiruppur_taluks_reference.png" alt="Illustrative map of the six taluks of Tiruppur district." class="taluk-ref-img">
+
+            <!-- Six Taluk Overlay Chips (Left Panel) -->
+            <div id="chipsContainerLeft">
+              <!-- Rendered via JS using Section 4 & 5 rules -->
             </div>
           </div>
 
-          <div class="panel-footer">
-            <div class="legend-row">
-              <div class="legend-items">
-                <span class="legend-item"><span class="marker-dot dot-high"></span> High (&ge;70)</span>
-                <span class="legend-item"><span class="marker-dot dot-medium"></span> Medium (50–69)</span>
-                <span class="legend-item"><span class="marker-dot dot-routine"></span> Routine (&lt;50)</span>
-                <span class="legend-item"><span class="marker-dot dot-unmeasured"></span> Not yet measured</span>
-              </div>
-              <div class="legend-scale-sizes">
-                <span>Depth scale:</span>
-                <span class="scale-circle" style="width: 8px; height: 8px;" title="6px: ≤4m bgl"></span> 6 px (4m)
-                <span class="scale-circle" style="width: 16px; height: 16px;" title="16px: ≥25m bgl"></span> 16 px (25m)
-              </div>
-            </div>
-            <div class="panel-footnote">
-              Method: empirical offset of +3.2 m applied to the May 2024 baseline. Derivation not yet documented; treat as illustrative.
-            </div>
+          <div class="panel-caption">
+            Illustrative taluk map of Tiruppur district. Not to scale. Boundaries approximate. Source: Tiruppur District Administration Map.
+          </div>
+
+          <div class="panel-footnote">
+            Scenario method: empirical +3.2 m drawdown offset applied to the May 2024 baseline. Derivation: not yet documented; treat as illustrative.
+          </div>
+
+          <div class="outside-taluks-note" id="outsideTaluksLeft">
+            <!-- Populated via JS -->
+          </div>
+
+          <div class="panel-legend">
+            <div class="legend-item"><span class="legend-dot dot-high"></span> High priority (&ge; 20 m bgl)</div>
+            <div class="legend-item"><span class="legend-dot dot-medium"></span> Medium (10 to 20 m bgl)</div>
+            <div class="legend-item"><span class="legend-dot dot-routine"></span> Routine (&lt; 10 m bgl)</div>
+            <div class="legend-item"><span class="legend-dot dot-insufficient"></span> Insufficient data (&lt; 2 readings)</div>
+            <div class="legend-item"><span class="legend-dot dot-unmeasured"></span> Not yet measured (0 readings)</div>
           </div>
         </div>
 
-        <!-- RIGHT MAP: Observed May 2024 -->
-        <div class="map-panel">
+        <!-- ── RIGHT PANEL: Observed Pre-Monsoon May 2024 ── -->
+        <div class="map-panel" id="panelObserved">
           <div class="panel-header">
-            <h3 class="panel-title">Observed pre-monsoon May 2024 (CGWB 2024-25, p.112)</h3>
+            <h3 class="panel-title">Observed pre-monsoon May 2024</h3>
             <span class="badge-measured">MEASURED</span>
           </div>
 
-          <div class="map-container" id="mapObserved"></div>
+          <div class="taluk-image-wrapper">
+            <img src="assets/tiruppur_taluks_reference.png" alt="Illustrative map of the six taluks of Tiruppur district." class="taluk-ref-img">
 
-          <div class="panel-footer">
-            <div class="legend-row">
-              <div class="legend-items">
-                <span class="legend-item"><span class="marker-dot dot-high"></span> High</span>
-                <span class="legend-item"><span class="marker-dot dot-medium"></span> Medium</span>
-                <span class="legend-item"><span class="marker-dot dot-routine"></span> Routine</span>
-                <span class="legend-item"><span class="marker-dot dot-unmeasured"></span> Not yet measured</span>
-              </div>
-              <div class="legend-scale-sizes">
-                <span>Depth scale:</span>
-                <span class="scale-circle" style="width: 8px; height: 8px;"></span> 6 px (4m)
-                <span class="scale-circle" style="width: 16px; height: 16px;"></span> 16 px (25m)
-              </div>
+            <!-- Six Taluk Overlay Chips (Right Panel) -->
+            <div id="chipsContainerRight">
+              <!-- Rendered via JS using Section 4 & 5 rules -->
             </div>
-            <div class="panel-footnote">
-              Observed depths from CGWB 2024-25 yearbook (Page 112). Stations without May 2024 readings are rendered with hollow dashed markers and marked "Not yet measured".
-            </div>
+          </div>
+
+          <div class="panel-caption">
+            Illustrative taluk map of Tiruppur district. Not to scale. Boundaries approximate. Source: Tiruppur District Administration Map.
+          </div>
+
+          <div class="panel-footnote">
+            Source: CGWB Groundwater Yearbook 2024-25, page 112 (May 2024 pre-monsoon). Stations with no reading in that round show 'Not yet measured'.
+          </div>
+
+          <div class="outside-taluks-note" id="outsideTaluksRight">
+            <!-- Populated via JS -->
+          </div>
+
+          <div class="panel-legend">
+            <div class="legend-item"><span class="legend-dot dot-high"></span> High priority (&ge; 20 m bgl)</div>
+            <div class="legend-item"><span class="legend-dot dot-medium"></span> Medium (10 to 20 m bgl)</div>
+            <div class="legend-item"><span class="legend-dot dot-routine"></span> Routine (&lt; 10 m bgl)</div>
+            <div class="legend-item"><span class="legend-dot dot-insufficient"></span> Insufficient data (&lt; 2 readings)</div>
+            <div class="legend-item"><span class="legend-dot dot-unmeasured"></span> Not yet measured (0 readings)</div>
           </div>
         </div>
       </div>
 
-      <!-- Map Action Bar (Reset View) -->
-      <div class="map-bottom-bar">
-        <span class="section-sub">Pan or zoom on either map to synchronously move both.</span>
-        <button type="button" id="btnResetMapView" class="btn-control" title="Reset maps to Tiruppur center">
-          <span>↺</span> Reset view
-        </button>
+      <!-- Interaction Status -->
+      <div class="map-interaction-bar">
+        <span class="filter-indicator" id="filterStatusText">Showing all stations across Tiruppur district</span>
+        <button type="button" id="btnResetMapView" class="btn-control" style="font-size: 11px; padding: 5px 12px;">Clear selection</button>
       </div>
     </section>
 
-    <!-- ═══ SECTION D: FILTER BAR ═══ -->
+    <!-- ═══ 4. FILTER BAR ═══ -->
     <section class="filter-bar" aria-label="Interactive Filters">
       <div class="filter-grid">
         <div class="filter-group">
           <label for="filterTaluk" class="filter-label">Taluk</label>
           <select id="filterTaluk" class="filter-select">
-            <option value="all">All Taluks (10 Blocks)</option>
+            <option value="all">All Taluks (6 Taluks)</option>
+            <option value="Avinashi">Avinashi</option>
+            <option value="Tirupur">Tirupur</option>
+            <option value="Palladam">Palladam</option>
+            <option value="Kangayam">Kangayam</option>
+            <option value="Dharapuram">Dharapuram</option>
+            <option value="Udumalpet">Udumalpet</option>
           </select>
         </div>
 
@@ -1279,18 +1234,16 @@
 
         <div class="filter-group">
           <label for="filterSearch" class="filter-label">Search Station</label>
-          <input type="text" id="filterSearch" class="filter-input" placeholder="Search station or taluk...">
+          <input type="text" id="filterSearch" class="filter-input" placeholder="Search station...">
         </div>
 
         <div class="filter-group">
-          <button type="button" id="btnResetFilters" class="btn-control" style="width: 100%;" title="Reset all filters">
-            <span>↺</span> Reset
-          </button>
+          <button type="button" id="btnResetFilters" class="btn-control" style="width: 100%;" title="Reset all filters">Reset</button>
         </div>
       </div>
     </section>
 
-    <!-- ═══ SECTION E: CHARTS GRID (2x2) ═══ -->
+    <!-- ═══ 5. CHARTS GRID (2x2) ═══ -->
     <section class="charts-grid-2x2" aria-label="Hydrological Analysis Charts">
       <!-- 1. Station Depth Time Series -->
       <div class="chart-panel">
@@ -1349,7 +1302,7 @@
       </div>
     </section>
 
-    <!-- ═══ SECTION F: PRIORITY RANKED TABLE ═══ -->
+    <!-- ═══ 6. PRIORITY TABLE ═══ -->
     <section class="table-section" aria-label="Action Priority Ranking">
       <div class="table-top-bar">
         <div>
@@ -1383,7 +1336,7 @@
       </div>
     </section>
 
-    <!-- ═══ SECTION G: COLLAPSIBLE METHODS & PROVENANCE ═══ -->
+    <!-- ═══ 7. COLLAPSIBLE METHODS & PROVENANCE ═══ -->
     <section class="collapsible-stack" aria-label="Methodology and Scientific Provenance">
       <!-- 1. Methodology -->
       <details class="collapsible-panel" open>
@@ -1474,23 +1427,24 @@
       <!-- 3. Limitations & Disclosures -->
       <details class="collapsible-panel">
         <summary class="collapsible-trigger">
-          <span>Hydrogeological Disclosures &amp; Geospatial Mapping Integrity</span>
+          <span>Hydrogeological Disclosures, Contamination &amp; Taluk Map Reference</span>
         </summary>
         <div class="collapsible-content">
-          <p><strong>1. Geospatial Mapping Integrity:</strong> Basemap uses OpenStreetMap tiles with dark contrast filter applied strictly to the tile pane. All hand-drawn or schematic river lines have been removed to preserve geospatial integrity.</p>
+          <p><strong>1. Taluk Map Reference:</strong> The illustrated taluk reference map depicts the six administrative taluks of Tiruppur district (Avinashi, Tirupur, Palladam, Kangayam, Dharapuram, Udumalpet). It is an illustrative visual reference and boundaries are approximate.</p>
           <p style="margin-top: 8px;"><strong>2. Crystalline Hydrogeology:</strong> Tiruppur rests on weathered and fissured crystalline rocks (gneisses and charnockites) with low primary porosity (specific yield typically 1.5% to 3.0%), making groundwater tables acutely vulnerable to deficit recharge during drought intervals.</p>
           <p style="margin-top: 8px;"><strong>3. Surveillance Gaps:</strong> Of 32 stations in the 2023–24 baseline network, only 9 core urban wells were resurveyed in the 2024–25 yearbook. Unmeasured stations are labeled "Not yet measured" rather than extrapolated.</p>
+          <p style="margin-top: 8px;"><strong>4. Industrial Contamination &amp; Salinity:</strong> Decades of intensive textile bleaching and dyeing operations historically discharged saline effluents into the Noyyal River basin and Orathupalayam reservoir, resulting in widespread percolation of sodium chloride, sodium sulphate, and elevated TDS into shallow unconfined aquifers (Source: CGWB Groundwater Quality 2024 &amp; TNPCB Water Quality Monitoring Reports).</p>
         </div>
       </details>
     </section>
 
-    <!-- ═══ SECTION H: QR DOCK & FOOTER ═══ -->
+    <!-- ═══ 8. QR DOCK & FOOTER ═══ -->
     <section class="qr-dock">
       <div class="qr-left">
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&amp;data=https://arunp061106.github.io/data-canvas-26-DF-dashboard/" alt="Live Dashboard QR Code" class="qr-img">
         <div>
-          <div class="qr-title">Live Device &amp; Review View</div>
-          <div class="qr-desc">Scan to interact with the synchronized two-map dashboard and filter matrix on your device.</div>
+          <div class="qr-title">Live Device &amp; Pitch View</div>
+          <div class="qr-desc">Scan to interact with the two-panel taluk model and live filter system on your mobile device.</div>
         </div>
       </div>
       <div>
@@ -1520,28 +1474,28 @@
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0;">
         <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px;">
-          <div class="en-metric-label">Observed May 2024</div>
-          <div class="en-metric-val" id="modalObservedMay24" style="color: var(--water);">--</div>
-          <div class="en-metric-sub">m bgl &bull; CGWB 2024-25, p.112</div>
+          <div style="font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 4px;">Observed May 2024</div>
+          <div id="modalObservedMay24" style="font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: var(--water);">--</div>
+          <div style="font-size: 11px; color: var(--muted);">m bgl &bull; CGWB 2024-25, p.112</div>
         </div>
         <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px;">
-          <div class="en-metric-label">2026 Scenario Depth</div>
-          <div class="en-metric-val" id="modalScenario2026" style="color: var(--drought);">--</div>
-          <div class="en-metric-sub">m bgl &bull; +3.2 m offset</div>
+          <div style="font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 4px;">2026 Scenario Depth</div>
+          <div id="modalScenario2026" style="font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: var(--drought);">--</div>
+          <div style="font-size: 11px; color: var(--muted);">m bgl &bull; +3.2 m offset</div>
         </div>
         <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px;">
-          <div class="en-metric-label">Seasonal Swing</div>
-          <div class="en-metric-val" id="modalSwing">--</div>
-          <div class="en-metric-sub">m &bull; Pre-to-post monsoon</div>
+          <div style="font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 4px;">Seasonal Swing</div>
+          <div id="modalSwing" style="font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: var(--text);">--</div>
+          <div style="font-size: 11px; color: var(--muted);">m &bull; Pre-to-post monsoon</div>
         </div>
         <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 12px;">
-          <div class="en-metric-label">Total Dissolved Solids</div>
-          <div class="en-metric-val" id="modalTds">--</div>
-          <div class="en-metric-sub">mg/L &bull; Laboratory analysis</div>
+          <div style="font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 4px;">Total Dissolved Solids</div>
+          <div id="modalTds" style="font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: var(--text);">--</div>
+          <div style="font-size: 11px; color: var(--muted);">mg/L &bull; Laboratory analysis</div>
         </div>
       </div>
       <div style="background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 14px;">
-        <div class="en-metric-label" style="margin-bottom: 4px;">Composite Score &amp; Action Rationale</div>
+        <div style="font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 4px;">Composite Score &amp; Action Rationale</div>
         <div id="modalScore" style="font-weight: 600; color: #ffffff; margin-bottom: 6px; font-family: var(--font-mono);">--</div>
         <div id="modalRationale" style="font-size: 13px; color: var(--muted); line-height: 1.5;">--</div>
       </div>
@@ -14228,7 +14182,7 @@
     }
   ],
   "provenance": {
-    "project_title": "A Catastrophe behind Colours — Groundwater Stress in Tiruppur and the Noyyal Basin",
+    "project_title": "A Catastrophe behind Colours - Groundwater Stress in Tiruppur and the Noyyal Basin",
     "generated_at": "2026-10-14",
     "sources": [
       {
@@ -14245,7 +14199,7 @@
         "agency": "Central Ground Water Board (CGWB), South Eastern Coastal Region, Chennai",
         "title": "Groundwater Yearbook of Tamil Nadu & UT of Puducherry (2023-2024)",
         "period": "May 2023, August 2023, November 2023, January 2024",
-        "coverage": "87 monitoring wells across all 14 taluks of Tiruppur (Pages 122-124)",
+        "coverage": "87 monitoring wells across Tiruppur district, focused on the 6 mapped taluks (Avinashi, Tirupur, Palladam, Kangayam, Dharapuram, Udumalpet)",
         "measurement_unit": "Depth to water level in meters below ground level (m bgl)",
         "provenance_note": "Extracted station-wise records with block/taluk classification, well type, coordinates, and 4-season water levels."
       },
@@ -14314,7 +14268,7 @@
 };
   </script>
 
-  <!-- ═══ DASHBOARD CONTROLLER & LEAFLET MAP LOGIC ═══ -->
+  <!-- ═══ DASHBOARD CONTROLLER & TALUK COMPARISON LOGIC ═══ -->
   <script>
   (function() {
     'use strict';
@@ -14325,8 +14279,28 @@
       return;
     }
 
+    // Six Taluks from the reference map (Section 4 specs)
+    const SIX_TALUKS = [
+      { name: 'Avinashi',   left: 33, top: 16 },
+      { name: 'Tirupur',    left: 40, top: 30 },
+      { name: 'Palladam',   left: 25, top: 35 },
+      { name: 'Kangayam',   left: 67, top: 33 },
+      { name: 'Dharapuram', left: 51, top: 56 },
+      { name: 'Udumalpet',  left: 16, top: 76 }
+    ];
+
+    function matchTaluk(stationTaluk, targetTaluk) {
+      const st = (stationTaluk || '').trim().toLowerCase();
+      const tt = (targetTaluk || '').trim().toLowerCase();
+      if (tt === 'tirupur') return st === 'tirupur' || st === 'tiruppur' || st === 'thiruppur';
+      if (tt === 'kangayam') return st === 'kangayam' || st === 'kangeyam';
+      if (tt === 'udumalpet') return st === 'udumalpet' || st === 'udumalaipettai';
+      return st === tt;
+    }
+
     // App State
     const state = {
+      selectedTaluk: null, // null = all
       filters: {
         taluk: 'all',
         wellType: 'all',
@@ -14336,15 +14310,7 @@
       sortCol: 'rank',
       sortAsc: true,
       selectedStation: data.priority_table[0] || null,
-      showElNino: false,
-      mapScenario: null,
-      mapObserved: null,
-      mapsInitialized: false,
-      markersScenario: [],
-      markersObserved: [],
-      talukLayerScenario: null,
-      talukLayerObserved: null,
-      isSyncing: false,
+      isPresentationMode: false,
       charts: {
         timeSeries: null,
         tds: null,
@@ -14360,15 +14326,14 @@
       kpiHighTdsCount: document.getElementById('kpiHighTdsCount'),
       kpiAnnualRainfall: document.getElementById('kpiAnnualRainfall'),
       kpiHighPriorityCount: document.getElementById('kpiHighPriorityCount'),
-      btnToggleElNino: document.getElementById('btnToggleElNino'),
-      elNinoBtnText: document.getElementById('elNinoBtnText'),
-      elNinoBanner: document.getElementById('elNinoBanner'),
-      leftMapElNinoOverlay: document.getElementById('leftMapElNinoOverlay'),
-      enRoniStatus: document.getElementById('enRoniStatus'),
-      enRainfall2026: document.getElementById('enRainfall2026'),
-      overlayRoniVal: document.getElementById('overlayRoniVal'),
-      overlayRainVal: document.getElementById('overlayRainVal'),
+      btnPresentationView: document.getElementById('btnPresentationView'),
+      btnClearTalukFilter: document.getElementById('btnClearTalukFilter'),
       btnResetMapView: document.getElementById('btnResetMapView'),
+      chipsContainerLeft: document.getElementById('chipsContainerLeft'),
+      chipsContainerRight: document.getElementById('chipsContainerRight'),
+      outsideTaluksLeft: document.getElementById('outsideTaluksLeft'),
+      outsideTaluksRight: document.getElementById('outsideTaluksRight'),
+      filterStatusText: document.getElementById('filterStatusText'),
       filterTaluk: document.getElementById('filterTaluk'),
       filterWellType: document.getElementById('filterWellType'),
       filterPriority: document.getElementById('filterPriority'),
@@ -14395,15 +14360,23 @@
     // =========================================================================
     function getFilteredStations() {
       return data.priority_table.filter(s => {
-        if (state.filters.taluk !== 'all' && s.taluk !== state.filters.taluk) return false;
+        // Taluk filter from chip or dropdown
+        if (state.selectedTaluk) {
+          if (!matchTaluk(s.taluk, state.selectedTaluk)) return false;
+        } else if (state.filters.taluk !== 'all') {
+          if (!matchTaluk(s.taluk, state.filters.taluk)) return false;
+        }
+
         if (state.filters.wellType !== 'all' && s.well_type !== state.filters.wellType) return false;
         if (state.filters.priority !== 'all' && s.priority_tier !== state.filters.priority) return false;
+
         if (state.filters.search) {
           const q = state.filters.search;
           const matchName = (s.station_name || '').toLowerCase().includes(q);
-          const matchTaluk = (s.taluk || '').toLowerCase().includes(q);
-          if (!matchName && !matchTaluk) return false;
+          const matchT = (s.taluk || '').toLowerCase().includes(q);
+          if (!matchName && !matchT) return false;
         }
+
         return true;
       });
     }
@@ -14411,12 +14384,26 @@
     function applyFilters() {
       const filtered = getFilteredStations();
       updateKpis(filtered);
-      renderMapMarkers(filtered);
       renderTable(filtered);
       renderTdsChart(filtered);
       renderPillarsChart(filtered);
 
       DOM.tableFilterCount.textContent = `${filtered.length} Stations`;
+
+      if (state.selectedTaluk) {
+        DOM.filterStatusText.innerHTML = `Filtered by: <strong>${state.selectedTaluk} Taluk</strong> (${filtered.length} stations)`;
+      } else {
+        DOM.filterStatusText.textContent = `Showing all stations across Tiruppur district (${filtered.length} stations)`;
+      }
+
+      // Update chip active outline
+      document.querySelectorAll('.taluk-chip').forEach(chip => {
+        if (chip.getAttribute('data-taluk') === state.selectedTaluk) {
+          chip.classList.add('chip-active');
+        } else {
+          chip.classList.remove('chip-active');
+        }
+      });
 
       if (filtered.length > 0) {
         const stillSelected = filtered.find(s => s.station_name === state.selectedStation?.station_name);
@@ -14427,19 +14414,8 @@
     }
 
     function initFilters() {
-      const taluks = new Set();
-      data.priority_table.forEach(s => {
-        if (s.taluk) taluks.add(s.taluk);
-      });
-
-      Array.from(taluks).sort().forEach(t => {
-        const opt = document.createElement('option');
-        opt.value = t;
-        opt.textContent = `${t} Taluk`;
-        DOM.filterTaluk.appendChild(opt);
-      });
-
       DOM.filterTaluk.addEventListener('change', (e) => {
+        state.selectedTaluk = e.target.value === 'all' ? null : e.target.value;
         state.filters.taluk = e.target.value;
         applyFilters();
       });
@@ -14459,24 +14435,29 @@
         applyFilters();
       });
 
-      DOM.btnResetFilters.addEventListener('click', () => {
+      function resetAllFilters() {
+        state.selectedTaluk = null;
         state.filters = { taluk: 'all', wellType: 'all', priority: 'all', search: '' };
         DOM.filterTaluk.value = 'all';
         DOM.filterWellType.value = 'all';
         DOM.filterPriority.value = 'all';
         DOM.filterSearch.value = '';
         applyFilters();
-      });
+      }
+
+      DOM.btnResetFilters.addEventListener('click', resetAllFilters);
+      DOM.btnClearTalukFilter.addEventListener('click', resetAllFilters);
+      DOM.btnResetMapView.addEventListener('click', resetAllFilters);
     }
 
     // =========================================================================
-    // 2. COUNTS & KPI STRIP (SECTION A & C REQUIREMENTS)
+    // 2. KPI STRIP COMPUTATION (DIRECT FROM DATA ARRAYS)
     // =========================================================================
     function updateKpis(filtered) {
-      // "Stations tracked" = distinct stations with at least one reading
+      // 1. Stations tracked = distinct stations in filtered array
       DOM.kpiStationsTracked.textContent = filtered.length;
 
-      // Median depth (m bgl)
+      // 2. Median depth (m bgl)
       const validDepths = filtered.map(s => s.max_depth_mbgl).filter(d => d !== null && d !== undefined).sort((a,b) => a - b);
       if (validDepths.length > 0) {
         const mid = Math.floor(validDepths.length / 2);
@@ -14486,284 +14467,203 @@
         DOM.kpiMedianDepth.textContent = "Not yet measured";
       }
 
-      // "Wells above 2,000 mg/L TDS" = measured TDS above 2,000 in data file
+      // 3. Wells above 2,000 mg/L TDS = measured TDS > 2000
       const highTdsCount = filtered.filter(s => (s.pre_monsoon_tds && s.pre_monsoon_tds > 2000) || (s.post_monsoon_tds && s.post_monsoon_tds > 2000)).length;
       DOM.kpiHighTdsCount.textContent = highTdsCount;
 
-      // "Annual rainfall" = computed by summing NASA POWER values from data file
+      // 4. Annual rainfall (computed from NASA POWER monthly sums for 2024)
       const rf2024Sum = (data.rainfall_monthly || []).filter(m => m.year === 2024).reduce((acc, m) => acc + (m.total_mm || 0), 0);
       DOM.kpiAnnualRainfall.textContent = rf2024Sum.toFixed(1);
 
-      // "High-priority wells" = composite score >= 70
+      // 5. High-priority wells = composite score >= 70
       const highPriorityCount = filtered.filter(s => s.priority_score >= 70).length;
       DOM.kpiHighPriorityCount.textContent = highPriorityCount;
     }
 
     // =========================================================================
-    // 3. MAP FIXES (OPENSTREETMAP, DARK TILE FILTER, SYNCHRONIZED PANNING)
+    // 3. TWO-PANEL TALUK COMPARISON WITH DYNAMIC CHIPS
     // =========================================================================
-    function initDualMaps() {
-      if (state.mapsInitialized) return;
+    function renderTalukChips() {
+      const stations = data.priority_table;
 
-      const mapOptions = {
-        zoomControl: true,
-        scrollWheelZoom: false,
-        minZoom: 10,
-        maxZoom: 14,
-        attributionControl: true
-      };
+      // Identify stations outside the six mapped taluks
+      const outside = stations
+        .filter(s => !SIX_TALUKS.some(t => matchTaluk(s.taluk, t.name)))
+        .map(s => s.station_name);
 
-      const osmUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-      const osmAttr = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors';
+      const outsideUnique = Array.from(new Set(outside)).sort();
+      const outsideHtml = outsideUnique.length > 0
+        ? `<strong>Stations outside the six mapped taluks (${outsideUnique.length}):</strong> ${outsideUnique.join(', ')}.`
+        : '';
 
-      // 1. Left Map: Scenario 2026
-      state.mapScenario = L.map('mapScenario', mapOptions).setView([11.1085, 77.3411], 12);
-      L.tileLayer(osmUrl, { attribution: osmAttr, maxZoom: 19 }).addTo(state.mapScenario);
-      L.control.scale({ imperial: false, metric: true, position: 'bottomleft' }).addTo(state.mapScenario);
+      DOM.outsideTaluksLeft.innerHTML = outsideHtml;
+      DOM.outsideTaluksRight.innerHTML = outsideHtml;
 
-      // 2. Right Map: Observed May 2024
-      state.mapObserved = L.map('mapObserved', mapOptions).setView([11.1085, 77.3411], 12);
-      L.tileLayer(osmUrl, { attribution: osmAttr, maxZoom: 19 }).addTo(state.mapObserved);
-      L.control.scale({ imperial: false, metric: true, position: 'bottomleft' }).addTo(state.mapObserved);
+      // Helper to compute stats for a taluk
+      function getTalukStats(talukName, mode) {
+        const stMatches = stations.filter(s => matchTaluk(s.taluk, talukName));
 
-      // 3. Add Tiruppur City Marker to both maps
-      const cityIcon = L.divIcon({
-        className: 'map-city-label',
-        html: '<span class="city-pin">★</span><span class="city-text">Tiruppur City</span>',
-        iconSize: [110, 24],
-        iconAnchor: [12, 12]
-      });
-      L.marker([11.1085, 77.3411], { icon: cityIcon, interactive: false }).addTo(state.mapScenario);
-      L.marker([11.1085, 77.3411], { icon: cityIcon, interactive: false }).addTo(state.mapObserved);
-
-      // 4. Add Taluk Centroid Labels (hidden below zoom 11)
-      addTalukLabels();
-
-      // 5. Synchronised panning (with infinite recursion guard)
-      function syncMaps(source, target) {
-        source.on('move', () => {
-          if (state.isSyncing) return;
-          state.isSyncing = true;
-          target.setView(source.getCenter(), source.getZoom(), { animate: false });
-          state.isSyncing = false;
-        });
-      }
-      syncMaps(state.mapScenario, state.mapObserved);
-      syncMaps(state.mapObserved, state.mapScenario);
-
-      // 6. Reset View Button
-      DOM.btnResetMapView.addEventListener('click', () => {
-        state.mapScenario.setView([11.1085, 77.3411], 12);
-        state.mapObserved.setView([11.1085, 77.3411], 12);
-      });
-
-      // 7. Invalidate sizes on window resize
-      window.addEventListener('resize', () => {
-        if (state.mapScenario) state.mapScenario.invalidateSize();
-        if (state.mapObserved) state.mapObserved.invalidateSize();
-      });
-
-      state.mapsInitialized = true;
-      renderMapMarkers(getFilteredStations());
-
-      setTimeout(() => {
-        if (state.mapScenario) state.mapScenario.invalidateSize();
-        if (state.mapObserved) state.mapObserved.invalidateSize();
-      }, 100);
-    }
-
-    function addTalukLabels() {
-      // Compute taluk centroids from station coordinates
-      const talukCoords = {};
-      data.priority_table.forEach(s => {
-        if (s.taluk && s.latitude && s.longitude) {
-          if (!talukCoords[s.taluk]) talukCoords[s.taluk] = [];
-          talukCoords[s.taluk].push([s.latitude, s.longitude]);
-        }
-      });
-
-      state.talukLayerScenario = L.layerGroup();
-      state.talukLayerObserved = L.layerGroup();
-
-      Object.entries(talukCoords).forEach(([taluk, coords]) => {
-        const avgLat = coords.reduce((acc, c) => acc + c[0], 0) / coords.length;
-        const avgLon = coords.reduce((acc, c) => acc + c[1], 0) / coords.length;
-
-        const icon = L.divIcon({
-          className: 'taluk-label-marker',
-          html: `<span class="taluk-label-text">${taluk}</span>`,
-          iconSize: [90, 20],
-          iconAnchor: [45, 10]
-        });
-
-        L.marker([avgLat, avgLon], { icon: icon, interactive: false }).addTo(state.talukLayerScenario);
-        L.marker([avgLat, avgLon], { icon: icon, interactive: false }).addTo(state.talukLayerObserved);
-      });
-
-      state.talukLayerScenario.addTo(state.mapScenario);
-      state.talukLayerObserved.addTo(state.mapObserved);
-
-      function updateTalukVisibility(map, layer) {
-        if (map.getZoom() < 11) {
-          if (map.hasLayer(layer)) map.removeLayer(layer);
-        } else {
-          if (!map.hasLayer(layer)) map.addLayer(layer);
-        }
-      }
-
-      state.mapScenario.on('zoomend', () => updateTalukVisibility(state.mapScenario, state.talukLayerScenario));
-      state.mapObserved.on('zoomend', () => updateTalukVisibility(state.mapObserved, state.talukLayerObserved));
-    }
-
-    // Helper: Depth to radius scale (6 px at shallowest to 16 px at deepest)
-    function calcRadius(depth) {
-      if (depth === null || depth === undefined) return 6;
-      // Linear scaling: 2m = 6px, 25m = 16px
-      return Math.max(6, Math.min(16, 6 + (depth - 2) * (10 / 23)));
-    }
-
-    function renderMapMarkers(stations) {
-      if (!state.mapsInitialized) return;
-
-      // Clear existing markers
-      state.markersScenario.forEach(m => state.mapScenario.removeLayer(m));
-      state.markersObserved.forEach(m => state.mapObserved.removeLayer(m));
-      state.markersScenario = [];
-      state.markersObserved = [];
-
-      stations.forEach(s => {
-        if (!s.latitude || !s.longitude) return;
-
-        // Tier Color Mapping: high red (#ef4444), medium amber (#f59e0b), routine green (#22c55e)
-        let tierColor = '#22c55e';
-        if (s.priority_tier === 'High Priority') tierColor = '#ef4444';
-        else if (s.priority_tier === 'Medium Priority') tierColor = '#f59e0b';
-
-        // ── LEFT MAP: Scenario 2026 Marker ──
-        const scenDepth = s.scenario_depth_mbgl !== null && s.scenario_depth_mbgl !== undefined
-          ? s.scenario_depth_mbgl
-          : (s.max_depth_mbgl !== null ? +(s.max_depth_mbgl + 3.2).toFixed(2) : null);
-
-        const rLeft = calcRadius(scenDepth);
-        const depthLeftText = scenDepth !== null ? `${scenDepth} m bgl` : 'Not yet measured';
-        const tdsText = s.pre_monsoon_tds !== null && s.pre_monsoon_tds !== undefined ? `${s.pre_monsoon_tds} mg/L` : 'Not yet measured';
-
-        const markerLeft = L.circleMarker([s.latitude, s.longitude], {
-          radius: rLeft,
-          fillColor: tierColor,
-          color: '#0b1220',
-          weight: 1.5,
-          opacity: 1,
-          fillOpacity: 0.88
-        });
-
-        const tooltipLeft = `
-          <div class="tooltip-title">${s.station_name} [SCENARIO]</div>
-          <div class="tooltip-row">Taluk: <strong>${s.taluk}</strong> (${s.well_type})</div>
-          <div class="tooltip-row">Projected Depth: <strong>${depthLeftText}</strong></div>
-          <div class="tooltip-row">TDS: <strong>${tdsText}</strong></div>
-          <div class="tooltip-row">Tier: <strong style="color: ${tierColor};">${s.priority_tier}</strong></div>
-        `;
-        markerLeft.bindTooltip(tooltipLeft, { direction: 'top', className: 'custom-map-tooltip' });
-        markerLeft.on('click', () => selectStation(s));
-        markerLeft.addTo(state.mapScenario);
-        state.markersScenario.push(markerLeft);
-
-        // ── RIGHT MAP: Observed May 2024 Marker ──
-        const obsDepth = s.observed_may24_mbgl !== null && s.observed_may24_mbgl !== undefined ? s.observed_may24_mbgl : null;
-        let markerRight;
-
-        if (obsDepth !== null) {
-          const rRight = calcRadius(obsDepth);
-          markerRight = L.circleMarker([s.latitude, s.longitude], {
-            radius: rRight,
-            fillColor: tierColor,
-            color: '#0b1220',
-            weight: 1.5,
-            opacity: 1,
-            fillOpacity: 0.88
-          });
-
-          const tooltipRight = `
-            <div class="tooltip-title">${s.station_name} [MEASURED]</div>
-            <div class="tooltip-row">Taluk: <strong>${s.taluk}</strong> (${s.well_type})</div>
-            <div class="tooltip-row">Observed May 2024: <strong>${obsDepth} m bgl</strong></div>
-            <div class="tooltip-row">Source: <strong>CGWB 2024-25, p.112</strong></div>
-            <div class="tooltip-row">TDS: <strong>${tdsText}</strong></div>
-            <div class="tooltip-row">Tier: <strong style="color: ${tierColor};">${s.priority_tier}</strong></div>
-          `;
-          markerRight.bindTooltip(tooltipRight, { direction: 'top', className: 'custom-map-tooltip' });
-        } else {
-          // Unmeasured station in May 2024 round
-          markerRight = L.circleMarker([s.latitude, s.longitude], {
-            radius: 6,
-            fillColor: 'transparent',
-            color: '#8ca3c0',
-            weight: 1.5,
-            dashArray: '3, 4',
-            opacity: 0.8,
-            fillOpacity: 0
-          });
-
-          const tooltipUnmeasured = `
-            <div class="tooltip-title">${s.station_name}</div>
-            <div class="tooltip-row">Taluk: <strong>${s.taluk}</strong> (${s.well_type})</div>
-            <div class="tooltip-row">Observed May 2024: <strong style="color: var(--drought);">Not yet measured</strong></div>
-            <div class="tooltip-row">TDS: <strong>${tdsText}</strong></div>
-            <div class="tooltip-row" style="color: var(--muted); font-size: 11px;">No May 2024 reading on CGWB p.112</div>
-          `;
-          markerRight.bindTooltip(tooltipUnmeasured, { direction: 'top', className: 'custom-map-tooltip' });
-        }
-
-        markerRight.on('click', () => selectStation(s));
-        markerRight.addTo(state.mapObserved);
-        state.markersObserved.push(markerRight);
-      });
-    }
-
-    // =========================================================================
-    // 4. EL NIÑO TOGGLE
-    // =========================================================================
-    function initElNinoToggle() {
-      DOM.btnToggleElNino.addEventListener('click', () => {
-        state.showElNino = !state.showElNino;
-
-        if (state.showElNino) {
-          DOM.btnToggleElNino.classList.add('active');
-          DOM.btnToggleElNino.setAttribute('aria-pressed', 'true');
-          DOM.elNinoBtnText.textContent = 'Hide El Niño effect';
-          DOM.elNinoBanner.style.display = 'block';
-          DOM.leftMapElNinoOverlay.style.display = 'block';
-
-          if (data.enso_roni && data.enso_roni.length > 0) {
-            const latestRoni = data.enso_roni[data.enso_roni.length - 1];
-            const roniText = `${latestRoni.status} (+${latestRoni.anomaly}°C Anomaly)`;
-            DOM.enRoniStatus.textContent = roniText;
-            DOM.overlayRoniVal.textContent = roniText;
-          }
-
-          // Check for 2026 rainfall figure in data file
-          const rf26Records = (data.rainfall_monthly || []).filter(m => m.year === 2026);
-          if (rf26Records.length > 0) {
-            const sum26 = rf26Records.reduce((acc, m) => acc + (m.total_mm || 0), 0);
-            DOM.enRainfall2026.textContent = `${sum26.toFixed(1)} mm`;
-            DOM.overlayRainVal.textContent = `${sum26.toFixed(1)} mm`;
+        let readings = [];
+        stMatches.forEach(s => {
+          if (mode === 'scenario') {
+            const val = s.scenario_depth_mbgl !== null && s.scenario_depth_mbgl !== undefined
+              ? s.scenario_depth_mbgl
+              : (s.max_depth_mbgl !== null ? +(s.max_depth_mbgl + 3.2).toFixed(2) : null);
+            if (val !== null) readings.push({ station: s.station_name, depth: val, year: '2026 Scenario' });
           } else {
-            DOM.enRainfall2026.textContent = 'not in data file';
-            DOM.overlayRainVal.textContent = 'not in data file';
+            // mode === 'observed' (May 2024 pre-monsoon round only)
+            if (s.observed_may24_mbgl !== null && s.observed_may24_mbgl !== undefined) {
+              readings.push({ station: s.station_name, depth: s.observed_may24_mbgl, year: 'May 2024' });
+            }
           }
+        });
+
+        readings.sort((a,b) => a.depth - b.depth);
+        const count = readings.length;
+
+        let median = null;
+        let tierClass = 'chip-tier-routine';
+        let valText = '';
+        let ariaText = '';
+        let countText = '';
+
+        if (count >= 2) {
+          const mid = Math.floor(count / 2);
+          median = count % 2 !== 0 ? readings[mid].depth : ((readings[mid - 1].depth + readings[mid].depth) / 2);
+          valText = `${median.toFixed(1)} m bgl`;
+          countText = `${count} stations`;
+
+          if (median >= 20) {
+            tierClass = 'chip-tier-high';
+          } else if (median >= 10) {
+            tierClass = 'chip-tier-medium';
+          } else {
+            tierClass = 'chip-tier-routine';
+          }
+
+          ariaText = `${talukName} taluk, median ${median.toFixed(1)} m bgl, ${count} stations`;
+        } else if (count === 1) {
+          median = readings[0].depth;
+          valText = `${median.toFixed(1)} m bgl`;
+          countText = '1 station &bull; Insufficient data';
+          tierClass = 'chip-tier-insufficient';
+          ariaText = `${talukName} taluk, ${readings[0].depth} m bgl, 1 station (insufficient data)`;
         } else {
-          DOM.btnToggleElNino.classList.remove('active');
-          DOM.btnToggleElNino.setAttribute('aria-pressed', 'false');
-          DOM.elNinoBtnText.textContent = 'Show current El Niño effect';
-          DOM.elNinoBanner.style.display = 'none';
-          DOM.leftMapElNinoOverlay.style.display = 'none';
+          valText = 'Not yet measured';
+          countText = '0 stations';
+          tierClass = 'chip-tier-unmeasured';
+          ariaText = `${talukName} taluk, Not yet measured, 0 stations`;
+        }
+
+        return {
+          talukName,
+          count,
+          readings,
+          valText,
+          countText,
+          tierClass,
+          ariaText
+        };
+      }
+
+      function createChipElement(tConfig, stats) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `taluk-chip ${stats.tierClass}`;
+        if (tConfig.top < 30) {
+          btn.classList.add('tooltip-below');
+        }
+        btn.style.left = `${tConfig.left}%`;
+        btn.style.top = `${tConfig.top}%`;
+        btn.setAttribute('data-taluk', tConfig.name);
+        btn.setAttribute('aria-label', stats.ariaText);
+
+        // Tooltip showing stations list with depth and year
+        let ttListHtml = '';
+        if (stats.readings.length > 0) {
+          ttListHtml = stats.readings.map(r => `
+            <div class="chip-tt-item">
+              <span>${r.station}</span>
+              <span>${r.depth} m (${r.year})</span>
+            </div>
+          `).join('');
+        } else {
+          ttListHtml = '<div style="color: var(--muted); font-size: 11px;">Not yet measured (no readings for this round).</div>';
+        }
+
+        btn.innerHTML = `
+          <span class="chip-name">${tConfig.name}</span>
+          <span class="chip-val">${stats.valText}</span>
+          <span class="chip-count">${stats.countText}</span>
+          <div class="chip-tooltip">
+            <div class="chip-tt-title">${tConfig.name} Taluk</div>
+            <div class="chip-tt-list">
+              ${ttListHtml}
+            </div>
+          </div>
+        `;
+
+        btn.addEventListener('click', () => {
+          if (state.selectedTaluk === tConfig.name) {
+            state.selectedTaluk = null;
+            DOM.filterTaluk.value = 'all';
+          } else {
+            state.selectedTaluk = tConfig.name;
+            DOM.filterTaluk.value = tConfig.name;
+          }
+          applyFilters();
+        });
+
+        return btn;
+      }
+
+      // Populate Left (Scenario 2026)
+      DOM.chipsContainerLeft.innerHTML = '';
+      SIX_TALUKS.forEach(t => {
+        const stats = getTalukStats(t.name, 'scenario');
+        const chip = createChipElement(t, stats);
+        DOM.chipsContainerLeft.appendChild(chip);
+      });
+
+      // Populate Right (Observed May 2024)
+      DOM.chipsContainerRight.innerHTML = '';
+      SIX_TALUKS.forEach(t => {
+        const stats = getTalukStats(t.name, 'observed');
+        const chip = createChipElement(t, stats);
+        DOM.chipsContainerRight.appendChild(chip);
+      });
+    }
+
+    // =========================================================================
+    // 4. PRESENTATION MODE (SECTION 9)
+    // =========================================================================
+    function togglePresentationMode() {
+      state.isPresentationMode = !state.isPresentationMode;
+
+      if (state.isPresentationMode) {
+        document.body.classList.add('presentation-mode');
+        DOM.btnPresentationView.classList.add('active');
+        DOM.btnPresentationView.textContent = 'Exit';
+      } else {
+        document.body.classList.remove('presentation-mode');
+        DOM.btnPresentationView.classList.remove('active');
+        DOM.btnPresentationView.textContent = 'Presentation view';
+      }
+    }
+
+    function initPresentationMode() {
+      DOM.btnPresentationView.addEventListener('click', togglePresentationMode);
+
+      // Keyboard accessible: Escape key to exit presentation mode
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && state.isPresentationMode) {
+          togglePresentationMode();
         }
       });
     }
 
     // =========================================================================
-    // 5. CHARTS (SECTION E REQUIREMENTS)
+    // 5. CHARTS (TIME SERIES, TDS, RAINFALL, PILLARS)
     // =========================================================================
     function selectStation(st) {
       state.selectedStation = st;
@@ -14899,16 +14799,16 @@
           scales: {
             x: {
               grid: { display: false },
-              ticks: { color: '#8ca3c0', font: { family: 'Inter', size: 9 }, maxRotation: 40, minRotation: 40 }
+              ticks: {
+                color: '#8ca3c0',
+                font: { family: 'Inter', size: 10 },
+                maxRotation: 45,
+                minRotation: 45
+              }
             },
             y: {
               grid: { color: 'rgba(255, 255, 255, 0.04)' },
-              ticks: {
-                color: '#8ca3c0',
-                font: { family: 'JetBrains Mono', size: 10 },
-                callback: v => v === 2000 ? '2,000 (BIS Limit)' : v
-              },
-              title: { display: true, text: 'TDS (mg/L)', color: '#8ca3c0', font: { size: 10 } }
+              ticks: { color: '#8ca3c0', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + ' mg/L' }
             }
           }
         }
@@ -14917,14 +14817,11 @@
 
     function initMonthlyRainfallChart() {
       const ctx = document.getElementById('chartMonthlyRainfall');
-      if (!ctx || !data.rainfall_monthly) return;
-
-      const rf23 = data.rainfall_monthly.filter(m => m.year === 2023);
-      const rf24 = data.rainfall_monthly.filter(m => m.year === 2024);
-      const rf23Sum = rf23.reduce((acc, m) => acc + (m.total_mm || 0), 0).toFixed(1);
-      const rf24Sum = rf24.reduce((acc, m) => acc + (m.total_mm || 0), 0).toFixed(1);
+      if (!ctx) return;
 
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const r23 = (data.rainfall_monthly || []).filter(m => m.year === 2023).map(m => m.total_mm);
+      const r24 = (data.rainfall_monthly || []).filter(m => m.year === 2024).map(m => m.total_mm);
 
       state.charts.rainfall = new Chart(ctx, {
         type: 'bar',
@@ -14932,15 +14829,19 @@
           labels: months,
           datasets: [
             {
-              label: `2023 (${rf23Sum} mm total)`,
-              data: months.map((_, i) => rf23[i] ? rf23[i].total_mm : 0),
-              backgroundColor: '#8ca3c0',
+              label: '2023 Precipitation (mm)',
+              data: r23,
+              backgroundColor: 'rgba(140, 163, 192, 0.5)',
+              borderColor: '#8ca3c0',
+              borderWidth: 1,
               borderRadius: 3
             },
             {
-              label: `2024 (${rf24Sum} mm total)`,
-              data: months.map((_, i) => rf24[i] ? rf24[i].total_mm : 0),
-              backgroundColor: '#2dd4bf',
+              label: '2024 Precipitation (mm)',
+              data: r24,
+              backgroundColor: 'rgba(45, 212, 191, 0.7)',
+              borderColor: '#2dd4bf',
+              borderWidth: 1,
               borderRadius: 3
             }
           ]
@@ -14950,21 +14851,20 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              labels: { color: '#8ca3c0', font: { family: 'Inter', size: 11, weight: 500 } }
+              labels: { color: '#8ca3c0', font: { family: 'Inter', size: 11 } }
             },
             tooltip: {
-              callbacks: { label: c => `${c.dataset.label}: ${c.raw.toFixed(1)} mm` }
+              callbacks: { label: c => `${c.dataset.label}: ${c.raw} mm` }
             }
           },
           scales: {
             x: {
               grid: { display: false },
-              ticks: { color: '#8ca3c0', font: { family: 'JetBrains Mono', size: 10 } }
+              ticks: { color: '#8ca3c0', font: { family: 'Inter', size: 10 } }
             },
             y: {
               grid: { color: 'rgba(255, 255, 255, 0.04)' },
-              ticks: { color: '#8ca3c0', font: { family: 'JetBrains Mono', size: 10 } },
-              title: { display: true, text: 'Rainfall (mm)', color: '#8ca3c0', font: { size: 10 } }
+              ticks: { color: '#8ca3c0', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + 'mm' }
             }
           }
         }
@@ -14979,14 +14879,13 @@
         state.charts.pillars.destroy();
       }
 
-      // Top 8 stations by priority score
-      const topStations = [...stations].sort((a,b) => b.priority_score - a.priority_score).slice(0, 8);
-      const labels = topStations.map(s => s.station_name);
+      // Top 8 stations by priority score in current filtered view
+      const top8 = [...stations].sort((a,b) => b.priority_score - a.priority_score).slice(0, 8);
 
-      // Section A: Priority weights 40 / 40 / 20 (water table, salinity, fluctuation)
-      const p1 = topStations.map(s => (s.max_depth_mbgl >= 20 ? 40 : (s.max_depth_mbgl >= 10 ? 25 : 12)));
-      const p2 = topStations.map(s => ((s.pre_monsoon_tds || 0) >= 2000 ? 40 : ((s.pre_monsoon_tds || 0) >= 1200 ? 25 : 12)));
-      const p3 = topStations.map(s => (s.seasonal_range_m >= 5.0 ? 20 : (s.seasonal_range_m >= 2.0 ? 10 : 5)));
+      const labels = top8.map(s => s.station_name);
+      const p1 = top8.map(s => s.pillar_scores?.depth_score || 0);
+      const p2 = top8.map(s => s.pillar_scores?.salinity_score || 0);
+      const p3 = top8.map(s => s.pillar_scores?.drawdown_score || 0);
 
       state.charts.pillars = new Chart(ctx, {
         type: 'bar',
@@ -14994,19 +14893,19 @@
           labels: labels,
           datasets: [
             {
-              label: 'Pillar 1: Water table depth (40%)',
+              label: 'Pillar 1: Depth (40 pts)',
               data: p1,
               backgroundColor: '#ef4444',
               borderRadius: 2
             },
             {
-              label: 'Pillar 2: Salinity / TDS (40%)',
+              label: 'Pillar 2: Salinity (40 pts)',
               data: p2,
               backgroundColor: '#f59e0b',
               borderRadius: 2
             },
             {
-              label: 'Pillar 3: Seasonal fluctuation (20%)',
+              label: 'Pillar 3: Fluctuation (20 pts)',
               data: p3,
               backgroundColor: '#2dd4bf',
               borderRadius: 2
@@ -15018,24 +14917,29 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              labels: { color: '#8ca3c0', font: { family: 'Inter', size: 10, weight: 500 } }
+              labels: { color: '#8ca3c0', font: { family: 'Inter', size: 10 } }
             },
             tooltip: {
-              callbacks: { label: c => `${c.dataset.label}: ${c.raw} pts` }
+              callbacks: {
+                label: c => `${c.dataset.label}: ${c.raw} pts`,
+                afterBody: items => {
+                  const idx = items[0].dataIndex;
+                  return `Total Priority Score: ${top8[idx].priority_score} / 100`;
+                }
+              }
             }
           },
           scales: {
             x: {
               stacked: true,
               grid: { display: false },
-              ticks: { color: '#8ca3c0', font: { family: 'Inter', size: 9 }, maxRotation: 40, minRotation: 40 }
+              ticks: { color: '#8ca3c0', font: { family: 'Inter', size: 10 }, maxRotation: 40, minRotation: 40 }
             },
             y: {
               stacked: true,
               max: 100,
               grid: { color: 'rgba(255, 255, 255, 0.04)' },
-              ticks: { color: '#8ca3c0', font: { family: 'JetBrains Mono', size: 10 } },
-              title: { display: true, text: 'Total Score (40/40/20)', color: '#8ca3c0', font: { size: 10 } }
+              ticks: { color: '#8ca3c0', font: { family: 'JetBrains Mono', size: 10 } }
             }
           }
         }
@@ -15043,14 +14947,10 @@
     }
 
     // =========================================================================
-    // 6. PRIORITY TABLE (SORTABLE + INSPECTION DOSSIER)
+    // 6. PRIORITY TABLE
     // =========================================================================
     function renderTable(stations) {
-      const tbody = DOM.priorityTableBody;
-      tbody.innerHTML = '';
-
-      let items = [...stations];
-      items.sort((a, b) => {
+      const sorted = [...stations].sort((a, b) => {
         let valA = a[state.sortCol];
         let valB = b[state.sortCol];
 
@@ -15060,8 +14960,8 @@
           return state.sortAsc ? valB - valA : valA - valB;
         }
 
-        if (valA === null || valA === undefined) valA = -9999;
-        if (valB === null || valB === undefined) valB = -9999;
+        if (valA === null || valA === undefined) return 1;
+        if (valB === null || valB === undefined) return -1;
 
         if (typeof valA === 'string') {
           return state.sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
@@ -15069,62 +14969,63 @@
         return state.sortAsc ? valA - valB : valB - valA;
       });
 
-      items.forEach((s, idx) => {
+      DOM.priorityTableBody.innerHTML = '';
+
+      sorted.forEach((s, idx) => {
         const tr = document.createElement('tr');
         tr.setAttribute('data-station', s.station_name);
-        if (state.selectedStation && state.selectedStation.station_name === s.station_name) {
+        if (state.selectedStation?.station_name === s.station_name) {
           tr.classList.add('selected-row');
         }
 
-        let tierClass = 'tier-routine';
-        if (s.priority_tier === 'High Priority') tierClass = 'tier-high';
-        else if (s.priority_tier === 'Medium Priority') tierClass = 'tier-medium';
+        let tierClass = 'pill-routine';
+        if (s.priority_tier === 'High Priority') tierClass = 'pill-high';
+        else if (s.priority_tier === 'Medium Priority') tierClass = 'pill-medium';
 
-        const obsMay24 = s.observed_may24_mbgl !== null && s.observed_may24_mbgl !== undefined
-          ? `${s.observed_may24_mbgl} m`
-          : 'Not yet measured';
+        const obsVal = s.observed_may24_mbgl !== null && s.observed_may24_mbgl !== undefined
+          ? `${s.observed_may24_mbgl.toFixed(2)}`
+          : '<span style="color: var(--muted); font-style: italic;">Not yet measured</span>';
 
-        const scen26 = s.scenario_depth_mbgl !== null && s.scenario_depth_mbgl !== undefined
-          ? `${s.scenario_depth_mbgl} m`
-          : (s.max_depth_mbgl !== null ? `${+(s.max_depth_mbgl + 3.2).toFixed(2)} m` : 'Not yet measured');
+        const scenVal = s.scenario_depth_mbgl !== null && s.scenario_depth_mbgl !== undefined
+          ? `${s.scenario_depth_mbgl.toFixed(2)}`
+          : (s.max_depth_mbgl !== null ? `${(s.max_depth_mbgl + 3.2).toFixed(2)}` : '<span style="color: var(--muted); font-style: italic;">Not yet measured</span>');
 
-        const swing = s.seasonal_range_m !== null && s.seasonal_range_m !== undefined
-          ? `${s.seasonal_range_m} m`
-          : 'Not yet measured';
+        const swingVal = s.seasonal_range_m !== null && s.seasonal_range_m !== undefined
+          ? `${s.seasonal_range_m.toFixed(2)}`
+          : '<span style="color: var(--muted); font-style: italic;">Not yet measured</span>';
 
-        const tds = s.pre_monsoon_tds !== null && s.pre_monsoon_tds !== undefined
-          ? `${s.pre_monsoon_tds}`
-          : 'Not yet measured';
+        const tdsVal = s.pre_monsoon_tds !== null && s.pre_monsoon_tds !== undefined
+          ? s.pre_monsoon_tds
+          : '<span style="color: var(--muted); font-style: italic;">Not yet measured</span>';
 
         tr.innerHTML = `
-          <td><strong style="color: #ffffff; font-family: var(--font-mono);">#${idx + 1}</strong></td>
+          <td class="num-col">${idx + 1}</td>
           <td class="st-name">${s.station_name}</td>
-          <td>${s.taluk || 'Tiruppur'}</td>
+          <td>${s.taluk}</td>
           <td>${s.well_type}</td>
-          <td class="num-col">${obsMay24}</td>
-          <td class="num-col">${scen26} <span class="badge-scenario">SCENARIO</span></td>
-          <td class="num-col">${swing}</td>
-          <td class="num-col">${tds}</td>
-          <td class="num-col"><strong style="color: #ffffff;">${s.priority_score}</strong></td>
+          <td class="num-col">${obsVal}</td>
+          <td class="num-col" style="color: var(--drought);">${scenVal}</td>
+          <td class="num-col">${swingVal}</td>
+          <td class="num-col">${tdsVal}</td>
+          <td class="num-col" style="font-weight: 700; color: #ffffff;">${s.priority_score}</td>
           <td><span class="tier-pill ${tierClass}">${s.priority_tier}</span></td>
           <td>
-            <button type="button" class="btn-ghost-inspect" data-name="${s.station_name}">Inspect</button>
+            <button type="button" class="btn-control btn-inspect" style="font-size: 11px; padding: 4px 8px;">Inspect</button>
           </td>
         `;
 
         tr.addEventListener('click', (e) => {
-          if (!e.target.classList.contains('btn-ghost-inspect')) {
+          if (!e.target.classList.contains('btn-inspect')) {
             selectStation(s);
           }
         });
 
-        tr.querySelector('.btn-ghost-inspect').addEventListener('click', (e) => {
+        tr.querySelector('.btn-inspect').addEventListener('click', (e) => {
           e.stopPropagation();
-          selectStation(s);
-          openModal(s);
+          openStationModal(s);
         });
 
-        tbody.appendChild(tr);
+        DOM.priorityTableBody.appendChild(tr);
       });
     }
 
@@ -15136,16 +15037,19 @@
             state.sortAsc = !state.sortAsc;
           } else {
             state.sortCol = col;
-            state.sortAsc = true;
+            state.sortAsc = col === 'rank' ? true : false;
           }
           renderTable(getFilteredStations());
         });
       });
     }
 
-    function openModal(s) {
+    // =========================================================================
+    // 7. STATION MODAL
+    // =========================================================================
+    function openStationModal(s) {
       DOM.modalStationTitle.textContent = s.station_name;
-      DOM.modalStationSub.textContent = `${s.taluk} Taluk • ${s.well_type}`;
+      DOM.modalStationSub.textContent = `${s.taluk} Taluk • ${s.well_type} (${s.latitude.toFixed(4)} N, ${s.longitude.toFixed(4)} E)`;
       DOM.modalObservedMay24.textContent = s.observed_may24_mbgl !== null && s.observed_may24_mbgl !== undefined
         ? `${s.observed_may24_mbgl} m bgl`
         : 'Not yet measured';
@@ -15174,8 +15078,8 @@
     // =========================================================================
     function init() {
       initFilters();
-      initDualMaps();
-      initElNinoToggle();
+      renderTalukChips();
+      initPresentationMode();
       initMonthlyRainfallChart();
       initTableSorting();
       applyFilters();
@@ -15184,7 +15088,7 @@
         selectStation(data.priority_table[0]);
       }
 
-      console.log("Where Tiruppur's Water Breaks First: Monsoon Ink Two-Map Analytics Initialized.");
+      console.log("Where Tiruppur's Water Breaks First: Taluk Two-Panel Analytics Initialized.");
     }
 
     if (document.readyState === 'loading') {

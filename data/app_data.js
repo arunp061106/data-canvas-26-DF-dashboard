@@ -12676,7 +12676,7 @@ window.DASHBOARD_DATA = {
     }
   ],
   "provenance": {
-    "project_title": "A Catastrophe behind Colours — Groundwater Stress in Tiruppur and the Noyyal Basin",
+    "project_title": "A Catastrophe behind Colours - Groundwater Stress in Tiruppur and the Noyyal Basin",
     "generated_at": "2026-10-14",
     "sources": [
       {
@@ -12693,7 +12693,7 @@ window.DASHBOARD_DATA = {
         "agency": "Central Ground Water Board (CGWB), South Eastern Coastal Region, Chennai",
         "title": "Groundwater Yearbook of Tamil Nadu & UT of Puducherry (2023-2024)",
         "period": "May 2023, August 2023, November 2023, January 2024",
-        "coverage": "87 monitoring wells across all 14 taluks of Tiruppur (Pages 122-124)",
+        "coverage": "87 monitoring wells across Tiruppur district, focused on the 6 mapped taluks (Avinashi, Tirupur, Palladam, Kangayam, Dharapuram, Udumalpet)",
         "measurement_unit": "Depth to water level in meters below ground level (m bgl)",
         "provenance_note": "Extracted station-wise records with block/taluk classification, well type, coordinates, and 4-season water levels."
       },
