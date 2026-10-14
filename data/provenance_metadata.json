@@ -1,0 +1,84 @@
+{
+  "project_title": "A Catastrophe behind Colours \u2014 Groundwater Stress in Tiruppur and the Noyyal Basin",
+  "generated_at": "2026-10-14",
+  "sources": [
+    {
+      "filename": "CGWB_TN_GWYB_2024-25.pdf",
+      "agency": "Central Ground Water Board (CGWB), South Eastern Coastal Region, Chennai",
+      "title": "Groundwater Yearbook of Tamil Nadu & UT of Puducherry (2024-2025)",
+      "period": "May 2024, August 2024, November 2024, January 2025",
+      "coverage": "Tiruppur district core stations (Page 112)",
+      "measurement_unit": "Depth to water level in meters below ground level (m bgl)",
+      "provenance_note": "Extracted station-wise dug well records with coordinates and seasonal depths."
+    },
+    {
+      "filename": "CGWB_TN_GWYB_2023-24.pdf",
+      "agency": "Central Ground Water Board (CGWB), South Eastern Coastal Region, Chennai",
+      "title": "Groundwater Yearbook of Tamil Nadu & UT of Puducherry (2023-2024)",
+      "period": "May 2023, August 2023, November 2023, January 2024",
+      "coverage": "87 monitoring wells across all 14 taluks of Tiruppur (Pages 122-124)",
+      "measurement_unit": "Depth to water level in meters below ground level (m bgl)",
+      "provenance_note": "Extracted station-wise records with block/taluk classification, well type, coordinates, and 4-season water levels."
+    },
+    {
+      "filename": "CGWB_Groundwater_Quality_2024.pdf",
+      "agency": "Central Ground Water Board (CGWB), Ministry of Jal Shakti",
+      "title": "Ground Water Quality in Shallow Aquifers of India (2024)",
+      "period": "Pre-Monsoon (May 2024) and Post-Monsoon (November 2024)",
+      "coverage": "Tiruppur district monitoring stations (Pages 57, 59, 142, 145)",
+      "measurement_units": {
+        "EC": "microSiemens per centimeter (\u00b5S/cm at 25\u00b0C)",
+        "TDS": "milligrams per liter (mg/L)",
+        "Hardness": "mg/L as CaCO3",
+        "Major_Ions": "mg/L (Cl, SO4, NO3, F, Ca, Mg, Na, K)"
+      },
+      "provenance_note": "Extracted both Pre-Monsoon and Post-Monsoon chemical quality records for identical monitored stations."
+    },
+    {
+      "filename": "CGWB_Groundwater_Quality_2023.pdf",
+      "agency": "Central Ground Water Board (CGWB)",
+      "title": "National Groundwater Quality 2023 Report",
+      "period": "2023",
+      "coverage": "Tamil Nadu regional sample set",
+      "provenance_note": "Verified: Tiruppur district stations were omitted from the 2023 national quality publication (only Vellitirupur in neighbouring Erode appears). Hence, multi-year cross-season repeated quality comparisons cannot be claimed without inventing data."
+    },
+    {
+      "filename": "ground water swagger ui json.txt",
+      "agency": "India-WRIS / National Water Informatics Centre (NWIC)",
+      "title": "India-WRIS Groundwater Telemetry & Manual Stations API Output",
+      "period": "2025 telemetry observations",
+      "coverage": "497 daily automated GPRS telemetry readings for Nachipalayam1_1 piezometer and manual readings for P.N.Road and Chengapalli1",
+      "measurement_unit": "m (GPRS telemetry recorded as negative depth below surface)",
+      "provenance_note": "Original user Swagger UI JSON response parsed and cleaned of trailing HTTP headers."
+    },
+    {
+      "filename": "Tiruppur_Point_Rainfall_2023_2024.csv",
+      "agency": "NASA POWER Project / MERRA-2",
+      "title": "Daily Corrected Precipitation (PRECTOTCORR)",
+      "period": "2023-01-01 to 2024-12-31 (731 days)",
+      "coordinate": "11.1085\u00b0N, 77.3411\u00b0E (Tiruppur City centroid)",
+      "measurement_unit": "mm/day",
+      "provenance_note": "Modelled satellite-assimilated point estimate; provides meteorological context, not an official district-wide rain gauge network average."
+    },
+    {
+      "filename": "RONI.ascii.txt",
+      "agency": "NOAA Climate Prediction Center (CPC)",
+      "title": "Relative Oceanic Ni\u00f1o Index (RONI)",
+      "period": "1950 to 2026 (3-month seasonal running anomalies)",
+      "measurement_unit": "\u00b0C sea surface temperature anomaly relative to tropical mean",
+      "provenance_note": "Global Pacific oceanic-atmospheric ENSO context. Serves as climate backdrop, not direct proof of local water level causality."
+    },
+    {
+      "filename": "Tiruppur_Corporation_Ward_Map_Source.pdf",
+      "agency": "Tiruppur City Municipal Corporation",
+      "title": "Budget 2022-23 (containing static ward/zone illustration)",
+      "provenance_note": "Static cartographic visual only. Lacks vector boundaries / GeoJSON polygon geometries. As required by evidence rules, well points are not artificially attributed to municipal wards without authoritative spatial boundaries."
+    }
+  ],
+  "key_findings": {
+    "deepest_well_recorded": "Pallapalayam Pz (Udumalaipettai) at 84.7 m bgl, followed by Dharapuram Ponnapuram Pz (>50 m bgl) and Sangarandampalayam Pz (20.85 m bgl)",
+    "highest_salinity_recorded": "Arugampalayam (Uthukuli) with EC 4,290 \u00b5S/cm and TDS 2,789 mg/L (well above BIS permissible limit of 2,000 mg/L)",
+    "seasonal_quality_dynamics": "Nachipalayam TDS increased from 1,398 mg/L (Pre-monsoon) to 1,709 mg/L (Post-monsoon) and EC from 2,150 to 2,860 \u00b5S/cm, showing post-monsoon ionic concentration/leaching",
+    "climate_context": "2023 rainfall totalled 582.4 mm (subdued SWM and NEM during strong El Ni\u00f1o onset) while 2024 totalled 812.6 mm as ENSO decayed toward neutral/La Ni\u00f1a conditions"
+  }
+}

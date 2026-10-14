@@ -1,0 +1,194 @@
+[
+  {
+    "year": 2023,
+    "month": "2023-01",
+    "total_mm": 4.61,
+    "rainy_days": 0,
+    "max_single_day_mm": 2.13,
+    "season": "Winter"
+  },
+  {
+    "year": 2023,
+    "month": "2023-02",
+    "total_mm": 9.78,
+    "rainy_days": 3,
+    "max_single_day_mm": 4.04,
+    "season": "Winter"
+  },
+  {
+    "year": 2023,
+    "month": "2023-03",
+    "total_mm": 31.91,
+    "rainy_days": 5,
+    "max_single_day_mm": 6.2,
+    "season": "Summer / Pre-Monsoon"
+  },
+  {
+    "year": 2023,
+    "month": "2023-04",
+    "total_mm": 55.28,
+    "rainy_days": 9,
+    "max_single_day_mm": 14.6,
+    "season": "Summer / Pre-Monsoon"
+  },
+  {
+    "year": 2023,
+    "month": "2023-05",
+    "total_mm": 101.1,
+    "rainy_days": 13,
+    "max_single_day_mm": 16.68,
+    "season": "Summer / Pre-Monsoon"
+  },
+  {
+    "year": 2023,
+    "month": "2023-06",
+    "total_mm": 38.55,
+    "rainy_days": 5,
+    "max_single_day_mm": 7.51,
+    "season": "Southwest Monsoon"
+  },
+  {
+    "year": 2023,
+    "month": "2023-07",
+    "total_mm": 49.76,
+    "rainy_days": 8,
+    "max_single_day_mm": 7.99,
+    "season": "Southwest Monsoon"
+  },
+  {
+    "year": 2023,
+    "month": "2023-08",
+    "total_mm": 83.95,
+    "rainy_days": 9,
+    "max_single_day_mm": 23.6,
+    "season": "Southwest Monsoon"
+  },
+  {
+    "year": 2023,
+    "month": "2023-09",
+    "total_mm": 121.67,
+    "rainy_days": 15,
+    "max_single_day_mm": 23.31,
+    "season": "Southwest Monsoon"
+  },
+  {
+    "year": 2023,
+    "month": "2023-10",
+    "total_mm": 124.88,
+    "rainy_days": 12,
+    "max_single_day_mm": 16.61,
+    "season": "Northeast Monsoon"
+  },
+  {
+    "year": 2023,
+    "month": "2023-11",
+    "total_mm": 163.63,
+    "rainy_days": 17,
+    "max_single_day_mm": 21.35,
+    "season": "Northeast Monsoon"
+  },
+  {
+    "year": 2023,
+    "month": "2023-12",
+    "total_mm": 57.61,
+    "rainy_days": 4,
+    "max_single_day_mm": 17.08,
+    "season": "Northeast Monsoon"
+  },
+  {
+    "year": 2024,
+    "month": "2024-01",
+    "total_mm": 27.25,
+    "rainy_days": 4,
+    "max_single_day_mm": 12.21,
+    "season": "Winter"
+  },
+  {
+    "year": 2024,
+    "month": "2024-02",
+    "total_mm": 0.06,
+    "rainy_days": 0,
+    "max_single_day_mm": 0.04,
+    "season": "Winter"
+  },
+  {
+    "year": 2024,
+    "month": "2024-03",
+    "total_mm": 0.28,
+    "rainy_days": 0,
+    "max_single_day_mm": 0.07,
+    "season": "Summer / Pre-Monsoon"
+  },
+  {
+    "year": 2024,
+    "month": "2024-04",
+    "total_mm": 8.24,
+    "rainy_days": 1,
+    "max_single_day_mm": 3.58,
+    "season": "Summer / Pre-Monsoon"
+  },
+  {
+    "year": 2024,
+    "month": "2024-05",
+    "total_mm": 170.49,
+    "rainy_days": 16,
+    "max_single_day_mm": 32.58,
+    "season": "Summer / Pre-Monsoon"
+  },
+  {
+    "year": 2024,
+    "month": "2024-06",
+    "total_mm": 82.75,
+    "rainy_days": 9,
+    "max_single_day_mm": 18.94,
+    "season": "Southwest Monsoon"
+  },
+  {
+    "year": 2024,
+    "month": "2024-07",
+    "total_mm": 50.9,
+    "rainy_days": 6,
+    "max_single_day_mm": 7.66,
+    "season": "Southwest Monsoon"
+  },
+  {
+    "year": 2024,
+    "month": "2024-08",
+    "total_mm": 186.72,
+    "rainy_days": 19,
+    "max_single_day_mm": 31.01,
+    "season": "Southwest Monsoon"
+  },
+  {
+    "year": 2024,
+    "month": "2024-09",
+    "total_mm": 18.21,
+    "rainy_days": 1,
+    "max_single_day_mm": 3.0,
+    "season": "Southwest Monsoon"
+  },
+  {
+    "year": 2024,
+    "month": "2024-10",
+    "total_mm": 280.36,
+    "rainy_days": 23,
+    "max_single_day_mm": 25.47,
+    "season": "Northeast Monsoon"
+  },
+  {
+    "year": 2024,
+    "month": "2024-11",
+    "total_mm": 84.64,
+    "rainy_days": 12,
+    "max_single_day_mm": 8.72,
+    "season": "Northeast Monsoon"
+  },
+  {
+    "year": 2024,
+    "month": "2024-12",
+    "total_mm": 148.93,
+    "rainy_days": 7,
+    "max_single_day_mm": 41.01,
+    "season": "Northeast Monsoon"
+  }
+]

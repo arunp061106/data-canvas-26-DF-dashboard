@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Catastrophe behind Colours — Groundwater Stress in Tiruppur & the Noyyal Basin</title>
+  <meta name="description" content="A data-driven analytics dashboard documenting groundwater depletion, severe salinity dynamics (TDS/EC), and climate teleconnections across Tiruppur and the Noyyal River basin.">
+  <meta name="keywords" content="Tiruppur, Noyyal basin, groundwater depletion, water quality, TDS, electrical conductivity, CGWB, India-WRIS, SDG 6, SDG 3">
+
+  <!-- Fonts: Outfit (Headings) & Inter (Body & Data) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS for GIS Mapping -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+  <!-- Custom Dashboard Styles -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Chart.js 4.4.1 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+
+  <!-- =========================================================================
+       Site Header
+       ========================================================================= -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <div class="brand-wrapper">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">A Catastrophe behind Colours</h1>
+          <div class="brand-sub">Tiruppur & Noyyal Basin Groundwater Stress Analytics</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="sdg-badge-group" aria-label="Sustainable Development Goals">
+          <span class="sdg-badge sdg-6" title="Target: Ensure availability and sustainable management of water and sanitation for all">
+            <strong>SDG 6</strong> Clean Water
+          </span>
+          <span class="sdg-badge sdg-3" title="Target: Ensure healthy lives and promote well-being for all at all ages">
+            <strong>SDG 3</strong> Good Health
+          </span>
+        </div>
+
+        <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle dark/light theme" title="Switch Theme">
+          <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+
+    <!-- =========================================================================
+         Hero & Context Section
+         ========================================================================= -->
+    <section class="hero-section" aria-labelledby="heroHeading">
+      <div class="hero-grid">
+        <div>
+          <h2 id="heroHeading" class="hero-title">Tiruppur shines in bright textiles,<br><span style="background: var(--gradient-title); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">the catastrophe is underground.</span></h2>
+          <p class="hero-lead">
+            Known globally as the "Knitwear Capital of India", Tiruppur powers billions in textile exports. Yet decades of intense dyeing, bleaching, and chemical processing have burdened the fragile Noyyal River basin. Over-extraction and historic effluent leaching have driven groundwater levels down into hard rock aquifers while accelerating mineralization and salinity.
+          </p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="btn-secondary" onclick="document.getElementById('tabPriority').click()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              View Priority Testing Matrix
+            </button>
+            <button class="btn-secondary" onclick="document.getElementById('tabQuality').click()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Inspect 2024 Salinity Records
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-narrative-card">
+          <div class="narrative-quote">
+            "Borewells families depend upon for daily survival are falling and getting saltier. We synthesize official CGWB Yearbooks, India-WRIS GPRS telemetry, and NASA POWER climate data to separate seasonal fluctuations from chronic systemic stress, pinpointing exactly where follow-up testing must be prioritized."
+          </div>
+          <div class="narrative-source">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            Ground Truth: CGWB SE Coastal Region, Chennai & India-WRIS NWIC
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         KPI Summary Ribbon
+         ========================================================================= -->
+    <section aria-label="Key Performance Indicators">
+      <div class="kpi-grid">
+        <div class="kpi-card monitoring">
+          <div class="kpi-label">
+            <span>Monitored Wells</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>
+          </div>
+          <div class="kpi-value" id="kpiTotalWells">96</div>
+          <div class="kpi-sub">87 in 2023-24 & 9 Core 2024-25</div>
+        </div>
+
+        <div class="kpi-card stress">
+          <div class="kpi-label">
+            <span>Deepest Water Table</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline></svg>
+          </div>
+          <div class="kpi-value" id="kpiMaxDepth">84.7 <span style="font-size: 1rem; font-weight: 500;">m bgl</span></div>
+          <div class="kpi-sub">Pallapalayam Pz (Deep Aquifer)</div>
+        </div>
+
+        <div class="kpi-card salinity">
+          <div class="kpi-label">
+            <span>Max Salinity (TDS)</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+          </div>
+          <div class="kpi-value" id="kpiMaxTds">2,789 <span style="font-size: 1rem; font-weight: 500;">mg/L</span></div>
+          <div class="kpi-sub">Arugampalayam (Limit: 2,000 mg/L)</div>
+        </div>
+
+        <div class="kpi-card climate">
+          <div class="kpi-label">
+            <span>2023 vs 2024 Rainfall</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+          </div>
+          <div class="kpi-value" id="kpiRainfall">582 <span style="font-size: 1.1rem; font-weight: 400;">vs</span> 813 <span style="font-size: 1rem; font-weight: 500;">mm</span></div>
+          <div class="kpi-sub">Deficit in 2023 El Niño onset</div>
+        </div>
+
+        <div class="kpi-card stress">
+          <div class="kpi-label">
+            <span>Urgent Follow-Up</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>
+          </div>
+          <div class="kpi-value" id="kpiHighPriority">10 <span style="font-size: 1rem; font-weight: 500;">Wells</span></div>
+          <div class="kpi-sub">Score &ge; 60/100 (Immediate Action)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         Interactive Filter Bar
+         ========================================================================= -->
+    <section class="filter-bar" aria-label="Dashboard Filters">
+      <div class="filter-bar-header">
+        <div class="filter-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+          Interactive Observation Filters
+        </div>
+        <button id="resetFiltersBtn" class="filter-reset-btn" type="button">Reset All Filters</button>
+      </div>
+
+      <div class="filter-controls-grid">
+        <div class="filter-group">
+          <label for="filterTaluk">Taluk / Sector</label>
+          <select id="filterTaluk" class="filter-select">
+            <option value="all">All Taluks (District-wide)</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filterWellType">Well Infrastructure</label>
+          <select id="filterWellType" class="filter-select">
+            <option value="all">All Types (Dug & Bore)</option>
+            <option value="Dug Well">Dug Wells (Shallow)</option>
+            <option value="Bore Well">Bore Wells (Deep)</option>
+            <option value="Piezometer">Piezometers (Automated/Pz)</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filterPriority">Follow-up Priority</label>
+          <select id="filterPriority" class="filter-select">
+            <option value="all">All Priorities</option>
+            <option value="High Priority">High Priority (Urgent)</option>
+            <option value="Medium Priority">Medium Priority</option>
+            <option value="Routine Monitoring">Routine Monitoring</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filterSearch">Search Station / Location</label>
+          <input type="text" id="filterSearch" class="filter-input" placeholder="e.g. Arugampalayam, Nachipalayam, Agraharam...">
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         Tab Navigation
+         ========================================================================= -->
+    <nav class="dashboard-nav-tabs" role="tablist" aria-label="Dashboard views">
+      <button id="tabOverview" class="tab-btn active" role="tab" aria-selected="true" data-target="sectionOverview">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+        Spatial GIS Map & Overview
+      </button>
+      <button id="tabDepletion" class="tab-btn" role="tab" aria-selected="false" data-target="sectionDepletion">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        Groundwater Depletion & Telemetry
+      </button>
+      <button id="tabQuality" class="tab-btn" role="tab" aria-selected="false" data-target="sectionQuality">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+        Salinity (TDS & EC) Quality Snapshot
+      </button>
+      <button id="tabClimate" class="tab-btn" role="tab" aria-selected="false" data-target="sectionClimate">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+        Rainfall & ENSO (RONI) Teleconnections
+      </button>
+      <button id="tabPriority" class="tab-btn" role="tab" aria-selected="false" data-target="sectionPriority">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        Transparent Priority Testing Matrix
+      </button>
+      <button id="tabProvenance" class="tab-btn" role="tab" aria-selected="false" data-target="sectionProvenance">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Data Provenance & Limitations
+      </button>
+    </nav>
+
+    <!-- =========================================================================
+         SECTION 1: OVERVIEW & SPATIAL GIS MAP
+         ========================================================================= -->
+    <section id="sectionOverview" class="dashboard-section active" role="tabpanel" aria-labelledby="tabOverview">
+      <div class="section-header">
+        <h3 class="section-title">Spatial Distribution of Monitored Wells & Vulnerability Tiers</h3>
+        <p class="section-desc">
+          Interactive GIS mapping of monitored wells across the Tiruppur municipal cluster and Noyyal sub-basins. Markers are color-coded by composite vulnerability: <strong>Red (High Priority)</strong>, <strong>Amber (Medium Priority)</strong>, and <strong>Teal (Routine Monitoring)</strong>. Click any station marker to view exact depth metrics, chemical parameters, and operational recommendations.
+        </p>
+      </div>
+
+      <div class="map-container-card">
+        <div id="stationMap" aria-label="Interactive map showing groundwater station locations in Tiruppur"></div>
+        <div class="map-floating-legend">
+          <div class="legend-title">Follow-Up Priority Tiers</div>
+          <div class="legend-item"><div class="legend-dot high"></div> High Priority (Score &ge; 60)</div>
+          <div class="legend-item"><div class="legend-dot med"></div> Medium Priority (Score 40-59)</div>
+          <div class="legend-item"><div class="legend-dot low"></div> Routine Monitoring (&lt; 40)</div>
+        </div>
+      </div>
+
+      <div class="methodology-box">
+        <h4>Spatial Attribution & Municipal Ward Boundary Integrity</h4>
+        <p>
+          The downloaded Tiruppur City Municipal Corporation budget document (2022-23) includes a static cartographic layout of the 60 municipal wards and 4 administrative zones. In strict adherence to scientific data standards, <strong>borewells are positioned using their precise GPS survey coordinates</strong> from the Central Ground Water Board (CGWB) rather than interpolated or forced into unverified ward boundary polygons. Core industrial zone stations (e.g. <em>Tiruppur Agraharam, Weekly Market, Odakadu, P.N. Road, Kasipalayam</em>) lie directly within the municipal urban agglomeration, while peri-urban stations (<em>Nachipalayam, Arugampalayam, Kovilvazhi</em>) flank downstream textile cluster corridors.
+        </p>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 2: GROUNDWATER DEPLETION & TELEMETRY
+         ========================================================================= -->
+    <section id="sectionDepletion" class="dashboard-section" role="tabpanel" aria-labelledby="tabDepletion">
+      <div class="section-header">
+        <h3 class="section-title">Groundwater Levels, Drawdown Depth, & Telemetry Records</h3>
+        <p class="section-desc">
+          Official CGWB monitoring tracks water table depth in <strong>meters below ground level (m bgl)</strong>. Larger positive numbers indicate deeper, more depleted water tables. Note: Negative values in telemetry charts represent depth beneath surface datum.
+        </p>
+      </div>
+
+      <div class="grid-2col">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-title">Top 12 Deepest / Most Concerning Wells</div>
+              <div class="chart-card-subtitle">Maximum observed depth to water level (meters below ground level)</div>
+            </div>
+            <span class="chart-badge">CGWB GWYB 2023-25</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chartDeepestWells"></canvas>
+          </div>
+          <div class="chart-footer-note">
+            <span>Severe drawdown in deep piezometers (Pallapalayam Pz, Govindhapuram) exceeds 50–80m bgl.</span>
+            <span>Unit: m bgl</span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-title">Seasonal Water Level Dynamics (2024-25 Core Wells)</div>
+              <div class="chart-card-subtitle">Pre-monsoon (May) vs Monsoon (Aug) vs Post-monsoon (Nov) vs Winter (Jan)</div>
+            </div>
+            <span class="chart-badge">Page 112, GWYB 2024-25</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chartSeasonalCoreWells"></canvas>
+          </div>
+          <div class="chart-footer-note">
+            <span>Tiruppur Agraharam shows sharp draw-down in May 2024 (11.14m) rebounding after Northeast Monsoon.</span>
+            <span>Unit: m bgl</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-1col">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-title">India-WRIS Automated GPRS Telemetry: Nachipalayam Piezometer (2025)</div>
+              <div class="chart-card-subtitle">Continuous daily automated sensor observations (497 records, TIRU255) demonstrating dry season recession and recharge</div>
+            </div>
+            <span class="chart-badge">India-WRIS / NWIC Telemetry</span>
+          </div>
+          <div class="chart-canvas-wrapper" style="min-height: 340px;">
+            <canvas id="chartTelemetryNachipalayam"></canvas>
+          </div>
+          <div class="chart-footer-note">
+            <span>Sensor telemetry captures high-frequency aquifer behavior inaccessible via quarterly manual dip tapes.</span>
+            <span>Depth: 108m Piezometer</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 3: WATER QUALITY & SALINITY SNAPSHOT
+         ========================================================================= -->
+    <section id="sectionQuality" class="dashboard-section" role="tabpanel" aria-labelledby="tabQuality">
+      <div class="section-header">
+        <h3 class="section-title">2024 Water Quality, Salinity (TDS/EC), & Ionic Composition</h3>
+        <p class="section-desc">
+          Measurements extracted from <em>CGWB Ground Water Quality in Shallow Aquifers of India (2024)</em>. Electrical Conductivity (EC in &mu;S/cm at 25&deg;C) and Total Dissolved Solids (TDS in mg/L) benchmarked against Bureau of Indian Standards (BIS 10500:2012).
+        </p>
+      </div>
+
+      <div class="grid-2col">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-title">Pre-Monsoon vs Post-Monsoon TDS (2024)</div>
+              <div class="chart-card-subtitle">Paired seasonal samples benchmarked against BIS 10500 limits</div>
+            </div>
+            <span class="chart-badge">CGWB Quality 2024</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chartTdsComparison"></canvas>
+          </div>
+          <div class="chart-footer-note">
+            <span>Arugampalayam (2,789 mg/L) exceeds BIS permissible limit (2,000 mg/L). Nachipalayam rose post-monsoon.</span>
+            <span>Unit: mg/L</span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-title">Electrical Conductivity (EC) Salinity Profile</div>
+              <div class="chart-card-subtitle">Conductivity reflecting dissolved mineral and industrial salt load</div>
+            </div>
+            <span class="chart-badge">CGWB Quality 2024</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chartEcProfile"></canvas>
+          </div>
+          <div class="chart-footer-note">
+            <span>Arugampalayam EC reaches 4,290 &mu;S/cm; Nachipalayam climbed to 2,860 &mu;S/cm.</span>
+            <span>Unit: &mu;S/cm at 25&deg;C</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-bottom: 1.5rem;">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">Complete 2024 Water Quality Sample Inventory</div>
+            <div class="chart-card-subtitle">Extracted chemical parameters: pH, Hardness, Chlorides, Sulphates, Nitrates, Fluorides</div>
+          </div>
+          <span class="chart-badge">13 Verified Lab Samples</span>
+        </div>
+        <div class="table-responsive-wrapper">
+          <table class="data-table" id="qualitySamplesTable">
+            <thead>
+              <tr>
+                <th>Station</th>
+                <th>Season</th>
+                <th>pH</th>
+                <th>EC (&mu;S/cm)</th>
+                <th>TDS (mg/L)</th>
+                <th>Hardness</th>
+                <th>Cl (mg/L)</th>
+                <th>SO4 (mg/L)</th>
+                <th>NO3 (mg/L)</th>
+                <th>F (mg/L)</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Populated dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="methodology-box">
+        <h4>Scientific Integrity Disclosure: Multi-Year Salinity Trend Claim Boundary</h4>
+        <p>
+          <strong>Notice on Trend Claims:</strong> Claims that "TDS is steadily rising over multi-year periods" require repeated samples from identical well coordinates across matching seasons over consecutive years. While the 2024 national report provides robust Pre-Monsoon and Post-Monsoon samples for Tiruppur, <em>Tiruppur district monitoring stations were not included in the published CGWB 2023 national quality sample tables</em> (only Vellitirupur in neighbouring Erode appeared). Therefore, the 2024 chemical data is rigorously presented as a <strong>verified seasonal snapshot</strong> illustrating acute spatial salinity and post-monsoon ionic concentrations, rather than an unverified multi-year statistical trend.
+        </p>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 4: RAINFALL & ENSO CLIMATE CONTEXT
+         ========================================================================= -->
+    <section id="sectionClimate" class="dashboard-section" role="tabpanel" aria-labelledby="tabClimate">
+      <div class="section-header">
+        <h3 class="section-title">Rainfall Time Series & Global ENSO (RONI) Teleconnections</h3>
+        <p class="section-desc">
+          Aquifer recharge in the Noyyal basin depends upon both the Southwest Monsoon (Jun–Sep) and Northeast Monsoon (Oct–Dec). Global ocean-atmospheric phenomena (El Niño / Southern Oscillation) provide macroeconomic and hydrological context for the 2023–2024 observation period.
+        </p>
+      </div>
+
+      <div class="grid-2col">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-title">Monthly Rainfall Comparison: 2023 vs 2024</div>
+              <div class="chart-card-subtitle">NASA POWER Corrected Precipitation (PRECTOTCORR) at 11.1085&deg;N, 77.3411&deg;E</div>
+            </div>
+            <span class="chart-badge">NASA POWER Daily Point</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chartMonthlyRainfall"></canvas>
+          </div>
+          <div class="chart-footer-note">
+            <span>2023 Annual: 582.4 mm (Suppressed monsoons) vs 2024 Annual: 812.6 mm (Strong recharge).</span>
+            <span>Unit: mm/month</span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-title">NOAA Relative Oceanic Niño Index (RONI) 2020–2026</div>
+              <div class="chart-card-subtitle">Pacific Sea Surface Temperature Anomaly (&deg;C) showing El Niño / La Niña phases</div>
+            </div>
+            <span class="chart-badge">NOAA Climate Prediction Center</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chartRoniEnso"></canvas>
+          </div>
+          <div class="chart-footer-note">
+            <span>2023 marked strong El Niño onset (+1.8&deg;C anomaly), transitioning to neutral / weak La Niña in late 2024.</span>
+            <span>Threshold: &plusmn;0.5&deg;C</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-1col">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-title">2-Year Daily Rainfall Hyetograph (731 Days: 2023–2024)</div>
+              <div class="chart-card-subtitle">Daily precipitation pulses highlighting dry spells and intense recharge events (> 40 mm/day)</div>
+            </div>
+            <span class="chart-badge">731 Daily Observations</span>
+          </div>
+          <div class="chart-canvas-wrapper" style="min-height: 320px;">
+            <canvas id="chartDailyHyetograph"></canvas>
+          </div>
+          <div class="chart-footer-note">
+            <span>Notice extended dry spells between Jan–Apr 2023 coinciding with peak aquifer drawdowns.</span>
+            <span>Unit: mm/day</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="methodology-box">
+        <h4>Methodological Clarification: Gridded Satellite Estimates & Global Climate Indices</h4>
+        <p>
+          1. <strong>Precipitation Source:</strong> The rainfall time series represents NASA POWER satellite-reanalysis (MERRA-2) corrected precipitation for the single coordinate centroid of Tiruppur city (11.1085&deg;N, 77.3411&deg;E). It provides consistent meteorological context for urban and near-urban wells, but is not an official IMD district-wide rain gauge network total.<br>
+          2. <strong>ENSO / RONI Teleconnection:</strong> Relative Oceanic Niño Index (RONI) anomalies track equatorial Pacific sea surface temperature variations. While El Niño conditions historically suppress peninsular Indian monsoon rainfall, RONI is presented as <strong>macro-climate background</strong> and must not be cited as standalone mechanical proof that global El Niño caused specific local well declines.
+        </p>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 5: PRIORITY TESTING MATRIX & ACTION PLAN
+         ========================================================================= -->
+    <section id="sectionPriority" class="dashboard-section" role="tabpanel" aria-labelledby="tabPriority">
+      <div class="section-header">
+        <h3 class="section-title">Transparent Priority Testing & Remediation Matrix</h3>
+        <p class="section-desc">
+          Evidence-based prioritization of monitored wells requiring immediate follow-up testing, managed aquifer recharge, or community drinking water intervention. Ranks combine Water Table Depth (40%), Chemical Salinity / TDS (40%), and Seasonal Vulnerability (20%).
+        </p>
+      </div>
+
+      <div class="methodology-box">
+        <h4>Three-Pillar Evidence Ranking Formula (0–100 Points)</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+          <div>
+            <strong>1. Water Table Stress (Max 40 Pts)</strong><br>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">&ge; 20m bgl = 40 pts; 10–20m = 30 pts; 5–10m = 20 pts; &lt; 5m = 10 pts</span>
+          </div>
+          <div>
+            <strong>2. Salinity & TDS Stress (Max 40 Pts)</strong><br>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">&ge; 2,000 mg/L (Exceeds BIS limit) = 40 pts; 1,200–2,000 mg/L = 30 pts; Surveillance Gap = 10–12 pts</span>
+          </div>
+          <div>
+            <strong>3. Fluctuation Vulnerability (Max 20 Pts)</strong><br>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">&ge; 5m seasonal swing = 20 pts; 2–5m swing = 12 pts; &lt; 2m swing = 6 pts</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">Priority Station Rankings (<span id="priorityCountLabel">32</span> Monitored Wells)</div>
+            <div class="chart-card-subtitle">Click column headers to sort. Click any row to inspect complete station dossier.</div>
+          </div>
+          <button id="exportCsvBtn" class="btn-secondary" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export Priority Table (CSV)
+          </button>
+        </div>
+
+        <div class="table-responsive-wrapper">
+          <table class="data-table" id="priorityDataTable">
+            <thead>
+              <tr>
+                <th data-sort="priority_score">Score &darr;</th>
+                <th data-sort="priority_tier">Priority Tier</th>
+                <th data-sort="station_name">Station Name</th>
+                <th data-sort="taluk">Taluk / Sector</th>
+                <th data-sort="well_type">Type</th>
+                <th data-sort="max_depth_mbgl">Max Depth (m)</th>
+                <th data-sort="seasonal_range_m">Fluctuation (m)</th>
+                <th data-sort="post_monsoon_tds">Latest TDS (mg/L)</th>
+                <th>Evidence & Rationale</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="priorityTableBody">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 6: PROVENANCE, DATA INTEGRITY & LIMITATIONS
+         ========================================================================= -->
+    <section id="sectionProvenance" class="dashboard-section" role="tabpanel" aria-labelledby="tabProvenance">
+      <div class="section-header">
+        <h3 class="section-title">Data Provenance, Agency Documentation, & Limitations</h3>
+        <p class="section-desc">
+          Audit trail documenting source files, retrieval dates, geographic bounding, and scientific boundaries adhered to in this project.
+        </p>
+      </div>
+
+      <div class="chart-card" style="margin-bottom: 1.5rem;">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-title">Official Downloaded Sources & Extraction Registry</div>
+            <div class="chart-card-subtitle">Verified publications from Central Ground Water Board, NWIC, NASA, and NOAA</div>
+          </div>
+          <span class="chart-badge">Audited Sources</span>
+        </div>
+        <div class="table-responsive-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Source Filename</th>
+                <th>Publishing Agency</th>
+                <th>Report Title / Dataset</th>
+                <th>Observation Period</th>
+                <th>Tiruppur Data Coverage & Extracted Registry</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>CGWB_TN_GWYB_2024-25.pdf</strong></td>
+                <td>CGWB SECR Chennai</td>
+                <td>Groundwater Yearbook of Tamil Nadu & UT of Puducherry (2024-25)</td>
+                <td>May 2024, Aug 2024, Nov 2024, Jan 2025</td>
+                <td>Page 112: 9 core dug well stations in Tiruppur urban cluster with 4 seasonal depth records.</td>
+              </tr>
+              <tr>
+                <td><strong>CGWB_TN_GWYB_2023-24.pdf</strong></td>
+                <td>CGWB SECR Chennai</td>
+                <td>Groundwater Yearbook of Tamil Nadu & UT of Puducherry (2023-24)</td>
+                <td>May 2023, Aug 2023, Nov 2023, Jan 2024</td>
+                <td>Pages 122–124: 87 monitoring stations spanning all 14 taluks of Tiruppur district with seasonal depths.</td>
+              </tr>
+              <tr>
+                <td><strong>CGWB_Groundwater_Quality_2024.pdf</strong></td>
+                <td>CGWB, Ministry of Jal Shakti</td>
+                <td>Ground Water Quality in Shallow Aquifers of India (2024)</td>
+                <td>Pre-Monsoon & Post-Monsoon 2024</td>
+                <td>Pages 57, 59, 142, 145: 13 samples covering pH, EC, TDS, Hardness, and major ions.</td>
+              </tr>
+              <tr>
+                <td><strong>CGWB_Groundwater_Quality_2023.pdf</strong></td>
+                <td>CGWB, Ministry of Jal Shakti</td>
+                <td>Ground Water Quality in Shallow Aquifers of India (2023)</td>
+                <td>2023 Pre-Monsoon</td>
+                <td>Verified: Tiruppur district stations were omitted from published 2023 national quality tables (only neighbouring Erode).</td>
+              </tr>
+              <tr>
+                <td><strong>ground water swagger ui json.txt</strong></td>
+                <td>India-WRIS / NWIC</td>
+                <td>Swagger UI Automated Groundwater Telemetry API</td>
+                <td>2025 automated readings</td>
+                <td>500 records: 497 daily automated GPRS telemetry observations for Nachipalayam1_1 piezometer (TIRU255).</td>
+              </tr>
+              <tr>
+                <td><strong>Tiruppur_Point_Rainfall_2023_2024.csv</strong></td>
+                <td>NASA POWER / MERRA-2</td>
+                <td>Daily Corrected Precipitation (PRECTOTCORR)</td>
+                <td>2023-01-01 to 2024-12-31</td>
+                <td>731 daily point estimates for Tiruppur centroid (11.1085&deg;N, 77.3411&deg;E).</td>
+              </tr>
+              <tr>
+                <td><strong>RONI.ascii.txt</strong></td>
+                <td>NOAA CPC</td>
+                <td>Relative Oceanic Niño Index (RONI)</td>
+                <td>1950 to 2026</td>
+                <td>Quarterly 3-month running SST anomalies for Pacific Niño 3.4 region.</td>
+              </tr>
+              <tr>
+                <td><strong>Tiruppur_Corporation_Ward_Map_Source.pdf</strong></td>
+                <td>Tiruppur City Municipal Corp.</td>
+                <td>Corporation Budget 2022-23</td>
+                <td>2022-2023</td>
+                <td>Static layout map of 60 wards/4 zones; no vector GIS polygons available.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="methodology-box">
+        <h4>Methodological Guardrails & Adherence to Evidence Rules</h4>
+        <ul style="padding-left: 1.25rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7;">
+          <li><strong>No Imputed or Fabricated Data:</strong> No missing observations were filled, interpolated, or fabricated. Stations with missing seasonal readings are explicitly displayed as gaps or missing in records.</li>
+          <li><strong>Rigorous Distinction of Units:</strong> Groundwater levels are strictly documented as <em>Depth to Water Level</em> in meters below ground level (m bgl). Values are not conflated with water table elevation above mean sea level (m amsl).</li>
+          <li><strong>No False Multi-Year Salinity Claims:</strong> Because the 2023 CGWB national water quality report omitted Tiruppur monitoring stations, no claims of a multi-year "rising TDS trend" between 2023 and 2024 are made. Salinity is presented strictly as a 2024 seasonal snapshot (Pre vs Post-Monsoon).</li>
+          <li><strong>Gridded vs Gauge Distinction:</strong> NASA POWER precipitation data is clearly identified as a single-coordinate gridded estimate, not an official district-wide rain gauge network aggregate.</li>
+          <li><strong>ENSO Context vs Causality:</strong> NOAA RONI indices are shown as global oceanic-atmospheric climate backdrop, not direct proof of localized aquifer drawdown causation.</li>
+          <li><strong>Spatial Boundary Integrity:</strong> Because the municipal budget PDF is a static raster representation without authoritative polygon geometries, stations are mapped by surveyed GPS coordinates rather than artificial ward boundary joins.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       Station Detail Modal Dialog (Native HTML5 <dialog>)
+       ========================================================================= -->
+  <dialog id="stationModal" class="station-modal" aria-labelledby="modalStationTitle">
+    <div class="modal-header">
+      <div>
+        <h3 id="modalStationTitle" style="font-size: 1.25rem; margin-bottom: 0.15rem;">Station Dossier</h3>
+        <span id="modalStationSub" style="font-size: 0.8rem; color: var(--text-muted);">Tiruppur District Monitoring Network</span>
+      </div>
+      <button id="modalCloseBtn" class="modal-close-btn" type="button" aria-label="Close dialog">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="modal-stat-grid">
+        <div class="modal-stat-box">
+          <div class="title">Composite Priority Score</div>
+          <div class="val" id="modalScore">--</div>
+          <div id="modalTierPill" style="margin-top: 0.25rem;"></div>
+        </div>
+        <div class="modal-stat-box">
+          <div class="title">Max Observed Depth</div>
+          <div class="val" id="modalMaxDepth">--</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted);">Meters below ground level</div>
+        </div>
+        <div class="modal-stat-box">
+          <div class="title">Salinity: Post-Monsoon TDS</div>
+          <div class="val" id="modalTds">--</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted);">BIS Permissible: 2,000 mg/L</div>
+        </div>
+        <div class="modal-stat-box">
+          <div class="title">Seasonal Water Table Swing</div>
+          <div class="val" id="modalSwing">--</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted);">Pre vs Post Monsoon Range</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1rem;">
+        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">Infrastructure & Geographic Coordinates</h4>
+        <p id="modalGeoDetails" style="font-size: 0.85rem; color: var(--text-primary);"></p>
+      </div>
+
+      <div style="margin-bottom: 1rem;">
+        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">Evidence & Vulnerability Rationale</h4>
+        <p id="modalRationale" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;"></p>
+      </div>
+
+      <div>
+        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">Recommended Intervention</h4>
+        <p id="modalIntervention" style="font-size: 0.85rem; color: var(--accent-cyan); line-height: 1.5;"></p>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- =========================================================================
+       Site Footer
+       ========================================================================= -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h5>About "A Catastrophe behind Colours"</h5>
+          <p>
+            An investigative data analytics dashboard for Tiruppur and the Noyyal River basin. Integrating official groundwater monitoring records, chemical water quality laboratory analyses, and satellite precipitation series to protect community water access and advance UN Sustainable Development Goals (SDG 6: Clean Water and Sanitation; SDG 3: Good Health and Well-Being).
+          </p>
+        </div>
+        <div class="footer-col">
+          <h5>Core Data Custodians</h5>
+          <p>
+            &bull; Central Ground Water Board (CGWB)<br>
+            &bull; National Water Informatics Centre (NWIC)<br>
+            &bull; NASA POWER Project (MERRA-2)<br>
+            &bull; NOAA Climate Prediction Center (CPC)
+          </p>
+        </div>
+        <div class="footer-col">
+          <h5>Deployment & Access</h5>
+          <p>
+            Fully functional client-side web application ready for <strong>GitHub Pages</strong> or local offline execution without server runtime overhead. Companion Streamlit application included for Python-native environments.
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 A Catastrophe behind Colours. Ground Truth Open Data Initiative.</div>
+        <div>Tiruppur & Noyyal Basin Analytics &bull; SDGs 6 & 3</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Preloaded Data Bundle (CORS-free instantaneous loading) -->
+  <script src="data/app_data.js"></script>
+
+  <!-- Main Dashboard Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

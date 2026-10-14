@@ -1,0 +1,562 @@
+[
+  {
+    "season": "DJF",
+    "year": 2020,
+    "label": "DJF 2020",
+    "anomaly": 0.14,
+    "status": "Neutral"
+  },
+  {
+    "season": "JFM",
+    "year": 2020,
+    "label": "JFM 2020",
+    "anomaly": 0.1,
+    "status": "Neutral"
+  },
+  {
+    "season": "FMA",
+    "year": 2020,
+    "label": "FMA 2020",
+    "anomaly": 0.02,
+    "status": "Neutral"
+  },
+  {
+    "season": "MAM",
+    "year": 2020,
+    "label": "MAM 2020",
+    "anomaly": -0.25,
+    "status": "Neutral"
+  },
+  {
+    "season": "AMJ",
+    "year": 2020,
+    "label": "AMJ 2020",
+    "anomaly": -0.55,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "MJJ",
+    "year": 2020,
+    "label": "MJJ 2020",
+    "anomaly": -0.72,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "JJA",
+    "year": 2020,
+    "label": "JJA 2020",
+    "anomaly": -0.76,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "JAS",
+    "year": 2020,
+    "label": "JAS 2020",
+    "anomaly": -0.85,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "ASO",
+    "year": 2020,
+    "label": "ASO 2020",
+    "anomaly": -1.16,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "SON",
+    "year": 2020,
+    "label": "SON 2020",
+    "anomaly": -1.37,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "OND",
+    "year": 2020,
+    "label": "OND 2020",
+    "anomaly": -1.46,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "NDJ",
+    "year": 2020,
+    "label": "NDJ 2020",
+    "anomaly": -1.39,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "DJF",
+    "year": 2021,
+    "label": "DJF 2021",
+    "anomaly": -1.32,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "JFM",
+    "year": 2021,
+    "label": "JFM 2021",
+    "anomaly": -1.18,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "FMA",
+    "year": 2021,
+    "label": "FMA 2021",
+    "anomaly": -1.08,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "MAM",
+    "year": 2021,
+    "label": "MAM 2021",
+    "anomaly": -0.89,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "AMJ",
+    "year": 2021,
+    "label": "AMJ 2021",
+    "anomaly": -0.68,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "MJJ",
+    "year": 2021,
+    "label": "MJJ 2021",
+    "anomaly": -0.57,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "JJA",
+    "year": 2021,
+    "label": "JJA 2021",
+    "anomaly": -0.6,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "JAS",
+    "year": 2021,
+    "label": "JAS 2021",
+    "anomaly": -0.76,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "ASO",
+    "year": 2021,
+    "label": "ASO 2021",
+    "anomaly": -0.95,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "SON",
+    "year": 2021,
+    "label": "SON 2021",
+    "anomaly": -1.08,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "OND",
+    "year": 2021,
+    "label": "OND 2021",
+    "anomaly": -1.24,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "NDJ",
+    "year": 2021,
+    "label": "NDJ 2021",
+    "anomaly": -1.22,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "DJF",
+    "year": 2022,
+    "label": "DJF 2022",
+    "anomaly": -1.18,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "JFM",
+    "year": 2022,
+    "label": "JFM 2022",
+    "anomaly": -1.13,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "FMA",
+    "year": 2022,
+    "label": "FMA 2022",
+    "anomaly": -1.19,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "MAM",
+    "year": 2022,
+    "label": "MAM 2022",
+    "anomaly": -1.26,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "AMJ",
+    "year": 2022,
+    "label": "AMJ 2022",
+    "anomaly": -1.17,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "MJJ",
+    "year": 2022,
+    "label": "MJJ 2022",
+    "anomaly": -0.95,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "JJA",
+    "year": 2022,
+    "label": "JJA 2022",
+    "anomaly": -0.86,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "JAS",
+    "year": 2022,
+    "label": "JAS 2022",
+    "anomaly": -0.94,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "ASO",
+    "year": 2022,
+    "label": "ASO 2022",
+    "anomaly": -1.07,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "SON",
+    "year": 2022,
+    "label": "SON 2022",
+    "anomaly": -1.1,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "OND",
+    "year": 2022,
+    "label": "OND 2022",
+    "anomaly": -1.05,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "NDJ",
+    "year": 2022,
+    "label": "NDJ 2022",
+    "anomaly": -0.99,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "DJF",
+    "year": 2023,
+    "label": "DJF 2023",
+    "anomaly": -0.86,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "JFM",
+    "year": 2023,
+    "label": "JFM 2023",
+    "anomaly": -0.68,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "FMA",
+    "year": 2023,
+    "label": "FMA 2023",
+    "anomaly": -0.55,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "MAM",
+    "year": 2023,
+    "label": "MAM 2023",
+    "anomaly": -0.31,
+    "status": "Neutral"
+  },
+  {
+    "season": "AMJ",
+    "year": 2023,
+    "label": "AMJ 2023",
+    "anomaly": -0.04,
+    "status": "Neutral"
+  },
+  {
+    "season": "MJJ",
+    "year": 2023,
+    "label": "MJJ 2023",
+    "anomaly": 0.28,
+    "status": "Neutral"
+  },
+  {
+    "season": "JJA",
+    "year": 2023,
+    "label": "JJA 2023",
+    "anomaly": 0.54,
+    "status": "El Ni\u00f1o"
+  },
+  {
+    "season": "JAS",
+    "year": 2023,
+    "label": "JAS 2023",
+    "anomaly": 0.79,
+    "status": "El Ni\u00f1o"
+  },
+  {
+    "season": "ASO",
+    "year": 2023,
+    "label": "ASO 2023",
+    "anomaly": 1.04,
+    "status": "El Ni\u00f1o"
+  },
+  {
+    "season": "SON",
+    "year": 2023,
+    "label": "SON 2023",
+    "anomaly": 1.3,
+    "status": "El Ni\u00f1o"
+  },
+  {
+    "season": "OND",
+    "year": 2023,
+    "label": "OND 2023",
+    "anomaly": 1.42,
+    "status": "El Ni\u00f1o"
+  },
+  {
+    "season": "NDJ",
+    "year": 2023,
+    "label": "NDJ 2023",
+    "anomaly": 1.4,
+    "status": "El Ni\u00f1o"
+  },
+  {
+    "season": "DJF",
+    "year": 2024,
+    "label": "DJF 2024",
+    "anomaly": 1.13,
+    "status": "El Ni\u00f1o"
+  },
+  {
+    "season": "JFM",
+    "year": 2024,
+    "label": "JFM 2024",
+    "anomaly": 0.78,
+    "status": "El Ni\u00f1o"
+  },
+  {
+    "season": "FMA",
+    "year": 2024,
+    "label": "FMA 2024",
+    "anomaly": 0.42,
+    "status": "Neutral"
+  },
+  {
+    "season": "MAM",
+    "year": 2024,
+    "label": "MAM 2024",
+    "anomaly": 0.04,
+    "status": "Neutral"
+  },
+  {
+    "season": "AMJ",
+    "year": 2024,
+    "label": "AMJ 2024",
+    "anomaly": -0.28,
+    "status": "Neutral"
+  },
+  {
+    "season": "MJJ",
+    "year": 2024,
+    "label": "MJJ 2024",
+    "anomaly": -0.45,
+    "status": "Neutral"
+  },
+  {
+    "season": "JJA",
+    "year": 2024,
+    "label": "JJA 2024",
+    "anomaly": -0.49,
+    "status": "Neutral"
+  },
+  {
+    "season": "JAS",
+    "year": 2024,
+    "label": "JAS 2024",
+    "anomaly": -0.56,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "ASO",
+    "year": 2024,
+    "label": "ASO 2024",
+    "anomaly": -0.67,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "SON",
+    "year": 2024,
+    "label": "SON 2024",
+    "anomaly": -0.76,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "OND",
+    "year": 2024,
+    "label": "OND 2024",
+    "anomaly": -0.88,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "NDJ",
+    "year": 2024,
+    "label": "NDJ 2024",
+    "anomaly": -1.05,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "DJF",
+    "year": 2025,
+    "label": "DJF 2025",
+    "anomaly": -1.1,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "JFM",
+    "year": 2025,
+    "label": "JFM 2025",
+    "anomaly": -0.85,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "FMA",
+    "year": 2025,
+    "label": "FMA 2025",
+    "anomaly": -0.66,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "MAM",
+    "year": 2025,
+    "label": "MAM 2025",
+    "anomaly": -0.5,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "AMJ",
+    "year": 2025,
+    "label": "AMJ 2025",
+    "anomaly": -0.48,
+    "status": "Neutral"
+  },
+  {
+    "season": "MJJ",
+    "year": 2025,
+    "label": "MJJ 2025",
+    "anomaly": -0.36,
+    "status": "Neutral"
+  },
+  {
+    "season": "JJA",
+    "year": 2025,
+    "label": "JJA 2025",
+    "anomaly": -0.41,
+    "status": "Neutral"
+  },
+  {
+    "season": "JAS",
+    "year": 2025,
+    "label": "JAS 2025",
+    "anomaly": -0.59,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "ASO",
+    "year": 2025,
+    "label": "ASO 2025",
+    "anomaly": -0.78,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "SON",
+    "year": 2025,
+    "label": "SON 2025",
+    "anomaly": -0.93,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "OND",
+    "year": 2025,
+    "label": "OND 2025",
+    "anomaly": -0.98,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "NDJ",
+    "year": 2025,
+    "label": "NDJ 2025",
+    "anomaly": -1.04,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "DJF",
+    "year": 2026,
+    "label": "DJF 2026",
+    "anomaly": -0.91,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "JFM",
+    "year": 2026,
+    "label": "JFM 2026",
+    "anomaly": -0.76,
+    "status": "La Ni\u00f1a"
+  },
+  {
+    "season": "FMA",
+    "year": 2026,
+    "label": "FMA 2026",
+    "anomaly": -0.44,
+    "status": "Neutral"
+  },
+  {
+    "season": "MAM",
+    "year": 2026,
+    "label": "MAM 2026",
+    "anomaly": -0.04,
+    "status": "Neutral"
+  },
+  {
+    "season": "AMJ",
+    "year": 2026,
+    "label": "AMJ 2026",
+    "anomaly": 0.49,
+    "status": "Neutral"
+  },
+  {
+    "season": "MJJ",
+    "year": 2026,
+    "label": "MJJ 2026",
+    "anomaly": 0.97,
+    "status": "El Ni\u00f1o"
+  },
+  {
+    "season": "JJA",
+    "year": 2026,
+    "label": "JJA 2026",
+    "anomaly": 1.36,
+    "status": "El Ni\u00f1o"
+  },
+  {
+    "season": "JAS",
+    "year": 2026,
+    "label": "JAS 2026",
+    "anomaly": 1.69,
+    "status": "El Ni\u00f1o"
+  }
+]
