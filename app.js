@@ -1,5 +1,5 @@
 /**
- * WHERE TIRUPPUR'S WATER BREAKS FIRST
+ * CATASTROPHE BEHIND THE COLOURS
  * Bklit UI + Oceanic Hydro-Thermal Telemetry Dashboard Engine
  * Zero-paragraph, high-impact geospatial analytics controller
  */
