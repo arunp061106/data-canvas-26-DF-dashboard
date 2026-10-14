@@ -1,6 +1,6 @@
 /**
  * WHERE TIRUPPUR'S WATER BREAKS FIRST
- * Executive Geospatial Pitch Deck & Technical Dossier Unified Controller
+ * Isolated Dual-Map Workspace & Executive Pitch Deck Controller
  * Inspired by: Sentiment-Scope UI
  */
 
@@ -8,307 +8,30 @@
   'use strict';
 
   // Master State
+  let isElNinoActive = true; // Default ON for pitch deck impact
   let currentViewMode = 'pitch'; // 'pitch' | 'dossier'
-  let currentScenario = 'severe'; // 'baseline' | 'moderate' | 'severe'
-  let currentMasterTab = 'tab2'; // 'tab1' (Baseline) | 'tab2' (Expected vs Shock)
-  let currentSubToggle = 'shock'; // 'ghost' | 'shock' | 'delta'
   let sortColumn = 'rank';
   let sortAsc = true;
 
-  // Map & Chart Objects
-  let map = null;
-  let talukGeoJsonLayer = null;
-  let riverLayerGroup = null;
-  let borewellLayerGroup = null;
+  // Leaflet Map Objects
+  let mapLeft = null;
+  let mapRight = null;
+  let satLayerLeft = null;
+  let satLayerRight = null;
+  let rightTaluksLayer = null;
+  let rightBorewellsLayer = null;
+  let leftBorewellsLayer = null;
+
+  // Chart Objects
   let divergenceChartInstance = null;
   let proximityChartInstance = null;
   let technicalDossierInitialized = false;
 
-  // Master 14 Prioritized Wards & Borewells (Noyyal Corridor)
-  const WARD_BOREWELLS = [
-    {
-      id: "W-15",
-      ward: "Ward 15 (Agraharam)",
-      locality: "Tiruppur Agraharam",
-      zone: "Zone 1 (North)",
-      lat: 11.1243,
-      lon: 77.4157,
-      distNoyyalKm: 0.35,
-      baseDepth: 11.1,
-      baseTds: 1217,
-      modDrop: 4.8,
-      modTds: 2150,
-      sevDrop: 7.6,
-      sevTds: 2840,
-      rank: 1,
-      actionBase: "HIGH",
-      actionMod: "CRITICAL: Test & Cap",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Direct 350m Noyyal buffer; acute sewage seepage upon water table drop."
-    },
-    {
-      id: "W-34",
-      ward: "Ward 34 (Weekly Market)",
-      locality: "Weekly Market / South Bank",
-      zone: "Zone 2 (Central)",
-      lat: 11.0882,
-      lon: 77.3431,
-      distNoyyalKm: 0.42,
-      baseDepth: 5.8,
-      baseTds: 1380,
-      modDrop: 3.9,
-      modTds: 2090,
-      sevDrop: 6.2,
-      sevTds: 2750,
-      rank: 2,
-      actionBase: "HIGH",
-      actionMod: "CRITICAL: Test & Cap",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Dense textile market core; unlined storm drains feed sewage leachate."
-    },
-    {
-      id: "W-28",
-      ward: "Ward 28 (Central Textile)",
-      locality: "Kumaran Road / Central",
-      zone: "Zone 2 (Central)",
-      lat: 11.1078,
-      lon: 77.3542,
-      distNoyyalKm: 0.55,
-      baseDepth: 7.6,
-      baseTds: 1410,
-      modDrop: 4.2,
-      modTds: 2210,
-      sevDrop: 6.8,
-      sevTds: 2820,
-      rank: 3,
-      actionBase: "HIGH",
-      actionMod: "CRITICAL: Test & Cap",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "High domestic discharge volume; historic subsurface sludge accumulation."
-    },
-    {
-      id: "W-22",
-      ward: "Ward 22 (Kasipalayam)",
-      locality: "Kasipalayam East",
-      zone: "Zone 2 (East)",
-      lat: 11.1156,
-      lon: 77.3857,
-      distNoyyalKm: 0.70,
-      baseDepth: 8.7,
-      baseTds: 1290,
-      modDrop: 4.5,
-      modTds: 1980,
-      sevDrop: 7.1,
-      sevTds: 2690,
-      rank: 4,
-      actionBase: "HIGH",
-      actionMod: "CRITICAL: Test & Cap",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Downstream percolation cone; domestic runoff mixes with crystalline recharge."
-    },
-    {
-      id: "W-52",
-      ward: "Ward 52 (Veerapandi)",
-      locality: "Veerapandi West",
-      zone: "Zone 3 (South)",
-      lat: 11.0721,
-      lon: 77.3612,
-      distNoyyalKm: 0.85,
-      baseDepth: 9.2,
-      baseTds: 1340,
-      modDrop: 4.1,
-      modTds: 1920,
-      sevDrop: 6.5,
-      sevTds: 2580,
-      rank: 5,
-      actionBase: "HIGH",
-      actionMod: "CRITICAL: Test & Cap",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Rapid peri-urban growth without septic sewage connections."
-    },
-    {
-      id: "W-41",
-      ward: "Ward 41 (Nallur)",
-      locality: "Nallur Corridor",
-      zone: "Zone 3 (Southeast)",
-      lat: 11.0845,
-      lon: 77.3814,
-      distNoyyalKm: 0.95,
-      baseDepth: 10.4,
-      baseTds: 1260,
-      modDrop: 4.6,
-      modTds: 1890,
-      sevDrop: 7.3,
-      sevTds: 2510,
-      rank: 6,
-      actionBase: "HIGH",
-      actionMod: "CRITICAL: Test & Cap",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Critical 1km buffer limit; aquifer transition from weathered to hard gneiss."
-    },
-    {
-      id: "W-08",
-      ward: "Ward 8 (Vellampalayam)",
-      locality: "15 Velampalayam",
-      zone: "Zone 1 (Northwest)",
-      lat: 11.1412,
-      lon: 77.3289,
-      distNoyyalKm: 1.15,
-      baseDepth: 12.3,
-      baseTds: 1180,
-      modDrop: 5.1,
-      modTds: 1810,
-      sevDrop: 7.9,
-      sevTds: 2420,
-      rank: 7,
-      actionBase: "MODERATE",
-      actionMod: "HIGH: Monitor Weekly",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Dense worker housing density; shallow dug wells dry out earliest."
-    },
-    {
-      id: "W-19",
-      ward: "Ward 19 (Mannarai)",
-      locality: "Mannarai North",
-      zone: "Zone 1 (North)",
-      lat: 11.1354,
-      lon: 77.3621,
-      distNoyyalKm: 1.30,
-      baseDepth: 13.8,
-      baseTds: 1120,
-      modDrop: 5.4,
-      modTds: 1750,
-      sevDrop: 8.4,
-      sevTds: 2360,
-      rank: 8,
-      actionBase: "MODERATE",
-      actionMod: "HIGH: Monitor Weekly",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Hard rock fissure recharge rate drops >50% during dry conditions."
-    },
-    {
-      id: "W-46",
-      ward: "Ward 46 (Chettipalayam)",
-      locality: "Chettipalayam Road",
-      zone: "Zone 4 (South)",
-      lat: 11.0610,
-      lon: 77.3488,
-      distNoyyalKm: 1.45,
-      baseDepth: 14.2,
-      baseTds: 1090,
-      modDrop: 5.2,
-      modTds: 1680,
-      sevDrop: 8.1,
-      sevTds: 2280,
-      rank: 9,
-      actionBase: "MODERATE",
-      actionMod: "HIGH: Monitor Weekly",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Transition zone between agricultural extraction and urban domestic stress."
-    },
-    {
-      id: "W-03",
-      ward: "Ward 3 (Poopunagar)",
-      locality: "Poopunagar North",
-      zone: "Zone 1 (Far North)",
-      lat: 11.1589,
-      lon: 77.3412,
-      distNoyyalKm: 1.65,
-      baseDepth: 15.6,
-      baseTds: 1040,
-      modDrop: 5.6,
-      modTds: 1620,
-      sevDrop: 8.8,
-      sevTds: 2190,
-      rank: 10,
-      actionBase: "MODERATE",
-      actionMod: "HIGH: Monitor Weekly",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Borewells over 150m depth show accelerating fluoride and TDS concentrations."
-    },
-    {
-      id: "W-58",
-      ward: "Ward 58 (Andipalayam)",
-      locality: "Andipalayam Lake Belt",
-      zone: "Zone 4 (Southwest)",
-      lat: 11.0543,
-      lon: 77.3210,
-      distNoyyalKm: 1.80,
-      baseDepth: 16.9,
-      baseTds: 1010,
-      modDrop: 5.9,
-      modTds: 1580,
-      sevDrop: 9.2,
-      sevTds: 2120,
-      rank: 11,
-      actionBase: "MODERATE",
-      actionMod: "HIGH: Monitor Weekly",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Lake bed dries up completely during El Niño; artificial recharge halts."
-    },
-    {
-      id: "W-NP",
-      ward: "Nachipalayam Telemetry Node",
-      locality: "Nachipalayam1_1 Piezometer",
-      zone: "West Corridor (WRIS)",
-      lat: 11.0267,
-      lon: 77.3344,
-      distNoyyalKm: 1.95,
-      baseDepth: 20.4,
-      baseTds: 980,
-      modDrop: 6.8,
-      modTds: 1720,
-      sevDrop: 11.5,
-      sevTds: 2490,
-      rank: 12,
-      actionBase: "HIGH",
-      actionMod: "CRITICAL: Test & Cap",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Historic reservoir backwater salinity zone; deep fractured rock drawdown."
-    },
-    {
-      id: "W-PL",
-      ward: "Palladam Border (Pallapalayam)",
-      locality: "Pallapalayam Pz",
-      zone: "Southwest Sector",
-      lat: 10.5256,
-      lon: 77.2181,
-      distNoyyalKm: 2.40,
-      baseDepth: 84.7,
-      baseTds: 720,
-      modDrop: 8.2,
-      modTds: 1240,
-      sevDrop: 14.5,
-      sevTds: 1850,
-      rank: 13,
-      actionBase: "HIGH",
-      actionMod: "HIGH: Monitor Weekly",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Extreme structural drawdown depth (84.7m bgl); critical yield collapse risk."
-    },
-    {
-      id: "W-PY",
-      ward: "Periyapatti Sector",
-      locality: "Periyapatti Dug Well",
-      zone: "South Sector",
-      lat: 10.7583,
-      lon: 77.2708,
-      distNoyyalKm: 2.80,
-      baseDepth: 11.7,
-      baseTds: 1310,
-      modDrop: 3.5,
-      modTds: 1820,
-      sevDrop: 6.4,
-      sevTds: 2420,
-      rank: 14,
-      actionBase: "MODERATE",
-      actionMod: "HIGH: Monitor Weekly",
-      actionSev: "CRITICAL: Test & Cap",
-      rationale: "Post-monsoon TDS surged to 1,310 mg/L; second-tier priority node."
-    }
-  ];
+  // Center of Tiruppur District
+  const TIRUPPUR_CENTER = [10.88, 77.44];
+  const DEFAULT_ZOOM = 9.8;
 
-  // Noyyal River Corridor Polyline Coordinates (Avinashi through Tiruppur to Kangayam)
+  // Noyyal River Geometry across Tiruppur
   const NOYYAL_RIVER_COORDS = [
     [11.0820, 77.2600],
     [11.0890, 77.2920],
@@ -322,353 +45,562 @@
     [11.1300, 77.5450]
   ];
 
-  // Scenario Metric Definitions (Tier 2 KPIs)
-  const SCENARIOS = {
-    baseline: {
-      depthVal: "18.4",
-      depthComp: "Summer '25 Baseline Pre-Monsoon Level",
-      depthDelta: "<span class='kpi-delta-chip'>Historical Steady Mean</span>",
-      tdsVal: "1,450",
-      tdsComp: "Permissible Drinking Threshold Limit",
-      tdsDelta: "<span class='kpi-delta-chip'>Within BIS 2,000 Limit</span>",
-      wardsVal: "5 / 60",
-      wardsComp: "Low Buffer Alert Wards",
-      wardsDelta: "<span class='kpi-delta-chip delta-warn'>Local Leachate Pockets</span>",
-      sewageVal: "42%",
-      sewageComp: "Dry Season Dilution Buffer",
-      sewageDelta: "<span class='kpi-delta-chip'>Open Seepage via Runoff</span>"
+  // Top 10 Priority Wards & Firkas ranked by Expected vs El Niño Delta %
+  const PRIORITY_WARDS = [
+    {
+      rank: 1,
+      id: "W-41",
+      ward: "Ward 41 (Nallur)",
+      locality: "Nallur Corridor",
+      distNoyyalKm: 0.95,
+      lat: 11.0845,
+      lon: 77.3814,
+      expDepth: 18.2,
+      expTds: 1540,
+      shockDepth: 25.5,
+      shockTds: 2510,
+      drop: "-7.3m",
+      tdsSurgePct: "+63.0%",
+      status: "RED ALERT: Test & Cap First",
+      actionClass: "status-critical"
     },
-    moderate: {
-      depthVal: "23.2",
-      depthComp: "Expected '26: 18.4 m &bull; El Niño: 23.2 m",
-      depthDelta: "<span class='kpi-delta-chip delta-warn'>&#9660; -4.8m depletion (+26%)</span>",
-      tdsVal: "2,180",
-      tdsComp: "Expected '26: 1,450 mg/L &bull; El Niño: 2,180 mg/L",
-      tdsDelta: "<span class='kpi-delta-chip delta-warn'>&#9650; +50% surge (Exceeds BIS)</span>",
-      wardsVal: "9 / 60",
-      wardsComp: "Expected '26: 5 Wards &bull; El Niño: 9 Wards",
-      wardsDelta: "<span class='kpi-delta-chip delta-warn'>&#9888; High Risk Intrusion Belt</span>",
-      sewageVal: "55%",
-      sewageComp: "Expected '26: 42% &bull; El Niño: 55%",
-      sewageDelta: "<span class='kpi-delta-chip delta-warn'>&#9889; Dilution loss in 1.5km buffer</span>"
+    {
+      rank: 2,
+      id: "W-08",
+      ward: "Ward 8 (Vellampalayam)",
+      locality: "15 Velampalayam",
+      distNoyyalKm: 1.15,
+      lat: 11.1412,
+      lon: 77.3289,
+      expDepth: 17.8,
+      expTds: 1480,
+      shockDepth: 25.7,
+      shockTds: 2420,
+      drop: "-7.9m",
+      tdsSurgePct: "+63.5%",
+      status: "RED ALERT: Test & Cap First",
+      actionClass: "status-critical"
     },
-    severe: {
-      depthVal: "27.8",
-      depthComp: "Expected '26: 18.4 m &bull; El Niño Shock: 27.8 m",
-      depthDelta: "<span class='kpi-delta-chip delta-danger'>&#9660; -9.4m (+51% deeper depletion)</span>",
-      tdsVal: "2,890",
-      tdsComp: "Expected '26: 1,450 mg/L &bull; El Niño Shock: 2,890 mg/L",
-      tdsDelta: "<span class='kpi-delta-chip delta-danger'>&#9650; +99% Salinity Spike (Exceeds BIS)</span>",
-      wardsVal: "14 / 60",
-      wardsComp: "Expected '26: 5 Wards &bull; El Niño Shock: 14 Wards",
-      wardsDelta: "<span class='kpi-delta-chip delta-warn'>&#9888; 70% clustered in 1.5km Noyyal belt</span>",
-      sewageVal: "68%",
-      sewageComp: "Expected '26: 42% &bull; El Niño Shock: 68%",
-      sewageDelta: "<span class='kpi-delta-chip delta-warn'>&#9889; Zero rain dilution (&gt;35% deficit)</span>"
+    {
+      rank: 3,
+      id: "W-34",
+      ward: "Ward 34 (Tiruppur South / Market)",
+      locality: "Weekly Market / South Bank",
+      distNoyyalKm: 0.42,
+      lat: 11.0882,
+      lon: 77.3431,
+      expDepth: 18.8,
+      expTds: 1580,
+      shockDepth: 27.5,
+      shockTds: 2750,
+      drop: "-8.7m",
+      tdsSurgePct: "+74.1%",
+      status: "RED ALERT: Test & Cap First",
+      actionClass: "status-critical"
+    },
+    {
+      rank: 4,
+      id: "W-22",
+      ward: "Ward 22 (Kasipalayam)",
+      locality: "Kasipalayam East",
+      distNoyyalKm: 0.70,
+      lat: 11.1156,
+      lon: 77.3857,
+      expDepth: 18.5,
+      expTds: 1560,
+      shockDepth: 26.9,
+      shockTds: 2690,
+      drop: "-8.4m",
+      tdsSurgePct: "+72.4%",
+      status: "RED ALERT: Test & Cap First",
+      actionClass: "status-critical"
+    },
+    {
+      rank: 5,
+      id: "W-52",
+      ward: "Ward 52 (Veerapandi)",
+      locality: "Veerapandi West",
+      distNoyyalKm: 0.85,
+      lat: 11.0721,
+      lon: 77.3612,
+      expDepth: 18.0,
+      expTds: 1520,
+      shockDepth: 25.8,
+      shockTds: 2580,
+      drop: "-7.8m",
+      tdsSurgePct: "+69.7%",
+      status: "RED ALERT: Test & Cap First",
+      actionClass: "status-critical"
+    },
+    {
+      rank: 6,
+      id: "W-15",
+      ward: "Ward 15 (Agraharam)",
+      locality: "Tiruppur Agraharam",
+      distNoyyalKm: 0.35,
+      lat: 11.1243,
+      lon: 77.4157,
+      expDepth: 18.6,
+      expTds: 1600,
+      shockDepth: 28.4,
+      shockTds: 2840,
+      drop: "-9.8m",
+      tdsSurgePct: "+77.5%",
+      status: "RED ALERT: Test & Cap First",
+      actionClass: "status-critical"
+    },
+    {
+      rank: 7,
+      id: "W-28",
+      ward: "Ward 28 (Kumaran Road)",
+      locality: "Kumaran Road / Central",
+      distNoyyalKm: 0.55,
+      lat: 11.1078,
+      lon: 77.3542,
+      expDepth: 18.9,
+      expTds: 1620,
+      shockDepth: 28.2,
+      shockTds: 2820,
+      drop: "-9.3m",
+      tdsSurgePct: "+74.1%",
+      status: "RED ALERT: Test & Cap First",
+      actionClass: "status-critical"
+    },
+    {
+      rank: 8,
+      id: "W-03",
+      ward: "Ward 3 (Poopunagar)",
+      locality: "Poopunagar North",
+      distNoyyalKm: 1.65,
+      lat: 11.1589,
+      lon: 77.3412,
+      expDepth: 17.5,
+      expTds: 1390,
+      shockDepth: 24.2,
+      shockTds: 2190,
+      drop: "-6.7m",
+      tdsSurgePct: "+57.6%",
+      status: "HIGH: Monitor Weekly",
+      actionClass: "status-high"
+    },
+    {
+      rank: 9,
+      id: "W-19",
+      ward: "Ward 19 (Mannarai)",
+      locality: "Mannarai North",
+      distNoyyalKm: 1.30,
+      lat: 11.1354,
+      lon: 77.3621,
+      expDepth: 17.9,
+      expTds: 1440,
+      shockDepth: 24.8,
+      shockTds: 2360,
+      drop: "-6.9m",
+      tdsSurgePct: "+63.9%",
+      status: "HIGH: Monitor Weekly",
+      actionClass: "status-high"
+    },
+    {
+      rank: 10,
+      id: "W-58",
+      ward: "Ward 58 (Andipalayam)",
+      locality: "Andipalayam Lake Belt",
+      distNoyyalKm: 1.80,
+      lat: 11.0543,
+      lon: 77.3210,
+      expDepth: 18.1,
+      expTds: 1380,
+      shockDepth: 25.1,
+      shockTds: 2120,
+      drop: "-7.0m",
+      tdsSurgePct: "+53.6%",
+      status: "HIGH: Monitor Weekly",
+      actionClass: "status-high"
     }
-  };
+  ];
 
   // =========================================================================
-  // 1. INITIALIZE LEAFLET MAP & GEOJSON TALUKS
+  // 1. INITIALIZE ISOLATED DUAL MAP WORKSPACE
   // =========================================================================
-  function initMap() {
-    const mapEl = document.getElementById('leafletMap');
-    if (!mapEl) return;
-
-    // Centered on Tiruppur District (upright North)
-    map = L.map('leafletMap', {
-      zoomControl: true,
-      scrollWheelZoom: false
-    }).setView([10.92, 77.42], 10);
-
-    // Standard OpenStreetMap Tiles (100% reliable, zero API key)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-      maxZoom: 18,
-      subdomains: ['a', 'b', 'c']
-    }).addTo(map);
-
-    // River Layer Group
-    riverLayerGroup = L.layerGroup().addTo(map);
-    drawNoyyalVector();
-
-    // Taluks GeoJSON Layer Group
-    renderTaluksLayer();
-
-    // Borewell Overlay Layer Group
-    borewellLayerGroup = L.layerGroup().addTo(map);
-    updateBorewellMarkers();
+  function initDualMaps() {
+    initLeftMap();
+    initRightMap();
   }
 
-  function drawNoyyalVector() {
-    riverLayerGroup.clearLayers();
+  function initLeftMap() {
+    const el = document.getElementById('mapLeft2025');
+    if (!el) return;
 
-    // 2km Secondary Buffer Band
+    mapLeft = L.map('mapLeft2025', {
+      zoomControl: true,
+      scrollWheelZoom: false,
+      attributionControl: false
+    }).setView(TIRUPPUR_CENTER, DEFAULT_ZOOM);
+
+    // 1. Inverted Void Mask Layer (Covers everything outside Tiruppur with solid #090D16)
+    if (window.TIRUPPUR_INVERTED_MASK_GEOJSON) {
+      L.geoJSON(window.TIRUPPUR_INVERTED_MASK_GEOJSON, {
+        style: {
+          fillColor: '#090D16',
+          fillOpacity: 1.0,
+          stroke: false,
+          interactive: false
+        }
+      }).addTo(mapLeft);
+    }
+
+    // 2. Summer 2025 Taluk Polygons (Calm Baseline: Cyan / Emerald / mild Amber)
+    if (window.TIRUPPUR_TALUKS_GEOJSON) {
+      L.geoJSON(window.TIRUPPUR_TALUKS_GEOJSON, {
+        style: function (f) {
+          const depth = f.properties.baseline_25_depth;
+          let fill = '#10b981';
+          if (depth > 20) fill = '#f59e0b';
+          else if (depth > 16) fill = '#06b6d4';
+          return {
+            fillColor: fill,
+            weight: 1.5,
+            color: '#38bdf8',
+            opacity: 0.75,
+            fillOpacity: 0.45
+          };
+        },
+        onEachFeature: function (f, layer) {
+          layer.bindTooltip(`<strong>${f.properties.name}</strong><br>2025 Baseline: ${f.properties.baseline_25_depth}m bgl &bull; ${f.properties.baseline_25_tds} mg/L`, {
+            direction: 'top',
+            sticky: true
+          });
+        }
+      }).addTo(mapLeft);
+    }
+
+    // 3. Noyyal River Corridor Vector
     L.polyline(NOYYAL_RIVER_COORDS, {
-      color: '#f59e0b',
-      weight: 38,
-      opacity: 0.12,
-      lineCap: 'round',
-      lineJoin: 'round'
-    }).addTo(riverLayerGroup);
-
-    // 1km Critical Leachate Buffer Band
-    L.polyline(NOYYAL_RIVER_COORDS, {
-      color: '#ef4444',
-      weight: 20,
-      opacity: 0.22,
-      lineCap: 'round',
-      lineJoin: 'round'
-    }).addTo(riverLayerGroup);
-
-    // Main Noyyal River Line
-    const riverLine = L.polyline(NOYYAL_RIVER_COORDS, {
       color: '#06b6d4',
-      weight: 4,
+      weight: 3.5,
       opacity: 0.95
-    }).addTo(riverLayerGroup);
+    }).addTo(mapLeft);
 
-    riverLine.bindTooltip("Noyyal River Corridor (Sewage Contamination Vector)", {
-      direction: 'top',
-      className: 'river-tooltip'
+    // 4. Glowing District Outer Silhouette Border
+    if (window.TIRUPPUR_BOUNDARY_GEOJSON) {
+      L.geoJSON(window.TIRUPPUR_BOUNDARY_GEOJSON, {
+        style: {
+          color: '#38bdf8',
+          weight: 2.2,
+          fill: false,
+          opacity: 0.95,
+          className: 'district-glow-border'
+        }
+      }).addTo(mapLeft);
+    }
+
+    // 5. Left Map Borewells Overlay
+    leftBorewellsLayer = L.layerGroup().addTo(mapLeft);
+    PRIORITY_WARDS.forEach(w => {
+      L.circleMarker([w.lat, w.lon], {
+        radius: 5,
+        fillColor: '#10b981',
+        color: '#ffffff',
+        weight: 1.2,
+        fillOpacity: 0.85
+      }).bindTooltip(`${w.ward} &bull; 2025 Depth: 18.4m`).addTo(leftBorewellsLayer);
     });
   }
 
-  function getTalukStyle(feature) {
-    const p = feature.properties;
+  function initRightMap() {
+    const el = document.getElementById('mapRight2026');
+    if (!el) return;
 
-    // If Tab 1: Historical Baseline
-    if (currentMasterTab === 'tab1') {
-      let fillColor = '#10b981';
-      if (p.baseline_25_depth > 20) fillColor = '#f59e0b';
-      else if (p.baseline_25_depth > 16) fillColor = '#06b6d4';
-      return {
-        fillColor: fillColor,
-        weight: 1.5,
-        opacity: 0.8,
-        color: '#38bdf8',
-        fillOpacity: 0.45,
-        className: ''
-      };
+    mapRight = L.map('mapRight2026', {
+      zoomControl: true,
+      scrollWheelZoom: false,
+      attributionControl: false
+    }).setView(TIRUPPUR_CENTER, DEFAULT_ZOOM);
+
+    // 1. Inverted Void Mask Layer
+    if (window.TIRUPPUR_INVERTED_MASK_GEOJSON) {
+      L.geoJSON(window.TIRUPPUR_INVERTED_MASK_GEOJSON, {
+        style: {
+          fillColor: '#090D16',
+          fillOpacity: 1.0,
+          stroke: false,
+          interactive: false
+        }
+      }).addTo(mapRight);
     }
 
-    // Tab 2: Sub-Toggles
-    if (currentSubToggle === 'ghost') {
-      // Expected '26 Trend (Gentle historical path)
+    // 2. Noyyal River Line & Critical 1km Leachate Buffer
+    L.polyline(NOYYAL_RIVER_COORDS, {
+      color: '#ef4444',
+      weight: 18,
+      opacity: 0.22,
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(mapRight);
+
+    L.polyline(NOYYAL_RIVER_COORDS, {
+      color: '#06b6d4',
+      weight: 3.5,
+      opacity: 0.95
+    }).addTo(mapRight);
+
+    // 3. Glowing District Silhouette
+    if (window.TIRUPPUR_BOUNDARY_GEOJSON) {
+      L.geoJSON(window.TIRUPPUR_BOUNDARY_GEOJSON, {
+        style: {
+          color: '#ef4444',
+          weight: 2.4,
+          fill: false,
+          opacity: 0.95,
+          className: 'district-glow-border-shock'
+        }
+      }).addTo(mapRight);
+    }
+
+    // 4. Render Dynamic Right Map Layer (Expected vs El Niño)
+    updateRightMapDisplay();
+  }
+
+  function getRightTalukStyle(feature) {
+    const p = feature.properties;
+    const isCritical = p.critical_flag; // Tiruppur North, South, Uthukkuli, Kangayam
+
+    if (!isElNinoActive) {
+      // Expected 2026 Historical Trend (Gentle drift)
       return {
         fillColor: '#f59e0b',
         weight: 1.5,
-        opacity: 0.75,
         color: '#facc15',
-        dashArray: '4, 4',
-        fillOpacity: 0.35,
+        opacity: 0.75,
+        fillOpacity: 0.40,
         className: ''
       };
-    } else if (currentSubToggle === 'shock') {
-      // Live Shock: El Niño '26 Reality
-      const isCritical = p.critical_flag; // Tiruppur North, South, Uthukkuli, Kangayam
+    } else {
+      // EL NIÑO STRESS 2026: Pulsing Crimson on Noyyal Corridor
       return {
         fillColor: isCritical ? '#ef4444' : '#f97316',
-        weight: isCritical ? 2.5 : 1.5,
-        opacity: 0.95,
+        weight: isCritical ? 2.8 : 1.6,
         color: isCritical ? '#ff1a53' : '#fb923c',
-        fillOpacity: isCritical ? 0.65 : 0.45,
+        opacity: 0.95,
+        fillOpacity: isCritical ? 0.72 : 0.48,
         className: isCritical ? 'pulse-shock-corridor' : ''
       };
-    } else {
-      // Net Anomaly Delta (Delta Drop & TDS Spike)
-      const isCritical = p.critical_flag;
-      return {
-        fillColor: isCritical ? '#ec4899' : '#a855f7',
-        weight: isCritical ? 3.0 : 1.5,
-        opacity: 0.95,
-        color: isCritical ? '#f43f5e' : '#c084fc',
-        fillOpacity: isCritical ? 0.70 : 0.45,
-        className: isCritical ? 'pulse-anomaly-corridor' : ''
-      };
     }
   }
 
-  function renderTaluksLayer() {
-    if (talukGeoJsonLayer) {
-      map.removeLayer(talukGeoJsonLayer);
+  function updateRightMapDisplay() {
+    if (!mapRight) return;
+
+    if (rightTaluksLayer) {
+      mapRight.removeLayer(rightTaluksLayer);
     }
 
-    if (!window.TIRUPPUR_TALUKS_GEOJSON) return;
+    if (window.TIRUPPUR_TALUKS_GEOJSON) {
+      rightTaluksLayer = L.geoJSON(window.TIRUPPUR_TALUKS_GEOJSON, {
+        style: getRightTalukStyle,
+        onEachFeature: function (f, layer) {
+          const p = f.properties;
+          const depth = isElNinoActive ? p.el_nino_26_depth : p.expected_26_depth;
+          const tds = isElNinoActive ? p.el_nino_26_tds : p.expected_26_tds;
+          const stateTxt = isElNinoActive ? `<strong style="color: #ef4444;">EL NIÑO SHOCK: ${depth}m bgl &bull; ${tds} mg/L TDS (${p.anomaly_depth}m drop)</strong>` : `Expected '26: ${depth}m bgl &bull; ${tds} mg/L TDS`;
 
-    talukGeoJsonLayer = L.geoJSON(window.TIRUPPUR_TALUKS_GEOJSON, {
-      style: getTalukStyle,
-      onEachFeature: function (feature, layer) {
-        const p = feature.properties;
-
-        // Mouse hover inspector trigger
-        layer.on('mouseover', function (e) {
-          updateHoverInspector({
-            title: `${p.name} Taluk (${p.area_sq_km} sq.km)`,
-            baseDepth: `${p.baseline_25_depth} m bgl`,
-            shockDepth: `${p.el_nino_26_depth} m bgl`,
-            tds: `${p.el_nino_26_tds} mg/L (+${p.anomaly_tds_pct}%)`,
-            anomaly: `${p.anomaly_depth}m drop &bull; ${p.critical_flag ? 'CRITICAL NOYYAL BELT' : 'PERIPHERAL'}`,
-            footer: `Firkas: ${p.firkas}`
+          layer.bindTooltip(`<strong>${p.name} Taluk</strong><br>${stateTxt}`, {
+            direction: 'top',
+            sticky: true
           });
-          layer.bringToFront();
-          if (borewellLayerGroup) borewellLayerGroup.bringToFront();
-        });
-
-        layer.on('click', function () {
-          map.fitBounds(layer.getBounds(), { padding: [20, 20], maxZoom: 12 });
-        });
-      }
-    }).addTo(map);
-  }
-
-  function updateHoverInspector(data) {
-    const elTitle = document.getElementById('hoverTitle');
-    const elBase = document.getElementById('hoverBaseDepth');
-    const elShock = document.getElementById('hoverShockDepth');
-    const elTds = document.getElementById('hoverTds');
-    const elAnom = document.getElementById('hoverAnomaly');
-    const elFoot = document.getElementById('hoverFooter');
-
-    if (elTitle) elTitle.textContent = data.title;
-    if (elBase) elBase.textContent = data.baseDepth;
-    if (elShock) elShock.textContent = data.shockDepth;
-    if (elTds) elTds.textContent = data.tds;
-    if (elAnom) elAnom.innerHTML = data.anomaly;
-    if (elFoot) elFoot.textContent = data.footer;
-  }
-
-  function getNodeData(st) {
-    if (currentMasterTab === 'tab1' || currentScenario === 'baseline') {
-      return {
-        depth: st.baseDepth,
-        tds: st.baseTds,
-        action: st.actionBase,
-        isProjected: false
-      };
-    } else if (currentScenario === 'moderate') {
-      return {
-        depth: +(st.baseDepth + st.modDrop).toFixed(1),
-        tds: st.modTds,
-        action: st.actionMod,
-        isProjected: true
-      };
-    } else {
-      // severe
-      return {
-        depth: +(st.baseDepth + st.sevDrop).toFixed(1),
-        tds: st.sevTds,
-        action: st.actionSev,
-        isProjected: true
-      };
+        }
+      }).addTo(mapRight);
     }
-  }
 
-  function updateBorewellMarkers() {
-    if (!borewellLayerGroup) return;
-    borewellLayerGroup.clearLayers();
+    // Right Map Borewells
+    if (rightBorewellsLayer) {
+      mapRight.removeLayer(rightBorewellsLayer);
+    }
+    rightBorewellsLayer = L.layerGroup().addTo(mapRight);
 
-    WARD_BOREWELLS.forEach(st => {
-      const live = getNodeData(st);
+    PRIORITY_WARDS.forEach(w => {
+      const color = isElNinoActive ? '#ef4444' : '#f59e0b';
+      const radius = isElNinoActive ? 7 : 5;
+      const depth = isElNinoActive ? w.shockDepth : w.expDepth;
+      const tds = isElNinoActive ? w.shockTds : w.expTds;
 
-      let color = '#10b981'; // Green
-      let radius = 6;
-
-      if (live.action.includes('CRITICAL')) {
-        color = '#ef4444'; // Red
-        radius = 8;
-      } else if (live.action.includes('HIGH')) {
-        color = '#f97316'; // Orange
-        radius = 7;
-      } else if (live.tds >= 1200 || st.distNoyyalKm <= 1.0) {
-        color = '#eab308'; // Yellow
-        radius = 6;
-      }
-
-      const marker = L.circleMarker([st.lat, st.lon], {
+      const marker = L.circleMarker([w.lat, w.lon], {
         radius: radius,
         fillColor: color,
         color: '#ffffff',
         weight: 1.5,
-        opacity: 0.95,
-        fillOpacity: 0.85
+        fillOpacity: 0.9
       });
 
-      const popupHtml = `
-        <div style="font-size: 0.75rem; line-height: 1.35; min-width: 190px;">
-          <div style="font-weight: 800; font-size: 0.85rem; color: #38bdf8; margin-bottom: 0.2rem;">${st.ward}</div>
-          <div style="color: #94a3b8; margin-bottom: 0.4rem;">${st.locality} &bull; ${st.distNoyyalKm} km to Noyyal</div>
-          <div style="background: rgba(255,255,255,0.06); padding: 0.35rem 0.5rem; border-radius: 4px; margin-bottom: 0.4rem;">
-            <div><strong>2025 Level:</strong> ${st.baseDepth} m bgl</div>
-            <div><strong>2026 Shock:</strong> ${live.depth} m bgl</div>
-            <div><strong>TDS Salinity:</strong> ${live.tds} mg/L</div>
-          </div>
-          <div style="font-weight: 800; color: ${color};">
-            Priority Rank #${st.rank} &bull; ${live.action}
+      marker.bindPopup(`
+        <div style="font-size: 0.75rem;">
+          <strong style="color: #38bdf8;">${w.ward}</strong><br>
+          <span style="color: #94a3b8;">${w.locality} &bull; ${w.distNoyyalKm} km to Noyyal</span>
+          <div style="margin-top: 4px; padding: 4px; background: rgba(255,255,255,0.06); border-radius: 4px;">
+            <div><strong>2026 Level:</strong> ${depth} m bgl</div>
+            <div><strong>TDS Salinity:</strong> ${tds} mg/L</div>
+            <div style="color: #ef4444; font-weight: 800;">${isElNinoActive ? w.status : 'Normal Trend'}</div>
           </div>
         </div>
-      `;
+      `);
 
-      marker.bindPopup(popupHtml);
-
-      marker.on('mouseover', function () {
-        updateHoverInspector({
-          title: `Rank #${st.rank}: ${st.ward}`,
-          baseDepth: `${st.baseDepth} m bgl`,
-          shockDepth: `${live.depth} m bgl`,
-          tds: `${live.tds} mg/L (${st.distNoyyalKm}km to Noyyal)`,
-          anomaly: `${live.action}`,
-          footer: `${st.rationale}`
-        });
-      });
-
-      marker.wardId = st.id;
-      marker.addTo(borewellLayerGroup);
+      marker.addTo(rightBorewellsLayer);
     });
+
+    // Update Header Pill on Right Map
+    const badge = document.getElementById('rightMapStatusBadge');
+    const dot = document.getElementById('rightPanelDot');
+    const callouts = document.getElementById('rightMapDeltaCallouts');
+    const btn = document.getElementById('btnElNinoTrigger');
+    const btnLabel = document.getElementById('elNinoBtnLabel');
+
+    if (isElNinoActive) {
+      if (badge) {
+        badge.innerHTML = "🔥 EL NIÑO SHOCK: 28.6m bgl (-9.4m) &bull; 2,940 mg/L (+89.6%)";
+        badge.className = "panel-kpi-pill pill-shock-active";
+      }
+      if (dot) dot.className = "panel-status-dot dot-shock active";
+      if (callouts) callouts.style.display = "flex";
+      if (btn) btn.className = "el-nino-trigger-btn active";
+      if (btnLabel) btnLabel.textContent = "EL NIÑO EFFECT ACTIVE (CLICK TO RESET)";
+    } else {
+      if (badge) {
+        badge.innerHTML = "Expected Historical Trend: 19.2m bgl &bull; 1,550 mg/L TDS";
+        badge.className = "panel-kpi-pill";
+      }
+      if (dot) dot.className = "panel-status-dot dot-shock";
+      if (callouts) callouts.style.display = "none";
+      if (btn) btn.className = "el-nino-trigger-btn";
+      if (btnLabel) btnLabel.textContent = "APPLY EL NIÑO EFFECT";
+    }
   }
 
   // =========================================================================
-  // 2. TIER 2: UPDATE KPI CARDS
+  // 2. SATELLITE BASEMAP TOGGLE (STRICTLY CLIPPED INSIDE BOUNDARY)
+  // =========================================================================
+  function setBasemapLayer(mapSide, layerType) {
+    const targetMap = mapSide === 'left' ? mapLeft : mapRight;
+    if (!targetMap) return;
+
+    if (layerType === 'satellite') {
+      const tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+      if (mapSide === 'left') {
+        if (!satLayerLeft) {
+          satLayerLeft = L.tileLayer(tileUrl, { className: 'satellite-masked-layer', maxZoom: 18 });
+        }
+        satLayerLeft.addTo(targetMap);
+        satLayerLeft.bringToBack();
+      } else {
+        if (!satLayerRight) {
+          satLayerRight = L.tileLayer(tileUrl, { className: 'satellite-masked-layer', maxZoom: 18 });
+        }
+        satLayerRight.addTo(targetMap);
+        satLayerRight.bringToBack();
+      }
+    } else {
+      // Vector: remove satellite
+      if (mapSide === 'left' && satLayerLeft) {
+        targetMap.removeLayer(satLayerLeft);
+      } else if (mapSide === 'right' && satLayerRight) {
+        targetMap.removeLayer(satLayerRight);
+      }
+    }
+  }
+
+  // =========================================================================
+  // 3. TIER 2: UPDATE KPI CARDS ON EL NIÑO TOGGLE
   // =========================================================================
   function updateKpiRibbon() {
-    const scen = SCENARIOS[currentScenario];
-    if (!scen) return;
-
-    const elDepth = document.getElementById('kpiDepthVal');
-    const elDepthComp = document.getElementById('kpiDepthComp');
-    const elDepthDelta = document.getElementById('kpiDepthDelta');
-
-    const elTds = document.getElementById('kpiTdsVal');
+    const elTdsVal = document.getElementById('kpiTdsVal');
     const elTdsComp = document.getElementById('kpiTdsComp');
     const elTdsDelta = document.getElementById('kpiTdsDelta');
 
-    const elWards = document.getElementById('kpiWardsVal');
-    const elWardsComp = document.getElementById('kpiWardsComp');
-    const elWardsDelta = document.getElementById('kpiWardsDelta');
+    const elDepthVal = document.getElementById('kpiDepthVal');
+    const elDepthComp = document.getElementById('kpiDepthComp');
+    const elDepthDelta = document.getElementById('kpiDepthDelta');
 
-    const elSewage = document.getElementById('kpiSewageVal');
+    const elSewageVal = document.getElementById('kpiSewageVal');
     const elSewageComp = document.getElementById('kpiSewageComp');
     const elSewageDelta = document.getElementById('kpiSewageDelta');
 
-    if (elDepth) elDepth.innerHTML = `${scen.depthVal} <span class="kpi-unit">m bgl</span>`;
-    if (elDepthComp) elDepthComp.innerHTML = scen.depthComp;
-    if (elDepthDelta) elDepthDelta.innerHTML = scen.depthDelta;
+    const elWardsVal = document.getElementById('kpiWardsVal');
+    const elWardsComp = document.getElementById('kpiWardsComp');
+    const elWardsDelta = document.getElementById('kpiWardsDelta');
 
-    if (elTds) elTds.innerHTML = `${scen.tdsVal} <span class="kpi-unit">mg/L</span>`;
-    if (elTdsComp) elTdsComp.innerHTML = scen.tdsComp;
-    if (elTdsDelta) elTdsDelta.innerHTML = scen.tdsDelta;
+    const cards = [
+      document.getElementById('kpiCardSalinity'),
+      document.getElementById('kpiCardDepth'),
+      document.getElementById('kpiCardSewage'),
+      document.getElementById('kpiCardWards')
+    ];
 
-    if (elWards) elWards.innerHTML = `${scen.wardsVal} <span class="kpi-unit">Wards</span>`;
-    if (elWardsComp) elWardsComp.innerHTML = scen.wardsComp;
-    if (elWardsDelta) elWardsDelta.innerHTML = scen.wardsDelta;
+    if (isElNinoActive) {
+      // EL NIÑO ACTIVE NUMBERS
+      if (elTdsVal) elTdsVal.innerHTML = `<span class="val-prev">1,550</span> <span class="val-arrow">&#10142;</span> <span class="val-active text-danger">2,940</span> <span class="kpi-unit">mg/L</span>`;
+      if (elTdsComp) elTdsComp.textContent = "Expected: 1,550 mg/L • El Niño: 2,940 mg/L";
+      if (elTdsDelta) {
+        elTdsDelta.innerHTML = `&#9650; +89.6% Over Expected Trend`;
+        elTdsDelta.className = "kpi-delta-chip delta-danger";
+      }
 
-    if (elSewage) elSewage.innerHTML = `${scen.sewageVal} <span class="kpi-unit">Risk</span>`;
-    if (elSewageComp) elSewageComp.innerHTML = scen.sewageComp;
-    if (elSewageDelta) elSewageDelta.innerHTML = scen.sewageDelta;
+      if (elDepthVal) elDepthVal.innerHTML = `<span class="val-prev">19.2</span> <span class="val-arrow">&#10142;</span> <span class="val-active text-danger">28.6</span> <span class="kpi-unit">m bgl</span>`;
+      if (elDepthComp) elDepthComp.textContent = "Expected: 19.2m • El Niño: 28.6m bgl";
+      if (elDepthDelta) {
+        elDepthDelta.innerHTML = `&#9660; +48.9% Faster Depletion (-9.4m)`;
+        elDepthDelta.className = "kpi-delta-chip delta-danger";
+      }
+
+      if (elSewageVal) elSewageVal.innerHTML = `<span class="val-prev">42.0%</span> <span class="val-arrow">&#10142;</span> <span class="val-active text-purple">78.4%</span> <span class="kpi-unit">Aquifer Share</span>`;
+      if (elSewageComp) elSewageComp.textContent = "Expected: 42% Share • El Niño: 78.4% Share";
+      if (elSewageDelta) {
+        elSewageDelta.innerHTML = `&#9650; +86% Sewage Intrusion (Zero Dilution)`;
+        elSewageDelta.className = "kpi-delta-chip delta-warn";
+      }
+
+      if (elWardsVal) elWardsVal.innerHTML = `<span class="val-prev">5</span> <span class="val-arrow">&#10142;</span> <span class="val-active text-danger">14</span> <span class="kpi-unit">/ 60 Wards</span>`;
+      if (elWardsComp) elWardsComp.textContent = "Expected: 5 Wards • El Niño: 14 Wards Critical";
+      if (elWardsDelta) {
+        elWardsDelta.innerHTML = `&#9888; Tiruppur North & South Break First`;
+        elWardsDelta.className = "kpi-delta-chip delta-danger";
+      }
+
+      cards.forEach(c => c?.classList.add('shock-highlight'));
+    } else {
+      // EXPECTED 2026 BASELINE NUMBERS
+      if (elTdsVal) elTdsVal.innerHTML = `<span class="val-active" style="color: #38bdf8;">1,550</span> <span class="kpi-unit">mg/L</span>`;
+      if (elTdsComp) elTdsComp.textContent = "Expected Summer '26 Historical Trend";
+      if (elTdsDelta) {
+        elTdsDelta.innerHTML = `&#9679; Within Permissible Ceiling (2,000 mg/L)`;
+        elTdsDelta.className = "kpi-delta-chip";
+      }
+
+      if (elDepthVal) elDepthVal.innerHTML = `<span class="val-active" style="color: #38bdf8;">19.2</span> <span class="kpi-unit">m bgl</span>`;
+      if (elDepthComp) elDepthComp.textContent = "Expected Summer '26 Historical Trend";
+      if (elDepthDelta) {
+        elDepthDelta.innerHTML = `&#9660; Normal Seasonal Drift (+0.8m drop)`;
+        elDepthDelta.className = "kpi-delta-chip";
+      }
+
+      if (elSewageVal) elSewageVal.innerHTML = `<span class="val-active" style="color: #c084fc;">42.0%</span> <span class="kpi-unit">Aquifer Share</span>`;
+      if (elSewageComp) elSewageComp.textContent = "Normal Monsoon Recharge Active";
+      if (elSewageDelta) {
+        elSewageDelta.innerHTML = `&#9679; Dilution Buffer Intact`;
+        elSewageDelta.className = "kpi-delta-chip";
+      }
+
+      if (elWardsVal) elWardsVal.innerHTML = `<span class="val-active" style="color: #facc15;">5</span> <span class="kpi-unit">/ 60 Wards</span>`;
+      if (elWardsComp) elWardsComp.textContent = "Localized Shallow Dug Wells Only";
+      if (elWardsDelta) {
+        elWardsDelta.innerHTML = `&#9679; Standard Corporation Maintenance`;
+        elWardsDelta.className = "kpi-delta-chip";
+      }
+
+      cards.forEach(c => c?.classList.remove('shock-highlight'));
+    }
   }
 
   // =========================================================================
-  // 3. TIER 3: CHARTS (DIVERGENCE CURVE & NOYYAL PROXIMITY)
+  // 4. TIER 3: CHARTS (DIVERGENCE CURVE & PROXIMITY VS SALT SPIKE)
   // =========================================================================
   function initCharts() {
     initDivergenceChart();
@@ -683,11 +615,11 @@
       divergenceChartInstance.destroy();
     }
 
-    const labels = ["Summer '23", "Winter '23", "Summer '24", "Winter '24", "Summer '25", "Summer '26 (El Niño)"];
+    const labels = ["2023 Actual", "Winter '23", "2024 Actual", "Winter '24", "2025 Actual", "2026 Split"];
     
-    // Water level depth in m bgl (higher value = deeper water table)
-    const expectedPath = [16.2, 12.8, 17.1, 13.5, 17.8, 18.4];
-    const elNinoReality = [16.2, 12.8, 17.1, 13.5, 18.4, 27.8];
+    // Depth in m bgl
+    const expectedPath = [16.2, 12.8, 17.1, 13.5, 18.4, 19.2];
+    const elNinoReality = [16.2, 12.8, 17.1, 13.5, 18.4, 28.6];
 
     divergenceChartInstance = new Chart(ctx, {
       type: 'line',
@@ -695,29 +627,29 @@
         labels: labels,
         datasets: [
           {
-            label: "Expected Historical Path (No El Niño)",
+            label: "Expected '26 Past Trend (No El Niño)",
             data: expectedPath,
-            borderColor: '#38bdf8',
-            backgroundColor: 'rgba(56, 189, 248, 0.08)',
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.08)',
             borderWidth: 2,
             borderDash: [5, 4],
             pointRadius: 4,
-            pointBackgroundColor: '#38bdf8',
-            tension: 0.3
+            pointBackgroundColor: '#10b981',
+            tension: 0.25
           },
           {
-            label: "El Niño Reality Shock Path",
+            label: "El Niño '26 Reality Shock",
             data: elNinoReality,
             borderColor: '#ef4444',
-            backgroundColor: 'rgba(239, 68, 68, 0.22)',
+            backgroundColor: 'rgba(239, 68, 68, 0.25)',
             fill: {
               target: 0,
-              above: 'rgba(239, 68, 68, 0.22)' // Fill the gap between Expected & Shock
+              above: 'rgba(239, 68, 68, 0.22)' // Fills the 9.4m climate gap
             },
-            borderWidth: 2.5,
+            borderWidth: 2.8,
             pointRadius: 5,
             pointBackgroundColor: '#ef4444',
-            tension: 0.3
+            tension: 0.25
           }
         ]
       },
@@ -735,14 +667,14 @@
             }
           },
           tooltip: {
-            backgroundColor: '#0f172a',
+            backgroundColor: '#0d1424',
             titleColor: '#38bdf8',
             bodyColor: '#f8fafc',
-            borderColor: '#334155',
+            borderColor: '#2d3c54',
             borderWidth: 1,
             callbacks: {
-              label: function (context) {
-                return `${context.dataset.label}: ${context.raw} m bgl`;
+              label: function (c) {
+                return `${c.dataset.label}: ${c.raw} m bgl`;
               }
             }
           }
@@ -753,17 +685,13 @@
             ticks: { color: '#64748b', font: { size: 10 } }
           },
           y: {
-            // Depict depth from 5m to 32m
-            min: 5,
+            min: 10,
             max: 32,
-            reverse: false,
             grid: { color: 'rgba(255, 255, 255, 0.05)' },
             ticks: {
               color: '#64748b',
               font: { size: 10 },
-              callback: function (val) {
-                return val + 'm';
-              }
+              callback: function (val) { return val + 'm'; }
             },
             title: {
               display: true,
@@ -786,8 +714,8 @@
     }
 
     const categories = ["< 0.5 km", "0.5 – 1.0 km", "1.0 – 2.0 km", "> 3.0 km"];
-    const baselineTds = [1217, 1290, 1180, 950];
-    const shockTds = [2840, 2420, 1740, 1120];
+    const expectedTds = [1550, 1420, 1180, 950];
+    const shockTds = [2940, 2420, 1740, 1120];
 
     proximityChartInstance = new Chart(ctx, {
       type: 'bar',
@@ -795,20 +723,18 @@
         labels: categories,
         datasets: [
           {
-            label: "Summer 2025 Baseline TDS",
-            data: baselineTds,
+            label: "Expected '26 Past Trend TDS",
+            data: expectedTds,
             backgroundColor: '#06b6d4',
             borderRadius: 3,
-            borderWidth: 0,
             barPercentage: 0.65,
             categoryPercentage: 0.7
           },
           {
-            label: "Summer 2026 Shock TDS",
+            label: "El Niño '26 Reality TDS",
             data: shockTds,
             backgroundColor: '#ef4444',
             borderRadius: 3,
-            borderWidth: 0,
             barPercentage: 0.65,
             categoryPercentage: 0.7
           }
@@ -828,14 +754,14 @@
             }
           },
           tooltip: {
-            backgroundColor: '#0f172a',
+            backgroundColor: '#0d1424',
             titleColor: '#38bdf8',
             bodyColor: '#f8fafc',
-            borderColor: '#334155',
+            borderColor: '#2d3c54',
             borderWidth: 1,
             callbacks: {
-              label: function (context) {
-                return `${context.dataset.label}: ${context.raw} mg/L`;
+              label: function (c) {
+                return `${c.dataset.label}: ${c.raw} mg/L`;
               }
             }
           }
@@ -846,14 +772,14 @@
             ticks: { color: '#64748b', font: { size: 10 } },
             title: {
               display: true,
-              text: 'Distance from Noyyal Riverbed',
+              text: 'Distance from Noyyal Sewage Corridor',
               color: '#64748b',
               font: { size: 9, weight: '700' }
             }
           },
           y: {
             min: 0,
-            max: 3200,
+            max: 3300,
             grid: { color: 'rgba(255, 255, 255, 0.05)' },
             ticks: {
               color: '#64748b',
@@ -876,72 +802,45 @@
   }
 
   // =========================================================================
-  // 4. TIER 3: RANKED ACTION TABLE
+  // 5. RANKED PRIORITY ACTION TABLE
   // =========================================================================
   function renderActionTable() {
     const tbody = document.getElementById('actionTableBody');
     const searchVal = (document.getElementById('tableSearch')?.value || '').toLowerCase().trim();
     if (!tbody) return;
 
-    let items = [...WARD_BOREWELLS];
+    let items = [...PRIORITY_WARDS];
 
-    // Filter
     if (searchVal) {
-      items = items.filter(st =>
-        st.ward.toLowerCase().includes(searchVal) ||
-        st.locality.toLowerCase().includes(searchVal) ||
-        st.zone.toLowerCase().includes(searchVal)
+      items = items.filter(w =>
+        w.ward.toLowerCase().includes(searchVal) ||
+        w.locality.toLowerCase().includes(searchVal)
       );
     }
 
-    // Sort
-    items.sort((a, b) => {
-      let valA, valB;
-      const liveA = getNodeData(a);
-      const liveB = getNodeData(b);
-
-      if (sortColumn === 'rank') { valA = a.rank; valB = b.rank; }
-      else if (sortColumn === 'ward') { valA = a.ward; valB = b.ward; }
-      else if (sortColumn === 'dist') { valA = a.distNoyyalKm; valB = b.distNoyyalKm; }
-      else if (sortColumn === 'drop') { valA = currentScenario === 'severe' ? a.sevDrop : a.modDrop; valB = currentScenario === 'severe' ? b.sevDrop : b.modDrop; }
-      else if (sortColumn === 'tds') { valA = liveA.tds; valB = liveB.tds; }
-      else { valA = a.rank; valB = b.rank; }
-
-      if (typeof valA === 'string') {
-        return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
-      }
-      return sortAsc ? valA - valB : valB - valA;
-    });
-
     tbody.innerHTML = '';
 
-    items.forEach(st => {
-      const live = getNodeData(st);
+    items.forEach(w => {
       const tr = document.createElement('tr');
-
-      const dropDisplay = currentScenario === 'baseline' ? '0.0 m' : (currentScenario === 'moderate' ? `-${st.modDrop}m` : `-${st.sevDrop}m`);
-
-      let badgeClass = 'status-moderate';
-      if (live.action.includes('CRITICAL')) badgeClass = 'status-critical';
-      else if (live.action.includes('HIGH')) badgeClass = 'status-high';
+      const depthVal = isElNinoActive ? `${w.shockDepth}m (${w.drop})` : `${w.expDepth}m`;
+      const tdsVal = isElNinoActive ? `${w.shockTds} (${w.tdsSurgePct})` : `${w.expTds} mg/L`;
+      const statusText = isElNinoActive ? `<span class="status-badge status-critical">🔴 TEST & CAP FIRST</span>` : `<span class="status-badge status-high">MONITOR PRE-MONSOON</span>`;
 
       tr.innerHTML = `
-        <td><span class="rank-badge">#${st.rank}</span></td>
-        <td><strong style="color: #ffffff;">${st.ward}</strong><br><span style="font-size: 0.65rem; color: var(--text-dim);">${st.zone}</span></td>
-        <td><span style="color: ${st.distNoyyalKm <= 1.0 ? '#ef4444' : 'inherit'}; font-weight: 700;">${st.distNoyyalKm} km</span></td>
-        <td><span style="color: #f87171; font-weight: 700;">${dropDisplay}</span></td>
-        <td><strong style="color: ${live.tds >= 2000 ? '#ef4444' : '#facc15'};">${live.tds}</strong></td>
-        <td><span class="status-badge ${badgeClass}">${live.action}</span></td>
+        <td><span class="rank-badge">#${w.rank}</span></td>
+        <td><strong style="color: #ffffff;">${w.ward}</strong><br><span style="font-size: 0.64rem; color: var(--text-dim);">${w.locality}</span></td>
+        <td><span style="color: ${w.distNoyyalKm <= 1.0 ? '#ef4444' : 'inherit'}; font-weight: 700;">${w.distNoyyalKm} km</span></td>
+        <td><span style="color: #f87171; font-weight: 700;">${depthVal}</span></td>
+        <td><strong style="color: ${w.shockTds >= 2000 ? '#ef4444' : '#facc15'};">${tdsVal}</strong></td>
+        <td>${statusText}</td>
       `;
 
       tr.addEventListener('click', () => {
-        if (map) {
-          map.setView([st.lat, st.lon], 14, { animate: true });
-          borewellLayerGroup.eachLayer(layer => {
-            if (layer.wardId === st.id) {
-              layer.openPopup();
-            }
-          });
+        if (mapRight) {
+          mapRight.setView([w.lat, w.lon], 13, { animate: true });
+        }
+        if (mapLeft) {
+          mapLeft.setView([w.lat, w.lon], 13, { animate: true });
         }
       });
 
@@ -950,52 +849,59 @@
   }
 
   // =========================================================================
-  // 5. VIEW MODE CONTROLLER & EVENT LISTENERS
+  // 6. EVENT BINDINGS
   // =========================================================================
-  function setScenario(scenKey) {
-    currentScenario = scenKey;
-    updateKpiRibbon();
-    updateBorewellMarkers();
-    renderActionTable();
-  }
-
-  function setMasterTab(tabKey) {
-    currentMasterTab = tabKey;
-    const btnTab1 = document.getElementById('btnMasterTab1');
-    const btnTab2 = document.getElementById('btnMasterTab2');
-    const subWrap = document.getElementById('mapSubToggles');
-
-    if (tabKey === 'tab1') {
-      btnTab1?.classList.add('active');
-      btnTab1?.setAttribute('aria-selected', 'true');
-      btnTab2?.classList.remove('active');
-      btnTab2?.setAttribute('aria-selected', 'false');
-      if (subWrap) subWrap.style.opacity = '0.35';
-      setScenario('baseline');
-    } else {
-      btnTab2?.classList.add('active');
-      btnTab2?.setAttribute('aria-selected', 'true');
-      btnTab1?.classList.remove('active');
-      btnTab1?.setAttribute('aria-selected', 'false');
-      if (subWrap) subWrap.style.opacity = '1';
-      setScenario('severe');
+  function initEvents() {
+    // 1. Bottom El Niño Trigger Button
+    const btnTrigger = document.getElementById('btnElNinoTrigger');
+    if (btnTrigger) {
+      btnTrigger.addEventListener('click', () => {
+        isElNinoActive = !isElNinoActive;
+        updateRightMapDisplay();
+        updateKpiRibbon();
+        renderActionTable();
+      });
     }
 
-    renderTaluksLayer();
-  }
-
-  function setSubToggle(subKey) {
-    currentSubToggle = subKey;
-    const subBtns = document.querySelectorAll('.sub-toggle-btn');
-    subBtns.forEach(btn => {
-      if (btn.getAttribute('data-sub') === subKey) {
+    // 2. Basemap Layer Switches (Vector vs Satellite)
+    document.querySelectorAll('.basemap-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const side = btn.getAttribute('data-map');
+        const layer = btn.getAttribute('data-layer');
+        document.querySelectorAll(`.basemap-btn[data-map="${side}"]`).forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
+        setBasemapLayer(side, layer);
+      });
     });
 
-    renderTaluksLayer();
+    // 3. Live Pitch Deck QR Dock & Modal
+    const qrDock = document.getElementById('qrDockCard');
+    const qrModal = document.getElementById('qrModal');
+    const qrClose = document.getElementById('btnQrModalClose');
+
+    if (qrDock && qrModal) {
+      qrDock.addEventListener('click', () => {
+        qrModal.showModal();
+      });
+    }
+    if (qrClose && qrModal) {
+      qrClose.addEventListener('click', () => {
+        qrModal.close();
+      });
+    }
+    if (qrModal) {
+      qrModal.addEventListener('click', (e) => {
+        if (e.target === qrModal) qrModal.close();
+      });
+    }
+
+    // 4. Action Table Search
+    document.getElementById('tableSearch')?.addEventListener('input', renderActionTable);
+
+    // 5. Global View Mode Switcher (Pitch Deck vs Technical Dossier)
+    document.getElementById('btnModePitch')?.addEventListener('click', () => switchViewMode('pitch'));
+    document.getElementById('btnModeDossier')?.addEventListener('click', () => switchViewMode('dossier'));
+    document.getElementById('btnBackToPitch')?.addEventListener('click', () => switchViewMode('pitch'));
   }
 
   function switchViewMode(mode) {
@@ -1009,22 +915,18 @@
       pitchView.style.display = 'flex';
       dossierView.style.display = 'none';
       btnPitch?.classList.add('active');
-      btnPitch?.setAttribute('aria-pressed', 'true');
       btnDossier?.classList.remove('active');
-      btnDossier?.setAttribute('aria-pressed', 'false');
 
-      if (map) {
-        setTimeout(() => { map.invalidateSize(); }, 150);
-      }
+      setTimeout(() => {
+        mapLeft?.invalidateSize();
+        mapRight?.invalidateSize();
+      }, 150);
     } else {
       pitchView.style.display = 'none';
       dossierView.style.display = 'block';
       btnDossier?.classList.add('active');
-      btnDossier?.setAttribute('aria-pressed', 'true');
       btnPitch?.classList.remove('active');
-      btnPitch?.setAttribute('aria-pressed', 'false');
 
-      // Initialize technical dossier if first time viewing
       if (!technicalDossierInitialized) {
         technicalDossierInitialized = true;
         initTechnicalDossier();
@@ -1033,72 +935,8 @@
     }
   }
 
-  function initEvents() {
-    // Top View Mode Switcher
-    document.getElementById('btnModePitch')?.addEventListener('click', () => switchViewMode('pitch'));
-    document.getElementById('btnModeDossier')?.addEventListener('click', () => switchViewMode('dossier'));
-    document.getElementById('btnBackToPitch')?.addEventListener('click', () => switchViewMode('pitch'));
-
-    // Master Tabs on Map
-    document.getElementById('btnMasterTab1')?.addEventListener('click', () => setMasterTab('tab1'));
-    document.getElementById('btnMasterTab2')?.addEventListener('click', () => setMasterTab('tab2'));
-
-    // Sub-Toggles on Map
-    document.querySelectorAll('.sub-toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        setSubToggle(btn.getAttribute('data-sub'));
-      });
-    });
-
-    // Extent Pills
-    document.getElementById('btnExtentDistrict')?.addEventListener('click', (e) => {
-      document.querySelectorAll('.extent-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      map?.setView([10.92, 77.42], 10, { animate: true });
-    });
-
-    document.getElementById('btnExtentCity')?.addEventListener('click', (e) => {
-      document.querySelectorAll('.extent-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      map?.setView([11.1085, 77.3800], 12, { animate: true });
-    });
-
-    // Scenario Controller Segmented Buttons
-    const scenBtns = document.querySelectorAll('.scenario-btn');
-    scenBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        scenBtns.forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-checked', 'false');
-        });
-        btn.classList.add('active');
-        btn.setAttribute('aria-checked', 'true');
-        setScenario(btn.getAttribute('data-scenario'));
-      });
-    });
-
-    // Action Table Search
-    document.getElementById('tableSearch')?.addEventListener('input', () => {
-      renderActionTable();
-    });
-
-    // Action Table Header Sort
-    document.querySelectorAll('#actionTable th[data-col]').forEach(th => {
-      th.addEventListener('click', () => {
-        const col = th.getAttribute('data-col');
-        if (sortColumn === col) {
-          sortAsc = !sortAsc;
-        } else {
-          sortColumn = col;
-          sortAsc = true;
-        }
-        renderActionTable();
-      });
-    });
-  }
-
   // =========================================================================
-  // 6. TECHNICAL DOSSIER INITIALIZER (PRESERVED COMPLETE SCIENCE DOSSIER)
+  // 7. PRESERVED TECHNICAL DOSSIER INITIALIZER
   // =========================================================================
   function initTechnicalDossier() {
     console.log("Initializing technical dossier scientific controller...");
@@ -2049,16 +1887,16 @@
   }
 
   // =========================================================================
-  // 7. INITIALIZE APPLICATION
+  // 8. BOOTSTRAP APP
   // =========================================================================
   function init() {
-    initMap();
+    initDualMaps();
     initCharts();
     updateKpiRibbon();
     renderActionTable();
     initEvents();
 
-    console.log("Where Tiruppur's Water Breaks First: Pitch Deck UI Ready.");
+    console.log("Where Tiruppur's Water Breaks First: Isolated Dual-Map Workspace Ready.");
   }
 
   if (document.readyState === 'loading') {

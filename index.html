@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Where Tiruppur's Water Breaks First: Predicting El Niño Stress on Borewells and the Noyyal Corridor</title>
-  <meta name="description" content="High-density executive geospatial pitch deck predicting El Niño groundwater stress and domestic sewage-induced aquifer salinization across the Tiruppur municipal Noyyal corridor.">
+  <meta name="description" content="Isolated Tiruppur District dual-map pitch deck predicting El Niño groundwater stress and sewage-induced aquifer salinization across the Noyyal corridor.">
   <meta name="keywords" content="Tiruppur, Noyyal River, Groundwater Depletion, El Nino Stress, TDS, Salinity, SDG 6, SDG 3, CGWB, India-WRIS">
 
   <!-- Google Fonts: Inter & Outfit -->
@@ -33,7 +33,7 @@
     <div class="mode-toggle-group">
       <button class="mode-toggle-btn active" id="btnModePitch" type="button" aria-pressed="true">
         <span class="mode-icon">&#9889;</span>
-        <span class="mode-text">Pitch Deck Mode (Executive Summary)</span>
+        <span class="mode-text">Pitch Deck Mode (Dual-Map Executive Summary)</span>
         <span class="mode-badge">Default</span>
       </button>
       <button class="mode-toggle-btn" id="btnModeDossier" type="button" aria-pressed="false">
@@ -45,11 +45,11 @@
   </div>
 
   <!-- =========================================================================
-       VIEW 1: HIGH-DENSITY EXECUTIVE PITCH DECK (3-TIER HIERARCHY)
+       VIEW 1: HIGH-DENSITY EXECUTIVE PITCH DECK (DUAL-MAP WORKSPACE)
        ========================================================================= -->
   <div id="pitchDeckView" class="dashboard-wrapper">
 
-    <!-- 1. HEADER BAR -->
+    <!-- 1. HEADER BAR WITH TITLE & LIVE PITCH DECK QR CODE DOCK -->
     <header class="header-bar" role="banner">
       <div class="header-left">
         <div class="project-title">
@@ -60,202 +60,219 @@
           <span class="header-badge badge-sdg6">SDG 6: Clean Water &amp; Sanitation</span>
           <span class="header-badge badge-sdg3">SDG 3: Good Health &amp; Well-Being</span>
           <span class="header-badge badge-gap">Zero Liquid Discharge (ZLD) vs. Sewage Gap Analysis</span>
+          <span class="header-badge badge-area">Tiruppur District: 5,087.26 Sq.Km &bull; 9 Taluks</span>
         </div>
       </div>
 
-      <!-- Interactive Scenario Controller -->
-      <div class="scenario-controller-group" role="region" aria-label="Simulation Scenario Selector">
-        <span class="scenario-label">Scenario Model:</span>
-        <div class="scenario-segmented-control" role="radiogroup">
-          <button class="scenario-btn" data-scenario="baseline" role="radio" aria-checked="false">
-            Baseline (Summer 2025)
-          </button>
-          <button class="scenario-btn" data-scenario="moderate" role="radio" aria-checked="false">
-            Moderate El Niño (Summer 2026)
-          </button>
-          <button class="scenario-btn active" data-scenario="severe" role="radio" aria-checked="true">
-            Severe El Niño Shock (Summer 2026)
-          </button>
+      <!-- CRITICAL FIX 3: LIVE PITCH DECK QR CODE DOCK (TOP-RIGHT) -->
+      <div class="qr-dock-card" id="qrDockCard" title="Click to enlarge QR code for judges">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&amp;data=https://arunp061106.github.io/data-canvas-26-DF-dashboard/" alt="Scan to Interact Live" class="qr-thumb-img" id="qrThumbImg">
+        <div class="qr-dock-info">
+          <div class="qr-dock-badge">&#128241; Scan for Live Judge View</div>
+          <div class="qr-dock-sub">Test the El Niño Trigger on Your Device</div>
+          <div class="qr-dock-hint">&#128269; Click to enlarge code</div>
         </div>
       </div>
     </header>
 
     <!-- =======================================================================
-         TIER 1: THE HOOK (Dual-Tab Tiruppur Outline Map with Sub-Toggles)
+         CRITICAL FIX 2: SIDE-BY-SIDE DUAL MAP WORKSPACE
+         Isolated Tiruppur District Silhouettes floating in #090D16 void
          ======================================================================= -->
-    <section class="tier1-map-section" aria-label="Tier 1: Geospatial Hook">
-      <div class="map-panel">
-        
-        <!-- Map Control Header with Dual Master Tabs & Sub-Toggles -->
-        <div class="panel-header-compact">
-          <div class="map-master-tabs" role="tablist" aria-label="Map Historical vs Scenario View">
-            <button class="master-tab-btn" id="btnMasterTab1" role="tab" aria-selected="false">
-              <span class="tab-indicator indicator-baseline"></span>
-              <span>Tab 1: Summer 2025 (Historical Baseline)</span>
-            </button>
-            <button class="master-tab-btn active" id="btnMasterTab2" role="tab" aria-selected="true">
-              <span class="tab-indicator indicator-shock"></span>
-              <span>Tab 2: Summer 2026 (Expected Trend vs. El Niño Shock)</span>
-            </button>
+    <section class="dual-map-workspace" aria-label="Dual Comparative Map Workspace">
+      
+      <!-- LEFT MAP PANEL: Summer 2025 (Past Year Actuals) -->
+      <div class="dual-map-panel left-panel">
+        <div class="dual-panel-header">
+          <div class="panel-tag-group">
+            <span class="panel-status-dot dot-baseline"></span>
+            <span class="panel-header-title">Tab 1: Summer 2025 (Past Year Actuals)</span>
           </div>
-
-          <!-- Sub-Toggles (Active when Tab 2 is selected) -->
-          <div class="map-sub-toggles" id="mapSubToggles" role="group" aria-label="Tab 2 Sub Overlays">
-            <button class="sub-toggle-btn" id="btnSubGhost" data-sub="ghost">
-              <span>Ghost Overlay: Expected '26</span>
-            </button>
-            <button class="sub-toggle-btn active" id="btnSubShock" data-sub="shock">
-              <span>Live Shock: El Niño '26</span>
-            </button>
-            <button class="sub-toggle-btn" id="btnSubDelta" data-sub="delta">
-              <span style="color: #ec4899;">&#128293; Net Anomaly Delta</span>
-            </button>
-          </div>
-
-          <!-- Quick Camera Extent Switcher -->
-          <div class="map-extent-pills">
-            <button class="extent-btn active" id="btnExtentDistrict" title="View Full District (9 Taluks)">District (9 Taluks)</button>
-            <button class="extent-btn" id="btnExtentCity" title="Zoom to Tiruppur Urban & Noyyal Corridor">City Corridor</button>
+          <div class="panel-header-right">
+            <span class="panel-kpi-pill pill-cyan">Baseline: 18.4m bgl &bull; 1,420 mg/L TDS</span>
+            <!-- Layer Style Switcher -->
+            <div class="basemap-toggle-group">
+              <button class="basemap-btn active" data-map="left" data-layer="vector" title="Clean Vector Choropleth">&#128506;&#65039; Vector</button>
+              <button class="basemap-btn" data-map="left" data-layer="satellite" title="Masked ESRI Satellite terrain strictly inside Tiruppur border">&#128752; Satellite</button>
+            </div>
           </div>
         </div>
 
-        <!-- Map Canvas with Floating HUD & Inspector -->
-        <div class="map-canvas-container">
-          <div id="leafletMap" aria-label="Interactive map of Tiruppur 9 Taluks, Noyyal river corridor, and borewells"></div>
+        <div class="dual-map-canvas-wrap">
+          <div id="mapLeft2025" class="isolated-map-container" aria-label="Summer 2025 Isolated Tiruppur District Map"></div>
           
-          <!-- Live Interactive Hover Inspector (Top Right) -->
-          <div class="map-hover-inspector" id="mapHoverInspector" aria-live="polite">
-            <div class="inspector-badge">INTERACTIVE HOVER INSPECTOR</div>
-            <div class="inspector-title" id="hoverTitle">Hover over any Taluk or Borewell</div>
-            <div class="inspector-grid" id="hoverGrid">
-              <div class="inspector-stat">
-                <span class="lbl">Baseline Depth</span>
-                <span class="val" id="hoverBaseDepth">17.5 m bgl</span>
-              </div>
-              <div class="inspector-stat">
-                <span class="lbl">2026 Shock Depth</span>
-                <span class="val text-danger" id="hoverShockDepth">29.2 m bgl</span>
-              </div>
-              <div class="inspector-stat">
-                <span class="lbl">Salinity (TDS)</span>
-                <span class="val text-warning" id="hoverTds">3,080 mg/L</span>
-              </div>
-              <div class="inspector-stat">
-                <span class="lbl">Anomaly Delta</span>
-                <span class="val text-magenta" id="hoverAnomaly">-10.6m / +90%</span>
-              </div>
-            </div>
-            <div class="inspector-footer" id="hoverFooter">Click any polygon or node for details</div>
+          <!-- Static Baseline Info Pill -->
+          <div class="map-overlay-badge badge-bottom-left">
+            <span>&#9679; Historical Summer Baseline: Stable Cyan/Emerald Palette across 9 Taluks</span>
           </div>
 
-          <!-- Map Legend HUD (Bottom Left) -->
-          <div class="map-hud-legend" role="complementary">
-            <div class="hud-title">Vectors &amp; Stress Layers</div>
-            <div class="hud-item">
-              <span class="hud-line-noyyal"></span>
-              <span>Noyyal Riverbed (Municipal Sewage Vector)</span>
-            </div>
-            <div class="hud-item">
-              <span class="hud-band-buffer"></span>
-              <span>1km Critical Seepage Leachate Zone</span>
-            </div>
-            <div class="hud-item">
-              <span class="hud-color-pill" style="background: #ef4444; box-shadow: 0 0 6px #ef4444;"></span>
-              <span>Pulsing Crimson: Critical Noyyal Taluk (Drop &gt; 9m | TDS &gt; 2,800)</span>
-            </div>
-            <div class="hud-item">
-              <span class="hud-color-pill" style="background: #f97316;"></span>
-              <span>High Risk Well (TDS 1,200–2,000 mg/L)</span>
-            </div>
-            <div class="hud-item">
-              <span class="hud-color-pill" style="background: #10b981;"></span>
-              <span>Baseline Safe / Peripheral Well (&lt; 1,000 mg/L)</span>
-            </div>
+          <div class="map-floating-legend">
+            <div class="f-legend-item"><span class="f-box" style="background: #10b981;"></span> 14–16m bgl</div>
+            <div class="f-legend-item"><span class="f-box" style="background: #06b6d4;"></span> 16–18m bgl</div>
+            <div class="f-legend-item"><span class="f-box" style="background: #f59e0b;"></span> 18–22m bgl</div>
+            <div class="f-legend-item"><span class="f-line-noyyal"></span> Noyyal Vector</div>
           </div>
         </div>
       </div>
+
+      <!-- RIGHT MAP PANEL: Summer 2026 (Expected Trend vs. El Niño Reality) -->
+      <div class="dual-map-panel right-panel" id="rightMapPanel">
+        <div class="dual-panel-header">
+          <div class="panel-tag-group">
+            <span class="panel-status-dot dot-shock" id="rightPanelDot"></span>
+            <span class="panel-header-title">Tab 2: Summer 2026 (Expected Trend vs. El Niño Reality)</span>
+          </div>
+          <div class="panel-header-right">
+            <span class="panel-kpi-pill" id="rightMapStatusBadge">Expected: 19.2m bgl &bull; 1,550 mg/L TDS</span>
+            <!-- Layer Style Switcher -->
+            <div class="basemap-toggle-group">
+              <button class="basemap-btn active" data-map="right" data-layer="vector" title="Clean Vector Choropleth">&#128506;&#65039; Vector</button>
+              <button class="basemap-btn" data-map="right" data-layer="satellite" title="Masked ESRI Satellite terrain strictly inside Tiruppur border">&#128752; Satellite</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="dual-map-canvas-wrap">
+          <div id="mapRight2026" class="isolated-map-container" aria-label="Summer 2026 Isolated Tiruppur District Map"></div>
+
+          <!-- FLOATING DELTA CALLOUT BADGES (Visible when El Niño is active) -->
+          <div class="map-delta-callouts" id="rightMapDeltaCallouts" style="display: none;">
+            <div class="delta-callout-pill callout-drop">
+              <span class="delta-icon">&#9660;</span>
+              <strong>-9.4m Extra Drop</strong>
+              <span>(vs. Expected Trend)</span>
+            </div>
+            <div class="delta-callout-pill callout-tds">
+              <span class="delta-icon">&#9650;</span>
+              <strong>+93.4% Salinity Spike</strong>
+              <span>(Exceeds BIS 2,000)</span>
+            </div>
+            <div class="delta-callout-pill callout-sewage">
+              <span class="delta-icon">&#9888;</span>
+              <strong>78.4% Untreated Sewage Infiltration</strong>
+            </div>
+          </div>
+
+          <!-- THE BOTTOM "EL NIÑO" TRIGGER BUTTON (HIGH-VISIBILITY PILL) -->
+          <div class="el-nino-trigger-wrapper">
+            <button class="el-nino-trigger-btn" id="btnElNinoTrigger" type="button" aria-pressed="false">
+              <span class="trigger-bolt">&#9889;</span>
+              <span class="trigger-label" id="elNinoBtnLabel">APPLY EL NIÑO EFFECT</span>
+              <span class="trigger-pulse-glow"></span>
+            </button>
+          </div>
+
+          <div class="map-floating-legend" id="rightMapLegend">
+            <div class="f-legend-item"><span class="f-box" style="background: #f59e0b;" id="legBox1"></span> 18–20m Expected</div>
+            <div class="f-legend-item"><span class="f-box" style="background: #ef4444;" id="legBox2"></span> 26–30m El Niño Shock</div>
+            <div class="f-legend-item"><span class="f-box" style="background: #ec4899; box-shadow: 0 0 6px #ec4899;" id="legBox3"></span> Critical Noyyal Pulse</div>
+            <div class="f-legend-item"><span class="f-line-buffer"></span> 1km Leachate Zone</div>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <!-- =======================================================================
-         TIER 2: THE MAINTAINER (4 High-Contrast Metric Cards with % Deltas)
+         TIER 2 (BELOW MAPS): SALINITY & DEPLETION % INCREASE KPI RIBBON
          ======================================================================= -->
-    <section class="tier2-kpi-ribbon" aria-label="Tier 2: Maintainer Numbers">
+    <section class="tier2-kpi-ribbon" aria-label="Tier 2: Salinity and Depletion Delta KPIs">
       
-      <!-- Card 1: Mean Borewell Depth -->
-      <div class="kpi-card kpi-depth">
-        <div class="kpi-top">
-          <span class="kpi-title">Mean Borewell Depth</span>
-          <span class="kpi-tag">CGWB Monitored</span>
-        </div>
-        <div class="kpi-main-val" id="kpiDepthVal">27.8 <span class="kpi-unit">m bgl</span></div>
-        <div class="kpi-comparison" id="kpiDepthComp">Expected '26: 18.4 m &bull; El Niño Shock: 27.8 m</div>
-        <div class="kpi-delta-chip delta-danger" id="kpiDepthDelta">&#9660; -9.4m (+51% deeper depletion)</div>
-      </div>
-
-      <!-- Card 2: Noyyal Corridor Salinity / TDS -->
-      <div class="kpi-card kpi-salinity">
+      <!-- KPI 1: Noyyal Corridor Salinity (TDS) -->
+      <div class="kpi-card kpi-salinity" id="kpiCardSalinity">
         <div class="kpi-top">
           <span class="kpi-title">Noyyal Corridor Salinity (TDS)</span>
-          <span class="kpi-tag">BIS Ceiling: 2,000 mg/L</span>
+          <span class="kpi-tag" id="kpiTdsTag">BIS Limit: 2,000 mg/L</span>
         </div>
-        <div class="kpi-main-val text-danger" id="kpiTdsVal">2,890 <span class="kpi-unit">mg/L</span></div>
-        <div class="kpi-comparison" id="kpiTdsComp">Expected '26: 1,450 mg/L &bull; El Niño Shock: 2,890 mg/L</div>
-        <div class="kpi-delta-chip delta-danger" id="kpiTdsDelta">&#9650; +99% Salinity Spike (Exceeds BIS)</div>
+        <div class="kpi-main-val text-danger" id="kpiTdsVal">
+          <span class="val-prev" id="kpiTdsPrev">1,550</span>
+          <span class="val-arrow">&#10142;</span>
+          <span class="val-active" id="kpiTdsActive">2,940</span>
+          <span class="kpi-unit">mg/L</span>
+        </div>
+        <div class="kpi-comparison" id="kpiTdsComp">Expected: 1,550 mg/L &bull; El Niño: 2,940 mg/L</div>
+        <div class="kpi-delta-chip delta-danger" id="kpiTdsDelta">&#9650; +89.6% Over Expected Trend</div>
       </div>
 
-      <!-- Card 3: Wards in Acute Failure -->
-      <div class="kpi-card kpi-wards">
+      <!-- KPI 2: Borewell Water Table Depth -->
+      <div class="kpi-card kpi-depth" id="kpiCardDepth">
         <div class="kpi-top">
-          <span class="kpi-title">Wards in Acute Failure</span>
-          <span class="kpi-tag">60 Corporation Wards</span>
+          <span class="kpi-title">Borewell Water Table Depth</span>
+          <span class="kpi-tag" id="kpiDepthTag">Mean Pre-Monsoon</span>
         </div>
-        <div class="kpi-main-val text-danger" id="kpiWardsVal">14 / 60 <span class="kpi-unit">Wards</span></div>
-        <div class="kpi-comparison" id="kpiWardsComp">Expected '26: 5 Wards &bull; El Niño Shock: 14 Wards</div>
-        <div class="kpi-delta-chip delta-warn" id="kpiWardsDelta">&#9888; 70% clustered in 1.5km Noyyal belt</div>
+        <div class="kpi-main-val text-cyan" id="kpiDepthVal">
+          <span class="val-prev" id="kpiDepthPrev">19.2</span>
+          <span class="val-arrow">&#10142;</span>
+          <span class="val-active text-danger" id="kpiDepthActive">28.6</span>
+          <span class="kpi-unit">m bgl</span>
+        </div>
+        <div class="kpi-comparison" id="kpiDepthComp">Expected: 19.2m &bull; El Niño: 28.6m bgl</div>
+        <div class="kpi-delta-chip delta-danger" id="kpiDepthDelta">&#9660; +48.9% Faster Depletion (-9.4m)</div>
       </div>
 
-      <!-- Card 4: Untreated Sewage Contamination Risk -->
-      <div class="kpi-card kpi-sewage">
+      <!-- KPI 3: Untreated Sewage Seepage (ZLD Gap) -->
+      <div class="kpi-card kpi-sewage" id="kpiCardSewage">
         <div class="kpi-top">
-          <span class="kpi-title">Untreated Sewage Contamination</span>
-          <span class="kpi-tag">Dilution Collapse</span>
+          <span class="kpi-title">Untreated Sewage Seepage (ZLD Gap)</span>
+          <span class="kpi-tag" id="kpiSewageTag">Noyyal 1.5km Buffer</span>
         </div>
-        <div class="kpi-main-val text-purple" id="kpiSewageVal">68% <span class="kpi-unit">Risk</span></div>
-        <div class="kpi-comparison" id="kpiSewageComp">Expected '26: 42% Risk &bull; El Niño Shock: 68% Risk</div>
-        <div class="kpi-delta-chip delta-warn" id="kpiSewageDelta">&#9889; Zero rain dilution (&gt;35% deficit)</div>
+        <div class="kpi-main-val text-purple" id="kpiSewageVal">
+          <span class="val-prev" id="kpiSewagePrev">42.0%</span>
+          <span class="val-arrow">&#10142;</span>
+          <span class="val-active" id="kpiSewageActive">78.4%</span>
+          <span class="kpi-unit">Aquifer Share</span>
+        </div>
+        <div class="kpi-comparison" id="kpiSewageComp">Expected: 42% Share &bull; El Niño: 78.4% Share</div>
+        <div class="kpi-delta-chip delta-warn" id="kpiSewageDelta">&#9650; +86% Sewage Intrusion (Zero Dilution)</div>
+      </div>
+
+      <!-- KPI 4: Critical Breakdown Wards -->
+      <div class="kpi-card kpi-wards" id="kpiCardWards">
+        <div class="kpi-top">
+          <span class="kpi-title">Critical Breakdown Wards</span>
+          <span class="kpi-tag" id="kpiWardsTag">Tiruppur Corp (60 Total)</span>
+        </div>
+        <div class="kpi-main-val text-danger" id="kpiWardsVal">
+          <span class="val-prev" id="kpiWardsPrev">5</span>
+          <span class="val-arrow">&#10142;</span>
+          <span class="val-active" id="kpiWardsActive">14</span>
+          <span class="kpi-unit">/ 60 Wards</span>
+        </div>
+        <div class="kpi-comparison" id="kpiWardsComp">Expected: 5 Wards &bull; El Niño: 14 Wards Critical</div>
+        <div class="kpi-delta-chip delta-danger" id="kpiWardsDelta">&#9888; Tiruppur North &amp; South Break First</div>
       </div>
 
     </section>
 
     <!-- =======================================================================
-         TIER 3: THE PROOF (Empirical Validation Charts & Ranked Action Table)
+         TIER 3 (BOTTOM): THE PROOF GRAPHS & RANKED ACTION TABLE
          ======================================================================= -->
     <section class="tier3-proof-grid" aria-label="Tier 3: Analytical Proof">
 
-      <!-- Chart 1: The Divergence Curve -->
+      <!-- Graph 1: Divergence Proof -->
       <div class="proof-card">
         <div class="proof-card-head">
           <div class="proof-card-title">
             <span class="proof-icon">&#128200;</span>
-            Graph 1: The Divergence Curve (Summer '23 &rarr; Summer '26)
+            Graph 1: Divergence Proof (2023 &rarr; 2026 Split)
           </div>
-          <span class="proof-tag tag-cyan">CGWB &bull; WRIS Telemetry</span>
+          <span class="proof-tag tag-cyan">CGWB &bull; NWIC Telemetry</span>
         </div>
         <div class="chart-container-compact">
           <canvas id="divergenceChart"></canvas>
         </div>
         <div class="proof-takeaway-pill">
           <span class="takeaway-bullet">&#9670;</span>
-          <span class="takeaway-text">Monsoon deficit &gt;35% triggers a 9.4m structural groundwater collapse across Noyyal crystalline rock.</span>
+          <span class="takeaway-text">Past trend says 19.2m dip; El Niño triggers a steep 28.6m plunge, widening a 9.4m structural deficit.</span>
         </div>
       </div>
 
-      <!-- Chart 2: Noyyal Proximity vs Salinity Explosion -->
+      <!-- Graph 2: Noyyal Distance vs Salt Spike -->
       <div class="proof-card">
         <div class="proof-card-head">
           <div class="proof-card-title">
             <span class="proof-icon">&#9879;</span>
-            Graph 2: Noyyal Proximity vs. Salinity Explosion
+            Graph 2: Noyyal Distance vs. Salt Spike
           </div>
           <span class="proof-tag tag-crimson">CGWB 2024 Lab Quality</span>
         </div>
@@ -264,22 +281,22 @@
         </div>
         <div class="proof-takeaway-pill">
           <span class="takeaway-bullet">&#9670;</span>
-          <span class="takeaway-text">TDS surges 2.5&times; higher within 1.5km as untreated domestic sewage infiltrates dry riverbed aquifers.</span>
+          <span class="takeaway-text">TDS explodes by &gt;90% within 1.5km of the dry Noyyal bed as domestic sewage leaches into depleted wells.</span>
         </div>
       </div>
 
-      <!-- Action Table: Where Water Breaks First -->
+      <!-- Ranked Priority Table: Top 10 Wards/Firkas -->
       <div class="proof-card proof-table-card">
         <div class="proof-card-head">
           <div class="proof-card-title">
             <span class="proof-icon">&#9776;</span>
-            Where Water Breaks First: Priority Intervention Wards
+            Ranked Priority Table: Top Wards &amp; Firkas
           </div>
-          <span class="proof-tag tag-amber">Ranked by Proximity &amp; Drop</span>
+          <span class="proof-tag tag-amber">Ranked by Expected vs. El Niño Delta %</span>
         </div>
         
         <div class="table-search-row">
-          <input type="text" id="tableSearch" class="search-input-compact" placeholder="Filter ward ID or locality (e.g. Ward 15, Kasipalayam, Veerapandi)...">
+          <input type="text" id="tableSearch" class="search-input-compact" placeholder="Filter ward/firka (e.g. Nallur, Vellampalayam, Kasipalayam)...">
         </div>
 
         <div class="table-scroll-wrap">
@@ -287,11 +304,11 @@
             <thead>
               <tr>
                 <th data-col="rank">Rank</th>
-                <th data-col="ward">Ward / Zone</th>
+                <th data-col="ward">Ward / Firka</th>
                 <th data-col="dist">Dist. Noyyal</th>
-                <th data-col="drop">2026 Drop</th>
-                <th data-col="tds">Proj. TDS</th>
-                <th>Action Status</th>
+                <th data-col="drop">Extra Drop</th>
+                <th data-col="tds">El Niño TDS</th>
+                <th>Priority Intervention</th>
               </tr>
             </thead>
             <tbody id="actionTableBody">
@@ -301,50 +318,42 @@
         </div>
         
         <div class="table-click-hint">
-          <span>&#9757; Click any ward row to pan directly to borewell location on map</span>
+          <span>&#9757; Click any row to focus and highlight borewell on both maps</span>
         </div>
       </div>
 
     </section>
 
     <!-- =======================================================================
-         COMPACT FOOTER STRIP: SOURCES + INFERENCES + CORE PITCH QUOTE
+         1-LINE FOOTER STRIP
          ======================================================================= -->
     <footer class="compact-pitch-footer" role="contentinfo">
       
-      <!-- Left Column: Sources Audit Strip -->
+      <!-- Sources Badges -->
       <div class="footer-card">
-        <div class="footer-card-head">Verified Empirical Data Sources</div>
+        <div class="footer-card-head">Official Government Data Sources</div>
         <div class="source-badges-wrap">
-          <span class="src-badge">CGWB GWYB 2023-25</span>
+          <span class="src-badge">CGWB &amp; TNWRD</span>
+          <span class="src-badge">IMD &amp; NOAA El Niño Index</span>
+          <span class="src-badge">TNPCB ZLD vs. Sewage Data</span>
           <span class="src-badge">India-WRIS GPRS</span>
-          <span class="src-badge">NASA POWER Rain</span>
-          <span class="src-badge">NOAA RONI SST</span>
-          <span class="src-badge">Tiruppur Corp Budget</span>
         </div>
-        <div class="footer-micro-note">100% verified government records &bull; Zero artificial interpolation</div>
       </div>
 
-      <!-- Center Column: Key Analytical Inferences (Max 12 words per bullet) -->
+      <!-- Analytical Thesis -->
       <div class="footer-card">
-        <div class="footer-card-head">Hydrological Logic Inferences</div>
-        <ul class="micro-bullet-list">
-          <li><strong>The ZLD Blindspot:</strong> Industrial dye effluent is contained; untreated municipal sewage now drives Noyyal aquifer contamination.</li>
-          <li><strong>Dilution Collapse:</strong> Weak monsoons reduce recharge &gt;35%, triggering exponential TDS surges near the riverbed.</li>
-          <li><strong>Pre-Emptive Targeting:</strong> 70% of acute failures cluster in just 22% of wards—allowing targeted pre-monsoon action.</li>
-        </ul>
+        <div class="footer-card-head">Hydrological Logic</div>
+        <div class="footer-logic-line">
+          Zero Liquid Discharge (ZLD) contained industrial dye effluent—leaving untreated municipal sewage as the primary driver of shallow aquifer salinization during drought.
+        </div>
       </div>
 
-      <!-- Right Column: The Core Pitch Quote Banner -->
+      <!-- 1-Line Core Quote Banner -->
       <div class="footer-callout-card">
         <div class="callout-pre-title">Core Executive Pitch Thesis</div>
         <blockquote class="core-pitch-quote">
-          &ldquo;Past trends say Tiruppur's water table should dip 1.2m this summer&mdash;El Niño says it drops 9.4m, doubling sewage salinity along the Noyyal. Here are the 14 wards that break first.&rdquo;
+          &ldquo;ZLD stopped textile dye pollution&mdash;but El Niño turns untreated Noyyal sewage into a +90% salinity spike across 14 wards.&rdquo;
         </blockquote>
-        <div class="callout-footer-tag">
-          <span>SDG 6.1 &bull; Corporation Priority Target List</span>
-          <span>Data Canvas '26 Pitch Deck UI</span>
-        </div>
       </div>
 
     </footer>
@@ -352,9 +361,27 @@
   </div>
 
   <!-- =========================================================================
+       QR CODE ENLARGED MODAL (For Presentation Screens)
+       ========================================================================= -->
+  <dialog id="qrModal" class="qr-modal-dialog" aria-labelledby="qrModalTitle">
+    <div class="qr-modal-inner">
+      <button class="qr-modal-close" id="btnQrModalClose" type="button" aria-label="Close QR Modal">&times;</button>
+      <h3 id="qrModalTitle" class="qr-modal-title">Live Judge &amp; Audience Interactive View</h3>
+      <p class="qr-modal-sub">Scan with any smartphone camera to open this live dashboard and trigger the El Niño simulation directly on your device.</p>
+      <div class="qr-modal-img-wrap">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&amp;data=https://arunp061106.github.io/data-canvas-26-DF-dashboard/" alt="Enlarged Live Dashboard QR Code" class="qr-modal-large-img">
+      </div>
+      <div class="qr-modal-url">
+        <code>https://arunp061106.github.io/data-canvas-26-DF-dashboard/</code>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- =========================================================================
        VIEW 2: TECHNICAL DEEP-DIVE DOSSIER (PRESERVED PREVIOUS SECTIONS)
        ========================================================================= -->
-  <div id="technicalDossierSection" class="technical-dossier-wrapper" style="display: none;">
+
+<div id="technicalDossierSection" class="technical-dossier-wrapper" style="display: none;">
     <div class="dossier-notice-banner">
       <div>
         <strong>&#128202; Technical Deep-Dive &amp; Provenance Dossier Active</strong>
@@ -999,7 +1026,7 @@
   <!-- =========================================================================
        DATA BUNDLES & APPLICATION SCRIPTS
        ========================================================================= -->
-  <!-- Tiruppur 9 Taluks GeoJSON -->
+  <!-- Tiruppur 9 Taluks GeoJSON & Inverted Void Mask -->
   <script src="data/tiruppur_taluks_geojson.js"></script>
 
   <!-- Master Groundwater Data Bundle -->
