@@ -315,7 +315,7 @@ html, body {
   z-index: 5;
 }
 
-/* Noyyal River Corridor Line */
+/* Noyyal River Corridor Path & Kinetic Flow Particles */
 .river-path {
   fill: none;
   stroke: var(--accent-cyan);
@@ -330,6 +330,28 @@ html, body {
   stroke: var(--accent-amber);
   opacity: 0.95;
   filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.7));
+}
+
+.river-flow-particles {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2.2px;
+  stroke-dasharray: 6 18;
+  stroke-linecap: round;
+  opacity: 0.85;
+  animation: riverFlowAnim 2s linear infinite;
+}
+
+@keyframes riverFlowAnim {
+  from { stroke-dashoffset: 48; }
+  to { stroke-dashoffset: 0; }
+}
+
+.river-flow-particles-shock {
+  stroke: #ffedd5;
+  stroke-dasharray: 8 14;
+  animation: riverFlowAnim 1.2s linear infinite;
+  filter: drop-shadow(0 0 4px #f43f5e);
 }
 
 /* Ambient Radial Heat Aura */
@@ -351,7 +373,7 @@ html, body {
   opacity: 1;
 }
 
-/* Borewell Pins */
+/* Borewell Pins with Sonar Shockwaves */
 .borewell-pin {
   pointer-events: auto;
   cursor: pointer;
@@ -377,26 +399,38 @@ html, body {
   opacity: 0.5;
 }
 
+.sonar-ring {
+  fill: none;
+  stroke-linecap: round;
+  pointer-events: none;
+  opacity: 0;
+}
+
 .pin-shock .pin-core {
   fill: var(--accent-crimson);
 }
 
-.pin-shock .pin-ring {
+.pin-shock .sonar-ring-1 {
   stroke: var(--accent-crimson);
-  animation: pin-pulse 1.8s infinite;
+  animation: sonarWave 2.2s cubic-bezier(0.1, 0.7, 0.1, 1) infinite;
 }
 
-@keyframes pin-pulse {
-  0% { r: 6; opacity: 0.9; }
-  100% { r: 16; opacity: 0; }
+.pin-shock .sonar-ring-2 {
+  stroke: var(--accent-amber);
+  animation: sonarWave 2.2s cubic-bezier(0.1, 0.7, 0.1, 1) infinite 0.7s;
 }
 
-/* Floating Anomaly Pills inside Map Corner */
+@keyframes sonarWave {
+  0% { r: 6px; opacity: 1; stroke-width: 2px; }
+  100% { r: 28px; opacity: 0; stroke-width: 0.5px; }
+}
+
+/* Floating Anomaly Badges on Map */
 .map-anomaly-card {
   position: absolute;
   top: 14px;
   right: 14px;
-  background: rgba(17, 19, 26, 0.92);
+  background: rgba(17, 19, 26, 0.94);
   backdrop-filter: blur(8px);
   border: 1px solid var(--border-card);
   border-radius: 8px;
@@ -440,114 +474,194 @@ html, body {
   gap: 2px;
 }
 
-/* Bottom Interactive Trigger Bar (Anchored at Bottom-Center of Right Map) */
-.map-bottom-trigger-bar {
+/* Bottom Interactive El Niño Simulation Dock */
+.sim-dock {
   padding: 12px 18px;
-  background: rgba(20, 24, 34, 0.95);
+  background: rgba(18, 22, 32, 0.96);
   border-top: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sim-dock-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
-.trigger-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.toggle-switch-wrapper {
+.btn-shock-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.25), rgba(245, 158, 11, 0.25));
+  border: 1px solid var(--accent-crimson);
+  color: #ffffff;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 14px rgba(244, 63, 94, 0.3);
   user-select: none;
 }
 
-.toggle-input {
-  display: none;
+.btn-shock-trigger:hover {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.4), rgba(245, 158, 11, 0.4));
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.5);
 }
 
-.toggle-track {
-  width: 44px;
-  height: 24px;
+.btn-shock-trigger.inactive {
   background: var(--bg-control);
-  border: 1px solid var(--border-card);
-  border-radius: 12px;
-  position: relative;
-  transition: all 0.25s ease;
-}
-
-.toggle-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--text-slate);
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.toggle-input:checked + .toggle-track {
-  background: var(--accent-crimson-dim);
-  border-color: var(--accent-crimson);
-}
-
-.toggle-input:checked + .toggle-track .toggle-thumb {
-  transform: translateX(20px);
-  background: var(--accent-crimson);
-  box-shadow: 0 0 8px rgba(244, 63, 94, 0.6);
-}
-
-.toggle-label-text {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-alabaster);
-}
-
-.severity-selector {
-  display: flex;
-  background: var(--bg-control);
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  padding: 2px;
-  gap: 2px;
-}
-
-.sev-btn {
-  background: transparent;
-  border: none;
+  border-color: var(--border-card);
   color: var(--text-slate);
-  font-family: var(--font-ui);
-  font-size: 11.5px;
-  font-weight: 500;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  box-shadow: none;
 }
 
-.sev-btn:hover {
-  color: var(--text-alabaster);
+/* Interactive ENSO Anomaly Slider */
+.enso-slider-wrap {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.sev-btn.active {
-  background: var(--bg-card-elevated);
-  color: var(--text-alabaster);
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+.enso-slider-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-family: var(--font-mono);
 }
 
-.sev-btn.active[data-sev="severe"] {
+.enso-slider-label-row .enso-val-tag {
+  font-weight: 700;
   color: var(--accent-crimson);
-  border: 1px solid rgba(244, 63, 94, 0.4);
+}
+
+.enso-range-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #06b6d4 0%, #f59e0b 50%, #f43f5e 100%);
+  outline: none;
+  cursor: pointer;
+}
+
+.enso-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #f43f5e;
+  box-shadow: 0 0 8px rgba(244, 63, 94, 0.8);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.enso-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.enso-ticks-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9.5px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
 }
 
 /* ==========================================================================
-   3. STAGE 2 (THE MAINTAINER): 4 HIGH-IMPACT KPI CARDS
+   2. LIVE UNDERGROUND AQUIFER X-RAY CUTAWAY (0m to 35m)
+   ========================================================================== */
+.stage-xray-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.xray-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.xray-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-alabaster);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.xray-badge-status {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--accent-crimson-dim);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  color: var(--accent-crimson);
+}
+
+.xray-badge-status.normal {
+  background: var(--accent-cyan-dim);
+  border-color: rgba(6, 182, 212, 0.4);
+  color: var(--accent-cyan);
+}
+
+.xray-svg-container {
+  width: 100%;
+  height: 250px;
+  background: #090c12;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.xray-svg-viewport {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.xray-footer-badges {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 11.5px;
+  color: var(--text-slate);
+  padding-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.xray-footer-badges strong {
+  color: var(--text-alabaster);
+}
+
+/* ==========================================================================
+   3. STAGE 2 (THE MAINTAINER): 4 HIGH-IMPACT KPI CARDS + VIAL + GAUGE
    ========================================================================== */
 .stage-kpi-ribbon {
   display: grid;
@@ -587,17 +701,17 @@ html, body {
   letter-spacing: 0.05em;
 }
 
-.kpi-badge-icon {
-  width: 14px;
-  height: 14px;
-  fill: var(--text-muted);
+.kpi-body-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 6px;
 }
 
-.kpi-val-row {
+.kpi-num-group {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin: 8px 0 6px;
+  flex-direction: column;
 }
 
 .kpi-current-val {
@@ -611,7 +725,7 @@ html, body {
 
 .kpi-baseline-val {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
@@ -639,6 +753,108 @@ html, body {
   background: var(--accent-amber-dim);
   border: 1px solid rgba(245, 158, 11, 0.35);
   color: var(--accent-amber);
+}
+
+/* Visual Water Sample Vial */
+.vial-container {
+  width: 26px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-top: 2px solid #ffffff;
+  border-radius: 2px 2px 13px 13px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+}
+
+.vial-liquid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 80%;
+  background: rgba(6, 182, 212, 0.45);
+  transition: background 0.6s ease;
+}
+
+.vial-liquid.toxic {
+  background: linear-gradient(to top, rgba(244, 63, 94, 0.9), rgba(245, 158, 11, 0.8));
+  box-shadow: 0 0 8px rgba(244, 63, 94, 0.5);
+}
+
+.vial-bis-line {
+  position: absolute;
+  bottom: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.6);
+  z-index: 2;
+}
+
+.vial-salt-p1, .vial-salt-p2, .vial-salt-p3 {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #ffffff;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.vial-liquid.toxic .vial-salt-p1 {
+  left: 6px;
+  bottom: 8px;
+  opacity: 0.8;
+  animation: saltFloat 1.8s ease-in-out infinite;
+}
+
+.vial-liquid.toxic .vial-salt-p2 {
+  left: 14px;
+  bottom: 14px;
+  opacity: 0.9;
+  animation: saltFloat 2.3s ease-in-out infinite 0.4s;
+}
+
+.vial-liquid.toxic .vial-salt-p3 {
+  left: 10px;
+  bottom: 22px;
+  opacity: 0.7;
+  animation: saltFloat 1.6s ease-in-out infinite 0.8s;
+}
+
+@keyframes saltFloat {
+  0% { transform: translateY(0); opacity: 0.8; }
+  50% { transform: translateY(-12px) translateX(2px); opacity: 1; }
+  100% { transform: translateY(-24px) translateX(-2px); opacity: 0.1; }
+}
+
+/* Vertical Depth Gauge */
+.depth-gauge-container {
+  width: 14px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-card);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.depth-gauge-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 55%;
+  background: linear-gradient(to bottom, #334155, var(--accent-cyan));
+  transition: height 0.6s ease, background 0.6s ease;
+}
+
+.depth-gauge-bar.shock {
+  height: 82%;
+  background: linear-gradient(to bottom, #334155, var(--accent-crimson));
 }
 
 /* ==========================================================================
@@ -743,7 +959,7 @@ html, body {
 }
 
 .action-table tr.active-row {
-  background: rgba(6, 182, 212, 0.1);
+  background: rgba(6, 182, 212, 0.12);
   border-left: 2px solid var(--accent-cyan);
 }
 
