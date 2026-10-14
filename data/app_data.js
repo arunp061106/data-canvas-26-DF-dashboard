@@ -11473,245 +11473,245 @@ window.DASHBOARD_DATA = {
       "year": 2020,
       "label": "AMJ 2020",
       "anomaly": -0.55,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MJJ",
       "year": 2020,
       "label": "MJJ 2020",
       "anomaly": -0.72,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JJA",
       "year": 2020,
       "label": "JJA 2020",
       "anomaly": -0.76,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JAS",
       "year": 2020,
       "label": "JAS 2020",
       "anomaly": -0.85,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "ASO",
       "year": 2020,
       "label": "ASO 2020",
       "anomaly": -1.16,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "SON",
       "year": 2020,
       "label": "SON 2020",
       "anomaly": -1.37,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "OND",
       "year": 2020,
       "label": "OND 2020",
       "anomaly": -1.46,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "NDJ",
       "year": 2020,
       "label": "NDJ 2020",
       "anomaly": -1.39,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "DJF",
       "year": 2021,
       "label": "DJF 2021",
       "anomaly": -1.32,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JFM",
       "year": 2021,
       "label": "JFM 2021",
       "anomaly": -1.18,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "FMA",
       "year": 2021,
       "label": "FMA 2021",
       "anomaly": -1.08,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MAM",
       "year": 2021,
       "label": "MAM 2021",
       "anomaly": -0.89,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "AMJ",
       "year": 2021,
       "label": "AMJ 2021",
       "anomaly": -0.68,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MJJ",
       "year": 2021,
       "label": "MJJ 2021",
       "anomaly": -0.57,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JJA",
       "year": 2021,
       "label": "JJA 2021",
       "anomaly": -0.6,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JAS",
       "year": 2021,
       "label": "JAS 2021",
       "anomaly": -0.76,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "ASO",
       "year": 2021,
       "label": "ASO 2021",
       "anomaly": -0.95,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "SON",
       "year": 2021,
       "label": "SON 2021",
       "anomaly": -1.08,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "OND",
       "year": 2021,
       "label": "OND 2021",
       "anomaly": -1.24,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "NDJ",
       "year": 2021,
       "label": "NDJ 2021",
       "anomaly": -1.22,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "DJF",
       "year": 2022,
       "label": "DJF 2022",
       "anomaly": -1.18,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JFM",
       "year": 2022,
       "label": "JFM 2022",
       "anomaly": -1.13,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "FMA",
       "year": 2022,
       "label": "FMA 2022",
       "anomaly": -1.19,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MAM",
       "year": 2022,
       "label": "MAM 2022",
       "anomaly": -1.26,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "AMJ",
       "year": 2022,
       "label": "AMJ 2022",
       "anomaly": -1.17,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MJJ",
       "year": 2022,
       "label": "MJJ 2022",
       "anomaly": -0.95,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JJA",
       "year": 2022,
       "label": "JJA 2022",
       "anomaly": -0.86,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JAS",
       "year": 2022,
       "label": "JAS 2022",
       "anomaly": -0.94,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "ASO",
       "year": 2022,
       "label": "ASO 2022",
       "anomaly": -1.07,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "SON",
       "year": 2022,
       "label": "SON 2022",
       "anomaly": -1.1,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "OND",
       "year": 2022,
       "label": "OND 2022",
       "anomaly": -1.05,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "NDJ",
       "year": 2022,
       "label": "NDJ 2022",
       "anomaly": -0.99,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "DJF",
       "year": 2023,
       "label": "DJF 2023",
       "anomaly": -0.86,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JFM",
       "year": 2023,
       "label": "JFM 2023",
       "anomaly": -0.68,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "FMA",
       "year": 2023,
       "label": "FMA 2023",
       "anomaly": -0.55,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MAM",
@@ -11739,56 +11739,56 @@ window.DASHBOARD_DATA = {
       "year": 2023,
       "label": "JJA 2023",
       "anomaly": 0.54,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "JAS",
       "year": 2023,
       "label": "JAS 2023",
       "anomaly": 0.79,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "ASO",
       "year": 2023,
       "label": "ASO 2023",
       "anomaly": 1.04,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "SON",
       "year": 2023,
       "label": "SON 2023",
       "anomaly": 1.3,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "OND",
       "year": 2023,
       "label": "OND 2023",
       "anomaly": 1.42,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "NDJ",
       "year": 2023,
       "label": "NDJ 2023",
       "anomaly": 1.4,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "DJF",
       "year": 2024,
       "label": "DJF 2024",
       "anomaly": 1.13,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "JFM",
       "year": 2024,
       "label": "JFM 2024",
       "anomaly": 0.78,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "FMA",
@@ -11830,63 +11830,63 @@ window.DASHBOARD_DATA = {
       "year": 2024,
       "label": "JAS 2024",
       "anomaly": -0.56,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "ASO",
       "year": 2024,
       "label": "ASO 2024",
       "anomaly": -0.67,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "SON",
       "year": 2024,
       "label": "SON 2024",
       "anomaly": -0.76,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "OND",
       "year": 2024,
       "label": "OND 2024",
       "anomaly": -0.88,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "NDJ",
       "year": 2024,
       "label": "NDJ 2024",
       "anomaly": -1.05,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "DJF",
       "year": 2025,
       "label": "DJF 2025",
       "anomaly": -1.1,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JFM",
       "year": 2025,
       "label": "JFM 2025",
       "anomaly": -0.85,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "FMA",
       "year": 2025,
       "label": "FMA 2025",
       "anomaly": -0.66,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MAM",
       "year": 2025,
       "label": "MAM 2025",
       "anomaly": -0.5,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "AMJ",
@@ -11914,49 +11914,49 @@ window.DASHBOARD_DATA = {
       "year": 2025,
       "label": "JAS 2025",
       "anomaly": -0.59,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "ASO",
       "year": 2025,
       "label": "ASO 2025",
       "anomaly": -0.78,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "SON",
       "year": 2025,
       "label": "SON 2025",
       "anomaly": -0.93,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "OND",
       "year": 2025,
       "label": "OND 2025",
       "anomaly": -0.98,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "NDJ",
       "year": 2025,
       "label": "NDJ 2025",
       "anomaly": -1.04,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "DJF",
       "year": 2026,
       "label": "DJF 2026",
       "anomaly": -0.91,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JFM",
       "year": 2026,
       "label": "JFM 2026",
       "anomaly": -0.76,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "FMA",
@@ -11984,21 +11984,21 @@ window.DASHBOARD_DATA = {
       "year": 2026,
       "label": "MJJ 2026",
       "anomaly": 0.97,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "JJA",
       "year": 2026,
       "label": "JJA 2026",
       "anomaly": 1.36,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "JAS",
       "year": 2026,
       "label": "JAS 2026",
       "anomaly": 1.69,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     }
   ],
   "priority_table": [
@@ -12018,7 +12018,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Critical TDS exceeds permissible limit (2789 mg/L); Acute seasonal swing (6.1 m)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 12.0
     },
     {
       "station_name": "Periyapatti",
@@ -12036,7 +12038,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (11.7 m bgl); Elevated TDS (1310 mg/L)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 14.9
     },
     {
       "station_name": "Ganapathipalayam",
@@ -12054,7 +12058,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (23.2 m bgl); Acute seasonal swing (17.45 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 26.4
     },
     {
       "station_name": "Govindhapuram Pz",
@@ -12072,7 +12078,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (55.0 m bgl); Acute seasonal swing (49.72 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 58.2
     },
     {
       "station_name": "Ponnapuram Pz",
@@ -12090,7 +12098,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (55.0 m bgl); Acute seasonal swing (46.45 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 58.2
     },
     {
       "station_name": "Oothukadu",
@@ -12108,7 +12118,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (20.4 m bgl); Acute seasonal swing (6.1 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 23.6
     },
     {
       "station_name": "Tiruppur Agraharam",
@@ -12126,7 +12138,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (11.14 m bgl); High seasonal fluctuation (5.69 m)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 7.0,
+      "scenario_depth_mbgl": 14.34
     },
     {
       "station_name": "Nachipalayam",
@@ -12144,7 +12158,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Elevated TDS (1709 mg/L)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 5.8,
+      "scenario_depth_mbgl": 10.13
     },
     {
       "station_name": "Sangarandampalayam Pz",
@@ -12162,7 +12178,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (20.85 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 24.05
     },
     {
       "station_name": "Pallapalayam Pz",
@@ -12180,7 +12198,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (84.7 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 87.9
     },
     {
       "station_name": "Kaltanpet (Karanampettai)",
@@ -12198,7 +12218,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (16.4 m bgl); Acute seasonal swing (13.32 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 19.6
     },
     {
       "station_name": "Palladam",
@@ -12216,7 +12238,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (13.45 m bgl); Acute seasonal swing (5.69 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 16.65
     },
     {
       "station_name": "Peruntholavu Pz",
@@ -12234,7 +12258,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (16.8 m bgl); Acute seasonal swing (5.58 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 20.0
     },
     {
       "station_name": "Karumancheri Pz",
@@ -12252,7 +12278,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (13.65 m bgl); Acute seasonal swing (5.8 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 16.85
     },
     {
       "station_name": "Thathanur Aanaikalpalayam Pz",
@@ -12270,7 +12298,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (12.1 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 15.3
     },
     {
       "station_name": "Varadharajapuram Murungapatti Pz",
@@ -12288,7 +12318,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (12.5 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 15.7
     },
     {
       "station_name": "Padiyur",
@@ -12306,7 +12338,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (12.1 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 15.3
     },
     {
       "station_name": "Ganganaickenpalayam Pz",
@@ -12324,7 +12358,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (15.55 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 18.75
     },
     {
       "station_name": "Velampalayam",
@@ -12342,7 +12378,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (11.87 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 15.07
     },
     {
       "station_name": "Uthukuli Pz",
@@ -12360,7 +12398,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (16.4 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 19.6
     },
     {
       "station_name": "Kovilvazhi I",
@@ -12378,7 +12418,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "High seasonal fluctuation (4.4 m)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 2.6,
+      "scenario_depth_mbgl": 10.2
     },
     {
       "station_name": "Karavallurpz",
@@ -12396,7 +12438,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (16.8 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 20.0
     },
     {
       "station_name": "Karuvalur",
@@ -12414,7 +12458,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (16.22 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 19.42
     },
     {
       "station_name": "Erakalpudur(Sivanmalai)",
@@ -12432,7 +12478,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (14.3 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 17.5
     },
     {
       "station_name": "Kunnathur",
@@ -12450,7 +12498,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (10.9 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 14.1
     },
     {
       "station_name": "Kovilvazhi IV",
@@ -12468,7 +12518,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "High seasonal fluctuation (3.9 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 1.65,
+      "scenario_depth_mbgl": 8.75
     },
     {
       "station_name": "Odakadu",
@@ -12486,7 +12538,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Medium Priority",
       "evidence_rationale": "No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 4.4,
+      "scenario_depth_mbgl": 9.4
     },
     {
       "station_name": "Kasipalayam (T)",
@@ -12504,7 +12558,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Routine Monitoring",
       "evidence_rationale": "No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 6.3,
+      "scenario_depth_mbgl": 9.6
     },
     {
       "station_name": "Tiruppur1",
@@ -12522,7 +12578,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Routine Monitoring",
       "evidence_rationale": "No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 5.7,
+      "scenario_depth_mbgl": 9.15
     },
     {
       "station_name": "Karamadai",
@@ -12540,7 +12598,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Routine Monitoring",
       "evidence_rationale": "Regular baseline monitoring",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 5.6
     },
     {
       "station_name": "P.N.Road",
@@ -12558,7 +12618,9 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Routine Monitoring",
       "evidence_rationale": "No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 3.77,
+      "scenario_depth_mbgl": 6.97
     },
     {
       "station_name": "Weekly Market",
@@ -12576,11 +12638,13 @@ window.DASHBOARD_DATA = {
       "priority_tier": "Routine Monitoring",
       "evidence_rationale": "No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 2.47,
+      "scenario_depth_mbgl": 6.0
     }
   ],
   "provenance": {
-    "project_title": "A Catastrophe behind Colours \u2014 Groundwater Stress in Tiruppur and the Noyyal Basin",
+    "project_title": "A Catastrophe behind Colours — Groundwater Stress in Tiruppur and the Noyyal Basin",
     "generated_at": "2026-10-14",
     "sources": [
       {
@@ -12608,7 +12672,7 @@ window.DASHBOARD_DATA = {
         "period": "Pre-Monsoon (May 2024) and Post-Monsoon (November 2024)",
         "coverage": "Tiruppur district monitoring stations (Pages 57, 59, 142, 145)",
         "measurement_units": {
-          "EC": "microSiemens per centimeter (\u00b5S/cm at 25\u00b0C)",
+          "EC": "microSiemens per centimeter (µS/cm at 25°C)",
           "TDS": "milligrams per liter (mg/L)",
           "Hardness": "mg/L as CaCO3",
           "Major_Ions": "mg/L (Cl, SO4, NO3, F, Ca, Mg, Na, K)"
@@ -12637,16 +12701,16 @@ window.DASHBOARD_DATA = {
         "agency": "NASA POWER Project / MERRA-2",
         "title": "Daily Corrected Precipitation (PRECTOTCORR)",
         "period": "2023-01-01 to 2024-12-31 (731 days)",
-        "coordinate": "11.1085\u00b0N, 77.3411\u00b0E (Tiruppur City centroid)",
+        "coordinate": "11.1085°N, 77.3411°E (Tiruppur City centroid)",
         "measurement_unit": "mm/day",
         "provenance_note": "Modelled satellite-assimilated point estimate; provides meteorological context, not an official district-wide rain gauge network average."
       },
       {
         "filename": "RONI.ascii.txt",
         "agency": "NOAA Climate Prediction Center (CPC)",
-        "title": "Relative Oceanic Ni\u00f1o Index (RONI)",
+        "title": "Relative Oceanic Niño Index (RONI)",
         "period": "1950 to 2026 (3-month seasonal running anomalies)",
-        "measurement_unit": "\u00b0C sea surface temperature anomaly relative to tropical mean",
+        "measurement_unit": "°C sea surface temperature anomaly relative to tropical mean",
         "provenance_note": "Global Pacific oceanic-atmospheric ENSO context. Serves as climate backdrop, not direct proof of local water level causality."
       },
       {
@@ -12658,9 +12722,9 @@ window.DASHBOARD_DATA = {
     ],
     "key_findings": {
       "deepest_well_recorded": "Pallapalayam Pz (Udumalaipettai) at 84.7 m bgl, followed by Dharapuram Ponnapuram Pz (>50 m bgl) and Sangarandampalayam Pz (20.85 m bgl)",
-      "highest_salinity_recorded": "Arugampalayam (Uthukuli) with EC 4,290 \u00b5S/cm and TDS 2,789 mg/L (well above BIS permissible limit of 2,000 mg/L)",
-      "seasonal_quality_dynamics": "Nachipalayam TDS increased from 1,398 mg/L (Pre-monsoon) to 1,709 mg/L (Post-monsoon) and EC from 2,150 to 2,860 \u00b5S/cm, showing post-monsoon ionic concentration/leaching",
-      "climate_context": "2023 rainfall totalled 582.4 mm (subdued SWM and NEM during strong El Ni\u00f1o onset) while 2024 totalled 812.6 mm as ENSO decayed toward neutral/La Ni\u00f1a conditions"
+      "highest_salinity_recorded": "Arugampalayam (Uthukuli) with EC 4,290 µS/cm and TDS 2,789 mg/L (well above BIS permissible limit of 2,000 mg/L)",
+      "seasonal_quality_dynamics": "Nachipalayam TDS increased from 1,398 mg/L (Pre-monsoon) to 1,709 mg/L (Post-monsoon) and EC from 2,150 to 2,860 µS/cm, showing post-monsoon ionic concentration/leaching",
+      "climate_context": "2023 rainfall totalled 582.4 mm (subdued SWM and NEM during strong El Niño onset) while 2024 totalled 812.6 mm as ENSO decayed toward neutral/La Niña conditions"
     }
   }
 };

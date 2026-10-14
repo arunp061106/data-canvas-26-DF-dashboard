@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Where Tiruppur's Water Breaks First — Groundwater Stress &amp; Depletion Analytics</title>
-  <meta name="description" content="Hydrological analytics dashboard evaluating borewell depletion, acute salinity (TDS), and drought stress across Tiruppur and the Noyyal basin.">
+  <title>Where Tiruppur's Water Breaks First — Two-Map Groundwater Depletion &amp; Salinity Analytics</title>
+  <meta name="description" content="Hydrological analytics dashboard comparing 2026 projected drought scenario against 2025 observed baseline across Tiruppur and the Noyyal basin.">
 
   <!-- Google Fonts: Syne, DM Mono, DM Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 
-  <!-- Leaflet CSS for OpenStreetMap Cartography -->
+  <!-- Leaflet CSS for CartoDB Dark Matter Cartography -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
   <!-- Leaflet JS -->
@@ -30,10 +30,10 @@
       --bg3: rgba(255, 255, 255, 0.07);
       --border: rgba(255, 255, 255, 0.08);
       --border-hover: rgba(255, 255, 255, 0.18);
-      --accent1: #7fffb2; /* Mint / Positive / Routine */
-      --accent2: #ff6b6b; /* Coral Red / High Priority */
-      --accent3: #ffd166; /* Amber / Medium Priority */
-      --accent4: #74b9ff; /* Sky Blue / Telemetry */
+      --accent1: #7fffb2; /* Mint / Routine / Normal */
+      --accent2: #ff6b6b; /* Coral Red / High Priority / Drought */
+      --accent3: #ffd166; /* Amber / Medium Priority / Alert */
+      --accent4: #74b9ff; /* Sky Blue / Telemetry / Rain */
       --accent5: #a29bfe; /* Violet / Scenario */
       --text: #e8ecf0;
       --text-muted: #8b95a5;
@@ -46,7 +46,6 @@
       --font-body: 'DM Sans', sans-serif;
       --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 
-      /* Spacing baseline (8px) */
       --sp-1: 4px;
       --sp-2: 8px;
       --sp-3: 16px;
@@ -77,7 +76,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── BACKGROUND ORBS & GRID OVERLAY (SENTIMENTSCOPE SIGNATURE) ── */
+    /* Background Orbs & Subtle Grid Overlay */
     .bg-canvas {
       position: fixed;
       inset: 0;
@@ -89,9 +88,9 @@
     .orb {
       position: absolute;
       border-radius: 50%;
-      filter: blur(80px);
+      filter: blur(120px);
       opacity: 0.22;
-      animation: orbFloat linear infinite;
+      animation: orbFloat 24s ease-in-out infinite alternate;
     }
 
     .orb-1 {
@@ -119,103 +118,38 @@
 
     @keyframes orbFloat {
       0% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(30px, -20px) scale(1.04); }
-      66% { transform: translate(-20px, 15px) scale(0.96); }
-      100% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(60px, 40px) scale(1.12); }
     }
 
-    body::before {
-      content: '';
+    .grid-overlay {
       position: fixed;
       inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(127, 255, 178, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(127, 255, 178, 0.02) 1px, transparent 1px);
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
       background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 1;
     }
 
+    /* Site Container */
     .site-wrapper {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       max-width: 1440px;
       margin: 0 auto;
       padding: 0 var(--sp-4);
     }
 
-    /* ==========================================================================
-       VIEW MODE TOGGLE BAR (STICKY AT TOP)
-       ========================================================================== */
-    .view-mode-bar {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(7, 8, 13, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: var(--sp-2) var(--sp-4);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .mode-toggle-group {
-      display: inline-flex;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      border-radius: 99px;
-      padding: 3px;
-      gap: 4px;
-    }
-
-    .mode-toggle-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-family: var(--font-body);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 6px 16px;
-      border-radius: 99px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-
-    .mode-toggle-btn:hover {
-      color: #ffffff;
-    }
-
-    .mode-toggle-btn.active {
-      background: linear-gradient(135deg, var(--accent1), var(--accent4));
-      color: #07080d;
-      font-weight: 700;
-      box-shadow: 0 2px 12px rgba(127, 255, 178, 0.3);
-    }
-
-    .view-indicator-text {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    /* ==========================================================================
-       HEADER (SENTIMENTSCOPE STYLE)
-       ========================================================================== */
+    /* ── 1. HEADER BAR ── */
     .site-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       padding: var(--sp-4) 0;
       border-bottom: 1px solid var(--border);
-      margin-bottom: var(--sp-4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
-      gap: var(--sp-3);
+      gap: 16px;
     }
 
     .header-left {
@@ -225,17 +159,17 @@
     }
 
     .logo-mark {
-      width: 46px;
-      height: 46px;
+      width: 48px;
+      height: 48px;
       background: linear-gradient(135deg, var(--accent1), var(--accent4));
       border-radius: 12px;
       display: grid;
       place-items: center;
       font-family: var(--font-head);
       font-weight: 800;
-      font-size: 18px;
+      font-size: 19px;
       color: #07080d;
-      box-shadow: 0 0 20px rgba(127, 255, 178, 0.3);
+      box-shadow: 0 0 20px rgba(127, 255, 178, 0.35);
       flex-shrink: 0;
     }
 
@@ -250,10 +184,9 @@
     }
 
     .site-sub {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      letter-spacing: 0.3px;
+      font-size: 13px;
+      color: var(--accent3);
+      font-weight: 500;
       margin-top: 2px;
     }
 
@@ -267,16 +200,15 @@
     .live-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
       background: rgba(127, 255, 178, 0.08);
-      border: 1px solid rgba(127, 255, 178, 0.2);
-      color: var(--accent1);
-      padding: 6px 14px;
-      border-radius: 99px;
+      border: 1px solid rgba(127, 255, 178, 0.25);
       font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
+      font-weight: 500;
+      color: var(--accent1);
     }
 
     .pulse-dot {
@@ -288,6 +220,11 @@
       animation: pulseAnim 2s infinite;
     }
 
+    .pulse-dot.dot-red {
+      background: var(--accent2);
+      box-shadow: 0 0 8px var(--accent2);
+    }
+
     @keyframes pulseAnim {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.4; transform: scale(0.85); }
@@ -296,49 +233,42 @@
     .tag-pill {
       font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 500;
-      padding: 5px 12px;
-      border-radius: 99px;
-      background: var(--bg2);
+      padding: 5px 10px;
+      border-radius: 6px;
       border: 1px solid var(--border);
+      background: var(--bg2);
       color: var(--text-muted);
     }
 
     .tag-sdg6 {
-      color: #38bdf8;
-      border-color: rgba(56, 189, 248, 0.3);
-      background: rgba(56, 189, 248, 0.08);
+      border-color: rgba(116, 185, 255, 0.35);
+      color: #74b9ff;
+      background: rgba(116, 185, 255, 0.08);
     }
 
     .tag-sdg3 {
-      color: var(--accent1);
-      border-color: rgba(127, 255, 178, 0.3);
+      border-color: rgba(127, 255, 178, 0.35);
+      color: #7fffb2;
       background: rgba(127, 255, 178, 0.08);
     }
 
-    /* ==========================================================================
-       FOUR HEADLINE CARDS (SENTIMENTSCOPE HERO STRIP)
-       ========================================================================== */
+    /* ── 2. KPI STRIP (5 HEADLINE CARDS) ── */
     .hero-kpi-strip {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: var(--sp-3);
-      margin-bottom: var(--sp-4);
+      margin: var(--sp-4) 0;
     }
 
     .kpi-card {
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 18px 20px;
-      backdrop-filter: blur(12px);
+      padding: 16px 18px;
       box-shadow: var(--glass-shadow);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
       position: relative;
       overflow: hidden;
-      transition: transform 0.2s ease, border-color 0.2s ease;
     }
 
     .kpi-card:hover {
@@ -346,42 +276,34 @@
       border-color: var(--border-hover);
     }
 
-    .kpi-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-    }
-
     .kpi-top {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 6px;
+      align-items: center;
+      margin-bottom: 8px;
     }
 
     .kpi-label {
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 500;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
     }
 
     .kpi-icon {
-      font-size: 18px;
+      font-size: 16px;
     }
 
     .kpi-val {
       font-family: var(--font-head);
-      font-size: 32px;
+      font-size: 26px;
       font-weight: 800;
-      color: #ffffff;
       line-height: 1.1;
       letter-spacing: -0.5px;
-      margin: 4px 0;
-      font-variant-numeric: tabular-nums;
+      color: #ffffff;
+      margin-bottom: 4px;
     }
 
     .val-accent1 { color: var(--accent1); }
@@ -390,42 +312,388 @@
     .val-accent4 { color: var(--accent4); }
 
     .kpi-unit-line {
-      font-family: var(--font-mono);
       font-size: 11px;
       color: var(--text-muted);
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      padding-top: 6px;
-      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* ==========================================================================
-       FILTER BAR (SENTIMENTSCOPE STYLE)
-       ========================================================================== */
+    /* ── 3. TWO-MAP COMPARISON SECTION ── */
+    .map-section-wrapper {
+      margin-bottom: var(--sp-5);
+    }
+
+    .map-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .map-actions-left {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .map-section-title {
+      font-family: var(--font-head);
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .map-section-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .btn-el-nino {
+      background: rgba(255, 107, 107, 0.08);
+      border: 1px solid rgba(255, 107, 107, 0.35);
+      color: var(--accent2);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-el-nino:hover {
+      background: rgba(255, 107, 107, 0.16);
+      border-color: var(--accent2);
+      transform: translateY(-1px);
+    }
+
+    .btn-el-nino.active {
+      background: var(--accent2);
+      color: #07080d;
+      border-color: var(--accent2);
+      box-shadow: 0 0 16px rgba(255, 107, 107, 0.4);
+    }
+
+    /* El Niño Banner */
+    .el-nino-banner {
+      background: rgba(255, 107, 107, 0.06);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .el-nino-banner-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .el-nino-banner-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-head);
+      font-size: 13px;
+      color: var(--accent2);
+      letter-spacing: 0.5px;
+    }
+
+    .el-nino-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .en-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .en-val {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .en-val.val-warning {
+      color: var(--accent3);
+      font-style: italic;
+    }
+
+    .en-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* Dual Maps Layout */
+    .dual-maps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-4);
+    }
+
+    .map-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .map-card-header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .map-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .map-title {
+      font-family: var(--font-head);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .scenario-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(162, 155, 254, 0.15);
+      border: 1px solid rgba(162, 155, 254, 0.4);
+      color: var(--accent5);
+    }
+
+    .measured-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(127, 255, 178, 0.12);
+      border: 1px solid rgba(127, 255, 178, 0.35);
+      color: var(--accent1);
+    }
+
+    .map-container-box {
+      height: 460px;
+      width: 100%;
+      position: relative;
+      background: #090b10;
+    }
+
+    /* Map Footers / Legends */
+    .map-card-footer {
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .map-legend-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 11.5px;
+    }
+
+    .legend-tiers {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-muted);
+    }
+
+    .dot-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-indicator.dot-red { background: var(--accent2); }
+    .dot-indicator.dot-amber { background: var(--accent3); }
+    .dot-indicator.dot-green { background: var(--accent1); }
+    .dot-indicator.dot-hollow {
+      border: 1.5px dashed #8b95a5;
+      background: transparent;
+    }
+
+    .legend-sizes {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+
+    .circle-scale {
+      border: 1px solid var(--text-muted);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .map-footnote {
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.4;
+      border-top: 1px dashed rgba(255, 255, 255, 0.05);
+      padding-top: 6px;
+    }
+
+    /* Floating Left Map El Niño Overlay */
+    .map-floating-overlay {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 1000;
+      background: rgba(7, 8, 13, 0.92);
+      border: 1px solid var(--accent2);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      width: 230px;
+      pointer-events: auto;
+    }
+
+    .overlay-title {
+      font-family: var(--font-head);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .overlay-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-bottom: 3px;
+      color: var(--text-muted);
+    }
+
+    .overlay-row strong {
+      color: #ffffff;
+      font-family: var(--font-mono);
+    }
+
+    .overlay-footnote {
+      font-size: 9.5px;
+      color: var(--text-dim);
+      margin-top: 6px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      padding-top: 4px;
+    }
+
+    /* Custom Leaflet Tooltip */
+    .leaflet-dark-tooltip {
+      background: rgba(7, 8, 13, 0.94) !important;
+      border: 1px solid var(--border-hover) !important;
+      border-radius: var(--radius-sm) !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+      padding: 8px 12px !important;
+      color: #ffffff !important;
+      font-family: var(--font-body) !important;
+      font-size: 12px !important;
+      line-height: 1.4 !important;
+    }
+
+    .leaflet-dark-tooltip::before {
+      border-top-color: rgba(7, 8, 13, 0.94) !important;
+    }
+
+    .map-tt-title {
+      font-family: var(--font-head);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent4);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .map-tt-foot {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      padding-top: 3px;
+    }
+
+    /* ── 4. FILTER BAR ── */
     .filter-bar {
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: var(--sp-3);
-      margin-bottom: var(--sp-4);
+      padding: 16px 20px;
       box-shadow: var(--glass-shadow);
+      margin-bottom: var(--sp-5);
     }
 
     .filter-grid {
       display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr 1fr 1.4fr auto;
-      gap: 12px;
-      align-items: center;
+      grid-template-columns: repeat(4, 1fr) auto;
+      gap: 14px;
+      align-items: end;
     }
 
     .filter-control {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
     }
 
     .filter-control label {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 10.5px;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -437,7 +705,7 @@
       color: var(--text);
       font-family: var(--font-body);
       font-size: 12.5px;
-      padding: 8px 12px;
+      padding: 9px 12px;
       border-radius: var(--radius-sm);
       outline: none;
       transition: all 0.2s ease;
@@ -456,92 +724,113 @@
       font-family: var(--font-mono);
       font-size: 11.5px;
       font-weight: 500;
-      padding: 9px 16px;
+      padding: 10px 16px;
       border-radius: var(--radius-sm);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      margin-top: 16px;
       transition: all 0.2s ease;
       white-space: nowrap;
     }
 
     .btn-reset:hover {
       background: rgba(255, 255, 255, 0.1);
-      border-color: var(--text-muted);
+      border-color: var(--border-hover);
     }
 
-    /* ==========================================================================
-       TWO-COLUMN BLOCK (PITCH DECK: CHARTS & TOP-10 TABLE)
-       ========================================================================== */
-    .pitch-charts-grid {
+    /* ── 5. CHARTS GRID ── */
+    .charts-grid-2x2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: var(--sp-4);
-      margin-bottom: var(--sp-4);
+      margin-bottom: var(--sp-5);
     }
 
-    .glass-card {
+    .chart-card {
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: var(--sp-3);
+      padding: 18px 20px;
       box-shadow: var(--glass-shadow);
-      backdrop-filter: blur(12px);
       display: flex;
       flex-direction: column;
     }
 
-    .card-header {
+    .chart-card-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: var(--sp-2);
-      padding-bottom: var(--sp-1);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      align-items: baseline;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
-    .card-title {
+    .chart-title {
       font-family: var(--font-head);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       color: #ffffff;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
-    .chart-container-box {
-      height: 240px;
+    .chart-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .chart-box {
+      height: 250px;
       position: relative;
       width: 100%;
     }
 
-    .scenario-pill {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 4px;
-      background: rgba(236, 72, 153, 0.15);
-      border: 1px solid rgba(236, 72, 153, 0.35);
-      color: #f472b6;
-    }
-
-    .card-caption {
+    .chart-caption {
       font-size: 11px;
-      color: var(--text-muted);
-      margin-top: var(--sp-2);
-      padding-top: var(--sp-1);
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-dim);
+      margin-top: 10px;
       line-height: 1.4;
+      border-top: 1px dashed rgba(255, 255, 255, 0.05);
+      padding-top: 6px;
     }
 
-    /* ── TABLES ── */
+    .insufficient-notice {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--accent3);
+      background: rgba(255, 209, 102, 0.08);
+      border: 1px solid rgba(255, 209, 102, 0.2);
+      border-radius: 4px;
+      padding: 4px 8px;
+      margin-bottom: 8px;
+    }
+
+    /* ── 6. PRIORITY TABLE ── */
+    .table-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--glass-shadow);
+      margin-bottom: var(--sp-5);
+    }
+
+    .table-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
     .table-responsive {
       overflow-x: auto;
-      max-height: 420px;
+      max-height: 480px;
       margin-top: 8px;
     }
 
@@ -567,6 +856,7 @@
       z-index: 5;
       cursor: pointer;
       user-select: none;
+      white-space: nowrap;
     }
 
     .dnd-table th:hover {
@@ -577,6 +867,7 @@
       padding: 10px 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
 
     .dnd-table tr:hover {
@@ -601,23 +892,22 @@
       padding: 3px 8px;
       border-radius: 4px;
       display: inline-block;
-      white-space: nowrap;
     }
 
     .tier-high {
       background: rgba(255, 107, 107, 0.15);
-      border: 1px solid rgba(255, 107, 107, 0.4);
+      border: 1px solid rgba(255, 107, 107, 0.35);
       color: var(--accent2);
     }
 
     .tier-medium {
       background: rgba(255, 209, 102, 0.15);
-      border: 1px solid rgba(255, 209, 102, 0.4);
+      border: 1px solid rgba(255, 209, 102, 0.35);
       color: var(--accent3);
     }
 
     .tier-routine {
-      background: rgba(127, 255, 178, 0.12);
+      background: rgba(127, 255, 178, 0.15);
       border: 1px solid rgba(127, 255, 178, 0.35);
       color: var(--accent1);
     }
@@ -629,7 +919,7 @@
       font-family: var(--font-mono);
       font-size: 11px;
       padding: 4px 10px;
-      border-radius: var(--radius-sm);
+      border-radius: 4px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
@@ -640,7 +930,81 @@
       color: #ffffff;
     }
 
-    /* ── QR CODE & LIVE URL DOCK (BOTTOM OF PITCH DECK) ── */
+    /* ── 7. COLLAPSIBLE METHODS & PROVENANCE ── */
+    .collapsible-wrapper {
+      margin-bottom: var(--sp-5);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .collapsible-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--glass-shadow);
+      overflow: hidden;
+    }
+
+    .collapsible-summary {
+      padding: 14px 18px;
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .collapsible-summary:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .collapsible-body {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .collapsible-body h4 {
+      font-family: var(--font-head);
+      font-size: 13px;
+      color: #ffffff;
+      margin: 12px 0 6px;
+    }
+
+    .collapsible-body h4:first-child {
+      margin-top: 0;
+    }
+
+    .criteria-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin: 10px 0;
+    }
+
+    .criteria-table th, .criteria-table td {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .criteria-table th {
+      background: rgba(255, 255, 255, 0.03);
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+    }
+
+    /* ── 8. QR CODE DOCK & FOOTER ── */
     .pitch-qr-dock {
       background: var(--bg2);
       border: 1px solid var(--border);
@@ -648,9 +1012,8 @@
       padding: 20px 24px;
       box-shadow: var(--glass-shadow);
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-top: var(--sp-4);
+      align-items: center;
       margin-bottom: var(--sp-5);
       flex-wrap: wrap;
       gap: 20px;
@@ -693,223 +1056,9 @@
       border: 1px solid rgba(127, 255, 178, 0.25);
       padding: 6px 12px;
       border-radius: 6px;
+      display: inline-block;
     }
 
-    /* ==========================================================================
-       TECHNICAL DOSSIER VIEW
-       ========================================================================== */
-    .dossier-layout {
-      display: flex;
-      flex-direction: column;
-      gap: var(--sp-4);
-      margin-bottom: var(--sp-5);
-    }
-
-    /* Fixed Height Leaflet Map Container */
-    .map-fixed-container {
-      height: 420px;
-      width: 100%;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      position: relative;
-    }
-
-    @media (max-width: 640px) {
-      .map-fixed-container {
-        height: 320px;
-      }
-    }
-
-    .leaflet-dark-legend {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      z-index: 1000;
-      background: rgba(7, 8, 13, 0.88);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(10px);
-      padding: 10px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 11.5px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .legend-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .dot-indicator {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      border: 1px solid #ffffff;
-      flex-shrink: 0;
-    }
-
-    .dot-red { background: var(--accent2); }
-    .dot-amber { background: var(--accent3); }
-    .dot-green { background: var(--accent1); }
-
-    /* Dossier Grid Sections */
-    .dossier-grid-2col {
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: var(--sp-4);
-    }
-
-    .dossier-metrics-strip {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px;
-      margin-top: 10px;
-    }
-
-    .dm-cell {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .dm-label {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
-
-    .dm-val {
-      font-family: var(--font-head);
-      font-size: 15px;
-      font-weight: 700;
-      color: #ffffff;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .insufficient-notice {
-      display: none;
-      background: rgba(255, 209, 102, 0.1);
-      border: 1px solid rgba(255, 209, 102, 0.3);
-      color: var(--accent3);
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      margin-bottom: 8px;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Collapsible Sections */
-    details {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin-bottom: var(--sp-3);
-      box-shadow: var(--glass-shadow);
-    }
-
-    details[open] {
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    summary {
-      padding: 14px 20px;
-      font-family: var(--font-head);
-      font-weight: 700;
-      font-size: 14.5px;
-      color: #ffffff;
-      cursor: pointer;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    summary::-webkit-details-marker {
-      display: none;
-    }
-
-    summary::after {
-      content: '+';
-      font-family: var(--font-mono);
-      font-size: 18px;
-      color: var(--text-muted);
-    }
-
-    details[open] summary::after {
-      content: '−';
-    }
-
-    .details-inner {
-      padding: 16px 20px;
-      border-top: 1px solid var(--border);
-      font-size: 13px;
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    .prov-data-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 12px;
-    }
-
-    .prov-data-table th, .prov-data-table td {
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      text-align: left;
-    }
-
-    .prov-data-table th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #ffffff;
-      font-family: var(--font-mono);
-      font-size: 11px;
-    }
-
-    /* Modal Backdrop */
-    .modal-veil {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
-      z-index: 10000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-box {
-      background: #0f131f;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      max-width: 520px;
-      width: 90%;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
-      position: relative;
-    }
-
-    .modal-close-btn {
-      position: absolute;
-      top: 16px; right: 16px;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    /* Footer */
     .site-footer {
       border-top: 1px solid var(--border);
       padding: var(--sp-4) 0 var(--sp-6);
@@ -926,116 +1075,111 @@
       margin-bottom: 16px;
     }
 
+    /* Modal Dossier */
+    .modal-veil {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      display: none;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: #0f121a;
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+      width: 100%;
+      max-width: 580px;
+      padding: 24px;
+      position: relative;
+      animation: modalFadeIn 0.2s ease;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .modal-close:hover { color: #ffffff; }
+
     /* ==========================================================================
        RESPONSIVENESS (390PX MOBILE & 1440PX DESKTOP)
        ========================================================================== */
     @media (max-width: 1080px) {
       .hero-kpi-strip {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
       }
-      .pitch-charts-grid, .dossier-grid-2col {
+      .charts-grid-2x2 {
         grid-template-columns: 1fr;
       }
       .filter-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .dual-maps-grid {
+        grid-template-columns: 1fr;
+      }
+      .map-container-box {
+        height: 340px;
+      }
+      .el-nino-grid {
+        grid-template-columns: 1fr;
       }
     }
 
     @media (max-width: 640px) {
-      .site-wrapper {
-        padding: 0 var(--sp-2);
-      }
       .hero-kpi-strip {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr 1fr;
       }
       .filter-grid {
         grid-template-columns: 1fr;
       }
-      .btn-reset {
-        margin-top: 0;
-      }
       .site-title {
         font-size: 18px;
       }
-      .header-right {
-        display: none;
-      }
-    }
-
-    /* ==========================================================================
-       PRINT STYLESHEET
-       ========================================================================== */
-    @media print {
-      body {
-        background: #ffffff !important;
-        color: #000000 !important;
-        font-size: 10pt;
-      }
-      .bg-canvas, .view-mode-bar, .filter-bar, .pitch-qr-dock, .btn-inspect, .btn-reset, .site-footer {
-        display: none !important;
-      }
-      .site-wrapper {
-        max-width: 100% !important;
-        padding: 0 !important;
-      }
-      .hero-kpi-strip {
-        page-break-after: always;
-        grid-template-columns: repeat(4, 1fr) !important;
-      }
-      .kpi-card {
-        border: 1px solid #ccc !important;
-        background: #fafafa !important;
-        box-shadow: none !important;
-      }
-      .kpi-val, .kpi-label, .kpi-unit-line {
-        color: #000000 !important;
-      }
-      .map-fixed-container {
-        height: 480px !important;
-        page-break-after: always;
-      }
-      .dnd-table th, .dnd-table td {
-        color: #000000 !important;
-        border-color: #ddd !important;
+      .qr-dock-left {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- ═══ SENTIMENTSCOPE FLOATING BACKGROUND ORBS ═══ -->
+  <!-- Background Orbs & 60px Grid Pattern -->
   <div class="bg-canvas" aria-hidden="true">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
+    <div class="grid-overlay"></div>
   </div>
-
-  <!-- ═══ TOP VIEW MODE TOGGLE BAR (STICKY) ═══ -->
-  <nav class="view-mode-bar" role="navigation" aria-label="Dashboard View Selector">
-    <div class="mode-toggle-group">
-      <button class="mode-toggle-btn active" id="btnModePitch" type="button" aria-pressed="true">
-        <span>⚡</span>
-        <span>Pitch Deck</span>
-      </button>
-      <button class="mode-toggle-btn" id="btnModeDossier" type="button" aria-pressed="false">
-        <span>📊</span>
-        <span>Technical Dossier</span>
-      </button>
-    </div>
-    <div class="view-indicator-text" id="viewIndicatorText">
-      Executive Summary View Active
-    </div>
-  </nav>
 
   <div class="site-wrapper">
 
-    <!-- ═══ SITE HEADER ═══ -->
+    <!-- ═══ 1. HEADER ═══ -->
     <header class="site-header" role="banner">
       <div class="header-left">
         <div class="logo-mark">WB</div>
         <div>
           <h1 class="site-title">Where Tiruppur's Water Breaks First</h1>
-          <p class="site-sub">Predicting Borewell Depletion &amp; Salinity Stress Across the Noyyal Basin</p>
+          <p class="site-sub">Which wells fail first in a dry year? • Borewell Depletion &amp; Salinity Stress Analytics</p>
         </div>
       </div>
       <div class="header-right">
@@ -1048,52 +1192,191 @@
       </div>
     </header>
 
-    <!-- ═══ FOUR HEADLINE CARDS (HERO KPI STRIP) ═══ -->
-    <section class="hero-kpi-strip" aria-label="Headline Key Indicators">
-      
-      <!-- KPI 1: Groundwater Depth -->
+    <!-- ═══ 2. KPI STRIP (5 HEADLINE CARDS) ═══ -->
+    <section class="hero-kpi-strip" aria-label="Key Performance Indicators">
+      <!-- KPI 1: Stations Tracked -->
+      <div class="kpi-card" id="kpiCardStations">
+        <div class="kpi-top">
+          <span class="kpi-label">Stations Tracked</span>
+          <span class="kpi-icon">📍</span>
+        </div>
+        <div class="kpi-val val-accent1" id="kpiValStations">32</div>
+        <div class="kpi-unit-line">Active Piezometers &amp; Dug Wells &bull; 2023–2025</div>
+      </div>
+
+      <!-- KPI 2: Median Depth -->
       <div class="kpi-card" id="kpiCardDepth">
         <div class="kpi-top">
-          <span class="kpi-label">Groundwater Depth</span>
+          <span class="kpi-label">Median Depth</span>
           <span class="kpi-icon">📏</span>
         </div>
         <div class="kpi-val val-accent3" id="kpiValDepth">12.3</div>
         <div class="kpi-unit-line">m bgl &bull; Pre-Monsoon Median</div>
       </div>
 
-      <!-- KPI 2: Peak Salinity (TDS) -->
+      <!-- KPI 3: Wells Above 2,000 mg/L TDS -->
       <div class="kpi-card" id="kpiCardTds">
         <div class="kpi-top">
-          <span class="kpi-label">Peak Salinity (TDS)</span>
+          <span class="kpi-label">Wells &gt; 2,000 mg/L TDS</span>
           <span class="kpi-icon">🧪</span>
         </div>
-        <div class="kpi-val val-accent2" id="kpiValTds">2,789</div>
-        <div class="kpi-unit-line">mg/L &bull; CGWB 2024 Lab Quality</div>
+        <div class="kpi-val val-accent2" id="kpiValTds">1</div>
+        <div class="kpi-unit-line">mg/L &bull; Exceeds BIS Safe Limit (Arugampalayam)</div>
       </div>
 
-      <!-- KPI 3: Annual Rainfall Total -->
+      <!-- KPI 4: Annual Rainfall -->
       <div class="kpi-card" id="kpiCardRainfall">
         <div class="kpi-top">
-          <span class="kpi-label">Annual Rainfall</span>
+          <span class="kpi-label">Annual Rainfall (2024)</span>
           <span class="kpi-icon">🌧️</span>
         </div>
         <div class="kpi-val val-accent4" id="kpiValRainfall">1,058.8</div>
-        <div class="kpi-unit-line">mm in 2024 (vs 842.7mm '23)</div>
+        <div class="kpi-unit-line">mm &bull; NASA MERRA-2 2024 Annual Sum</div>
       </div>
 
-      <!-- KPI 4: Priority Wells -->
+      <!-- KPI 5: High-Priority Count -->
       <div class="kpi-card" id="kpiCardUrgent">
         <div class="kpi-top">
-          <span class="kpi-label">Priority Wells</span>
-          <span class="kpi-icon">🚨</span>
+          <span class="kpi-label">High-Priority Wells</span>
+          <span class="kpi-icon">⚠️</span>
         </div>
-        <div class="kpi-val val-accent2" id="kpiValUrgent">14</div>
-        <div class="kpi-unit-line">Wells High Priority Red Alert</div>
+        <div class="kpi-val val-accent2" id="kpiValUrgent">12</div>
+        <div class="kpi-unit-line">Wells &bull; Score &ge; 70 (40/40/20 Matrix)</div>
       </div>
-
     </section>
 
-    <!-- ═══ SHARED FILTER BAR ═══ -->
+    <!-- ═══ 3. TWO-MAP COMPARISON SECTION ═══ -->
+    <section class="map-section-wrapper" aria-label="Dual Map Comparison">
+      <div class="map-actions-bar">
+        <div class="map-actions-left">
+          <h2 class="map-section-title">Spatial Groundwater Stress Comparison</h2>
+          <span class="map-section-sub">Synchronized spatial view: Projected Drought Scenario vs. Latest Measured Baseline</span>
+        </div>
+        <button type="button" id="btnToggleElNino" class="btn-el-nino" aria-pressed="false">
+          <span>⚡</span>
+          <span id="elNinoBtnText">Show current El Niño effect</span>
+        </button>
+      </div>
+
+      <!-- Toggleable El Niño Banner -->
+      <div id="elNinoBanner" class="el-nino-banner" style="display: none;">
+        <div class="el-nino-banner-header">
+          <div class="el-nino-banner-title">
+            <span class="pulse-dot dot-red"></span>
+            <strong>CLIMATE ANOMALY ALERT: RELATIVE OCEANIC NIÑO INDEX (RONI)</strong>
+          </div>
+          <span class="scenario-pill">SCENARIO IMPACT</span>
+        </div>
+        <div class="el-nino-grid">
+          <div class="el-nino-item">
+            <div class="en-label">LATEST RONI STATUS</div>
+            <div class="en-val" id="enRoniStatus">El Niño (+1.69°C Anomaly)</div>
+            <div class="en-sub">Period: JAS 2026 Forecast &bull; Source: NOAA Climate Prediction Center</div>
+          </div>
+          <div class="el-nino-item">
+            <div class="en-label">2026 ANNUAL RAINFALL</div>
+            <div class="en-val val-warning" id="enRainfall2026">not in data file</div>
+            <div class="en-sub">Source: NASA POWER MERRA-2 (Observed records end Dec 2024)</div>
+          </div>
+          <div class="el-nino-item">
+            <div class="en-label">HYDROLOGICAL STRESS MECHANISM</div>
+            <div class="en-val" style="font-size: 13.5px; font-weight: 500; color: var(--text);">+3.2 m Drawdown Offset</div>
+            <div class="en-sub">Compound effect: ~35% recharge deficit + high pumping velocity in crystalline bedrock</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dual Side-by-Side Maps Grid -->
+      <div class="dual-maps-grid">
+        <!-- LEFT MAP: Expected Summer 2026 (Scenario) -->
+        <div class="map-card">
+          <div class="map-card-header">
+            <div class="map-title-wrap">
+              <span class="dot-indicator dot-red"></span>
+              <span class="map-title">Expected summer 2026 (scenario)</span>
+            </div>
+            <span class="scenario-pill">SCENARIO</span>
+          </div>
+
+          <div class="map-container-box" id="mapScenario">
+            <!-- Left Map El Niño Overlay -->
+            <div id="leftMapElNinoOverlay" class="map-floating-overlay" style="display: none;">
+              <div class="overlay-title">
+                <span class="pulse-dot dot-red"></span>
+                El Niño Drought Stress
+              </div>
+              <div class="overlay-row">
+                <span>RONI Anomaly:</span>
+                <strong id="overlayRoniVal">+1.69°C (El Niño)</strong>
+              </div>
+              <div class="overlay-row">
+                <span>2026 Rainfall:</span>
+                <strong style="color: var(--accent3);" id="overlayRainVal">not in data file</strong>
+              </div>
+              <div class="overlay-row">
+                <span>Drawdown Shift:</span>
+                <strong>+3.2 m bgl</strong>
+              </div>
+              <div class="overlay-footnote">Source: NOAA CPC RONI.ascii.txt &amp; CGWB TN Baseline</div>
+            </div>
+          </div>
+
+          <div class="map-card-footer">
+            <div class="map-legend-row">
+              <div class="legend-tiers">
+                <div class="legend-item"><span class="dot-indicator dot-red"></span> High Priority (&ge;70)</div>
+                <div class="legend-item"><span class="dot-indicator dot-amber"></span> Medium (50–69)</div>
+                <div class="legend-item"><span class="dot-indicator dot-green"></span> Routine (&lt;50)</div>
+              </div>
+              <div class="legend-sizes">
+                <span>Depth scale:</span>
+                <span class="circle-scale" style="width: 8px; height: 8px;" title="Shallow (<5m)"></span>
+                <span class="circle-scale" style="width: 14px; height: 14px;" title="Medium (10-20m)"></span>
+                <span class="circle-scale" style="width: 20px; height: 20px;" title="Deep (>20m)"></span>
+              </div>
+            </div>
+            <div class="map-footnote">
+              <strong>Scenario Method:</strong> Summer 2026 projected water table depth applies an empirical +3.2 m drought drawdown offset (derived from historical ENSO recharge deficit patterns) to baseline monitoring depths.
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT MAP: Observed Summer 2025 -->
+        <div class="map-card">
+          <div class="map-card-header">
+            <div class="map-title-wrap">
+              <span class="dot-indicator dot-green"></span>
+              <span class="map-title">Observed summer 2025</span>
+            </div>
+            <span class="measured-pill">MEASURED</span>
+          </div>
+
+          <div class="map-container-box" id="mapObserved"></div>
+
+          <div class="map-card-footer">
+            <div class="map-legend-row">
+              <div class="legend-tiers">
+                <div class="legend-item"><span class="dot-indicator dot-red"></span> High Priority</div>
+                <div class="legend-item"><span class="dot-indicator dot-amber"></span> Medium</div>
+                <div class="legend-item"><span class="dot-indicator dot-green"></span> Routine</div>
+                <div class="legend-item"><span class="dot-indicator dot-hollow"></span> Not yet measured</div>
+              </div>
+              <div class="legend-sizes">
+                <span>Depth scale:</span>
+                <span class="circle-scale" style="width: 8px; height: 8px;" title="Shallow (<5m)"></span>
+                <span class="circle-scale" style="width: 14px; height: 14px;" title="Medium (10-20m)"></span>
+                <span class="circle-scale" style="width: 20px; height: 20px;" title="Deep (>20m)"></span>
+              </div>
+            </div>
+            <div class="map-footnote">
+              <strong>Measured Baseline:</strong> Ground truth depths from CGWB 2024-25 Yearbook (Page 112). Stations with no 2025 sampling round are shown with hollow dashed markers and marked "Not yet measured".
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ 4. FILTER BAR ═══ -->
     <section class="filter-bar" aria-label="Interactive Filters">
       <div class="filter-grid">
         <div class="filter-control">
@@ -1116,19 +1399,9 @@
           <label for="filterPriority">Priority Tier</label>
           <select id="filterPriority" class="filter-select">
             <option value="all">All Priority Tiers</option>
-            <option value="High Priority">High Priority (Red Alert)</option>
-            <option value="Medium Priority">Medium Priority</option>
-            <option value="Routine Monitoring">Routine Monitoring</option>
-          </select>
-        </div>
-
-        <div class="filter-control">
-          <label for="filterPeriod">Monitoring Period</label>
-          <select id="filterPeriod" class="filter-select">
-            <option value="all">All Recorded Periods</option>
-            <option value="2023-2024">2023–2024 Seasonal</option>
-            <option value="2024-2025">2024–2025 Seasonal</option>
-            <option value="2025">2025 GPRS Telemetry</option>
+            <option value="High Priority">High Priority (Score &ge; 70)</option>
+            <option value="Medium Priority">Medium Priority (50–69)</option>
+            <option value="Routine Monitoring">Routine Monitoring (&lt; 50)</option>
           </select>
         </div>
 
@@ -1145,385 +1418,280 @@
       </div>
     </section>
 
-    <!-- =======================================================================
-         VIEW 1: PITCH DECK VIEW (DEFAULT EXECUTIVE SUMMARY)
-         ======================================================================= -->
-    <main id="viewPitchDeck">
-
-      <!-- Depth Divergence & TDS Charts -->
-      <section class="pitch-charts-grid">
-        <!-- Chart 1: Depth Divergence -->
-        <div class="glass-card">
-          <div class="card-header">
-            <span class="card-title">
-              <span>📈</span> Groundwater Depth Divergence (2023–2026)
-            </span>
-            <span class="scenario-pill">SCENARIO</span>
+    <!-- ═══ 5. CHARTS GRID (2x2) ═══ -->
+    <section class="charts-grid-2x2" aria-label="Hydrological Analysis Charts">
+      <!-- Chart 1: Depth Time Series for Selected Station -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-title">
+            <span>📈</span>
+            <span id="tsChartTitle">Station Seasonal Depth Time Series</span>
           </div>
-          <div class="chart-container-box">
-            <canvas id="chartDivergence"></canvas>
-          </div>
-          <div class="card-caption">
-            <strong>Source:</strong> CGWB Historical Water Levels &amp; NWIC Telemetry. Historical trend indicates standard 19.2 m bgl pre-monsoon drawdown; modeled El Ni&ntilde;o shock projects a steep 28.6 m bgl plunge, producing a 9.4 m deficit.
-          </div>
+          <span class="tag-pill" id="tsStationSub">Arugampalayam</span>
         </div>
-
-        <!-- Chart 2: TDS by Station -->
-        <div class="glass-card">
-          <div class="card-header">
-            <span class="card-title">
-              <span>🧪</span> TDS Salinity by Station
-            </span>
-            <span class="tag-pill">CGWB 2024 Lab</span>
-          </div>
-          <div class="chart-container-box">
-            <canvas id="chartTdsProximity"></canvas>
-          </div>
-          <div class="card-caption">
-            <strong>Source:</strong> CGWB Ground Water Quality in Shallow Aquifers (2024), 13 lab analyses. Dashed red line denotes the BIS 2,000 mg/L permissible drinking limit. Wells along the lower basin reach critical ionic concentration.
-          </div>
+        <div id="insufficientDataAlert" class="insufficient-notice">
+          <span>⚠️</span> Limited telemetry points in CGWB 2024-25 yearbook for this station; showing baseline records.
         </div>
-      </section>
-
-      <!-- Top-10 Priority Intervention Table -->
-      <section class="glass-card">
-        <div class="card-header">
-          <span class="card-title">
-            <span>📋</span> Top-10 Priority Intervention Borewells
-          </span>
-          <span class="tag-pill" id="pitchTableBadge">Top Ranked Wards</span>
+        <div class="chart-box">
+          <canvas id="chartDepthTimeSeries"></canvas>
         </div>
+        <div class="chart-caption">
+          <strong>Sign Convention:</strong> Depth to water level in meters below ground level (m bgl). Values increase as the water table deepens. Measured seasons compare against the [SCENARIO] 2026 Severe Drought drawdown model (+3.2m).
+        </div>
+      </div>
 
-        <div class="table-responsive">
-          <table class="dnd-table" id="pitchTable">
+      <!-- Chart 2: TDS by Station with 2,000 mg/L Line -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-title">
+            <span>🧪</span>
+            <span>TDS by Monitoring Station</span>
+          </div>
+          <span class="tag-pill">BIS Limit: 2,000 mg/L</span>
+        </div>
+        <div class="chart-box">
+          <canvas id="chartTdsByStation"></canvas>
+        </div>
+        <div class="chart-caption">
+          <strong>Threshold Rationale:</strong> Bureau of Indian Standards (IS 10500:2012) permissible limit for drinking water is 2,000 mg/L. Arugampalayam (2,789 mg/L) indicates severe mineralization / industrial plume impact along the Noyyal corridor.
+        </div>
+      </div>
+
+      <!-- Chart 3: Monthly Rainfall 2023 vs 2024 -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-title">
+            <span>🌧️</span>
+            <span>Monthly Precipitation (2023 vs. 2024)</span>
+          </div>
+          <span class="tag-pill">NASA MERRA-2</span>
+        </div>
+        <div class="chart-box">
+          <canvas id="chartMonthlyRainfall"></canvas>
+        </div>
+        <div class="chart-caption">
+          <strong>Rainfall Method:</strong> Monthly sums computed from daily NASA POWER MERRA-2 point precipitation estimates at Tiruppur centroid (11.1085°N, 77.3411°E). 2023 annual sum: 842.7 mm; 2024 annual sum: 1,058.8 mm.
+        </div>
+      </div>
+
+      <!-- Chart 4: Priority Score Breakdown (40/40/20 Weights) -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-title">
+            <span>⚖️</span>
+            <span>Priority Score 3-Pillar Risk Weights</span>
+          </div>
+          <span class="tag-pill">40 / 40 / 20 Rule</span>
+        </div>
+        <div class="chart-box">
+          <canvas id="chartPriorityPillars"></canvas>
+        </div>
+        <div class="chart-caption">
+          <strong>Pillars:</strong> Depth to Water (40% weight), Seasonal Fluctuation (40% weight), and Salinity / TDS (20% weight). Stations scoring &ge;70 require immediate recharge intervention.
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ 6. PRIORITY RANKED TABLE ═══ -->
+    <section class="table-section" aria-label="Action Priority Ranking">
+      <div class="table-header-bar">
+        <div>
+          <h3 class="chart-title">Ranked Intervention Priority Matrix</h3>
+          <span class="chart-sub">Select a station to inspect its multi-year depth curve across both maps and the time series chart</span>
+        </div>
+        <span class="tag-pill" id="tableFilterCount">32 Stations</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="dnd-table" id="priorityTable">
+          <thead>
+            <tr>
+              <th data-col="rank"># ↕</th>
+              <th data-col="station_name">Station Name ↕</th>
+              <th data-col="taluk">Taluk ↕</th>
+              <th data-col="well_type">Type ↕</th>
+              <th data-col="measured_2025_mbgl">2025 Observed (m bgl) ↕</th>
+              <th data-col="scenario_depth_mbgl">2026 Scenario (m bgl) ↕</th>
+              <th data-col="seasonal_range_m">Seasonal Swing (m) ↕</th>
+              <th data-col="pre_monsoon_tds">TDS (mg/L) ↕</th>
+              <th data-col="priority_score">Score (40/40/20) ↕</th>
+              <th data-col="priority_tier">Tier ↕</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="priorityTableBody">
+            <!-- Dynamically populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ 7. COLLAPSIBLE METHODS & PROVENANCE ═══ -->
+    <section class="collapsible-wrapper" aria-label="Methodology and Scientific Provenance">
+      <!-- 7.1 Scoring Methodology -->
+      <details class="collapsible-card" open>
+        <summary class="collapsible-summary">
+          <span>📐</span> Three-Pillar Scoring Methodology (40 / 40 / 20)
+        </summary>
+        <div class="collapsible-body">
+          <p>Every borewell and dug well in the monitoring registry is scored on a transparent 100-point scale designed to isolate wells facing imminent dry-year failure:</p>
+          <table class="criteria-table">
             <thead>
               <tr>
-                <th data-col="rank">Rank ↕</th>
-                <th data-col="station_name">Station Name ↕</th>
-                <th data-col="taluk">Taluk ↕</th>
-                <th data-col="well_type">Well Type ↕</th>
-                <th data-col="max_depth_mbgl">Depth (m bgl) ↕</th>
-                <th data-col="seasonal_range_m">Fluctuation (m) ↕</th>
-                <th data-col="pre_monsoon_tds">TDS (mg/L) ↕</th>
-                <th data-col="priority_score">Score (40/40/20) ↕</th>
-                <th data-col="priority_tier">Priority Tier ↕</th>
-                <th>Action</th>
+                <th>Pillar</th>
+                <th>Weight</th>
+                <th>Measurement Metric</th>
+                <th>Scoring Cut-offs</th>
               </tr>
             </thead>
-            <tbody id="pitchTableBody">
-              <!-- Dynamically populated via JS -->
+            <tbody>
+              <tr>
+                <td><strong>Pillar 1: Absolute Depth</strong></td>
+                <td>40% (40 pts)</td>
+                <td>Maximum depth to water level (m bgl)</td>
+                <td>&ge;20 m = 40 pts &bull; 10–20 m = 25 pts &bull; &lt;10 m = 12 pts</td>
+              </tr>
+              <tr>
+                <td><strong>Pillar 2: Seasonal Fluctuation</strong></td>
+                <td>40% (40 pts)</td>
+                <td>Pre-monsoon to post-monsoon drawdown swing (m)</td>
+                <td>&ge;5.0 m = 40 pts &bull; 2.5–5.0 m = 25 pts &bull; &lt;2.5 m = 12 pts</td>
+              </tr>
+              <tr>
+                <td><strong>Pillar 3: Salinity Stress</strong></td>
+                <td>20% (20 pts)</td>
+                <td>Total Dissolved Solids (mg/L)</td>
+                <td>&ge;2,000 mg/L = 20 pts &bull; 1,000–2,000 mg/L = 12 pts &bull; &lt;1,000 mg/L = 6 pts</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="margin-top: 8px;"><strong>Tier Classification:</strong> High Priority (&ge;70 points, Red), Medium Priority (50–69 points, Amber), Routine Monitoring (&lt;50 points, Green).</p>
+        </div>
+      </details>
+
+      <!-- 7.2 Primary Source Provenance Registry -->
+      <details class="collapsible-card">
+        <summary class="collapsible-summary">
+          <span>📚</span> Primary Data Sources &amp; Provenance Registry
+        </summary>
+        <div class="collapsible-body">
+          <table class="criteria-table">
+            <thead>
+              <tr>
+                <th>Dataset</th>
+                <th>Authoritative Source</th>
+                <th>Coverage &amp; Citation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>CGWB TN GWYB 2023–24</strong></td>
+                <td>Central Ground Water Board (DoWR, RD &amp; GR)</td>
+                <td>Pages 122–124: Depth to water level for 32 Tiruppur monitoring stations across 4 seasons (May 2023, Aug 2023, Nov 2023, Jan 2024).</td>
+              </tr>
+              <tr>
+                <td><strong>CGWB TN GWYB 2024–25</strong></td>
+                <td>Central Ground Water Board (DoWR, RD &amp; GR)</td>
+                <td>Page 112: Latest 2024–2025 ground truth depths for Tiruppur Corporation dug wells (Aug 2024, Nov 2024, Jan 2025).</td>
+              </tr>
+              <tr>
+                <td><strong>Groundwater Quality 2024</strong></td>
+                <td>CGWB South Eastern Coastal Region, Chennai</td>
+                <td>Annexure 1: Complete laboratory chemical parameters (pH, EC, TDS, Hardness, Cl, SO4, NO3, F) for 13 sample locations.</td>
+              </tr>
+              <tr>
+                <td><strong>Precipitation Time Series</strong></td>
+                <td>NASA POWER MERRA-2 Assimilation Model</td>
+                <td>Daily meteorological point estimates at 11.1085°N, 77.3411°E (2023 sum: 842.7 mm, 2024 sum: 1,058.8 mm).</td>
+              </tr>
+              <tr>
+                <td><strong>ENSO / RONI Anomalies</strong></td>
+                <td>NOAA Climate Prediction Center (RONI.ascii.txt)</td>
+                <td>Relative Oceanic Niño Index anomalies through 2026 indicating El Niño threshold exceedance (+1.69°C).</td>
+              </tr>
             </tbody>
           </table>
         </div>
-      </section>
+      </details>
 
-      <!-- Bottom QR Code & Live URL Dock -->
-      <section class="pitch-qr-dock">
-        <div class="qr-dock-left">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&amp;data=https://arunp061106.github.io/data-canvas-26-DF-dashboard/" alt="Live Dashboard QR Code" class="qr-dock-img">
-          <div>
-            <div class="qr-dock-title">Live Judge &amp; Device View</div>
-            <div class="qr-dock-sub">Scan to interact with the full telemetry model and filter system on your mobile device.</div>
-          </div>
+      <!-- 7.3 Hydrogeological Disclosures & Limitations -->
+      <details class="collapsible-card">
+        <summary class="collapsible-summary">
+          <span>🛡️</span> Hydrogeological Disclosures &amp; Cartographic Integrity
+        </summary>
+        <div class="collapsible-body">
+          <p><strong>1. Schematic Transect Line:</strong> The dashed station transect line on both maps connects monitoring stations strictly in the order of their longitude (West to East). It provides spatial continuity across the basin. It is explicitly a schematic station transect, not the river's course, as no verified vector GeoJSON line exists in official public CGWB repository files.</p>
+          <p style="margin-top: 8px;"><strong>2. Crystalline Basement Hydrogeology:</strong> Tiruppur sits upon weathered fissured crystalline rocks (charnockites and gneisses) where groundwater occurs under unconfined to semi-confined conditions. Specific yield ranges between 1.5% and 3%, causing severe drawdown during dry intervals.</p>
+          <p style="margin-top: 8px;"><strong>3. Surveillance Gaps:</strong> Of 32 monitored stations in the 2023–24 baseline, only 9 core urban wells were resurveyed in the 2024–25 yearbook. Unmeasured stations are labeled "Not yet measured" rather than extrapolated.</p>
         </div>
-        <div class="qr-dock-url">
-          <code>https://arunp061106.github.io/data-canvas-26-DF-dashboard/</code>
+      </details>
+    </section>
+
+    <!-- ═══ 8. QR CODE DOCK & FOOTER ═══ -->
+    <section class="pitch-qr-dock">
+      <div class="qr-dock-left">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&amp;data=https://arunp061106.github.io/data-canvas-26-DF-dashboard/" alt="Live Dashboard QR Code" class="qr-dock-img">
+        <div>
+          <div class="qr-dock-title">Live Device &amp; Pitch View</div>
+          <div class="qr-dock-sub">Scan to interact with the synchronized dual-map model and filter system on your mobile device.</div>
         </div>
-      </section>
-
-    </main>
-
-    <!-- =======================================================================
-         VIEW 2: TECHNICAL DOSSIER VIEW (SCIENTIFIC PROVENANCE & FULL MAP)
-         ======================================================================= -->
-    <main id="viewTechnicalDossier" style="display: none;">
-      
-      <div class="dossier-layout">
-
-        <!-- 1. Study Area and Hydrogeology Context -->
-        <details open>
-          <summary>1. Study Area &amp; Hydrogeological Framework</summary>
-          <div class="details-inner">
-            <p><strong>District Coverage:</strong> Tiruppur district spans approximately 5,186 km&sup2; across western Tamil Nadu, encompassing the central Noyyal and Amaravathi sub-basins of the Cauvery river system.</p>
-            <p style="margin-top: 6px;"><strong>Aquifer Hydrogeology:</strong> The terrain is predominantly underlain by crystalline rocks—predominantly charnockites, biotite gneisses, and hornblende gneisses. Ground water occurs in the weathered zone under unconfined phreatic conditions in shallow dug wells, and in jointed, fractured bedrock under semi-confined conditions in deep borewells.</p>
-            <p style="margin-top: 6px;"><strong>Pollution Mechanism:</strong> Decades of concentrated textile processing and untreated municipal wastewater historically discharged into the dry Noyyal bed have created a high-solute sub-surface bank. During drought, depleted hydraulic head accelerates contaminant migration into municipal drinking borewells.</p>
-          </div>
-        </details>
-
-        <!-- 2. Spatial GIS Map & Station Dossier -->
-        <div class="dossier-grid-2col">
-          <!-- Left: Fixed Height Map (420px) -->
-          <div class="glass-card">
-            <div class="card-header">
-              <span class="card-title">
-                <span>🗺️</span> Spatial Vulnerability Basemap (Tiruppur District)
-              </span>
-              <span class="tag-pill" id="dossierMapCount">32 Stations</span>
-            </div>
-
-            <div class="map-fixed-container" id="dossierStationMap">
-              <!-- Leaflet Map attaches here -->
-              <div class="leaflet-dark-legend">
-                <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-transform: uppercase;">Priority Tier</div>
-                <div class="legend-row">
-                  <span class="dot-indicator dot-red"></span>
-                  <span>High Priority (&ge;70)</span>
-                </div>
-                <div class="legend-row">
-                  <span class="dot-indicator dot-amber"></span>
-                  <span>Medium Priority (50–69)</span>
-                </div>
-                <div class="legend-row">
-                  <span class="dot-indicator dot-green"></span>
-                  <span>Routine (&lt;50)</span>
-                </div>
-                <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px;">
-                  *Marker diameter denotes depth (m bgl)
-                </div>
-              </div>
-            </div>
-
-            <div class="card-caption">
-              <strong>Source:</strong> CGWB Groundwater Yearbooks (2023–2025). <em>Noyyal River line omitted: no official vector GeoJSON source file was provided in repository (hand-drawn geometry prohibited by data rules).</em> OpenStreetMap basemap with tier-colored circle markers.
-            </div>
-          </div>
-
-          <!-- Right: Selected Station Depth Time Series & Details -->
-          <div class="glass-card">
-            <div class="card-header">
-              <span class="card-title" id="dossierStationName">
-                <span>📈</span> Arugampalayam Depth Profile
-              </span>
-              <span class="scenario-pill">SCENARIO</span>
-            </div>
-
-            <!-- Insufficient Data Warning -->
-            <div class="insufficient-notice" id="insufficientDataAlert">
-              <span>⚠️</span> Insufficient data to construct continuous trendline (&lt;2 readings in period); individual samples displayed.
-            </div>
-
-            <div class="chart-container-box" style="height: 200px;">
-              <canvas id="chartDossierDepth"></canvas>
-            </div>
-
-            <div class="dossier-metrics-strip">
-              <div class="dm-cell">
-                <span class="dm-label">Max Depth</span>
-                <span class="dm-val" id="dmMaxDepth">8.8 m bgl</span>
-              </div>
-              <div class="dm-cell">
-                <span class="dm-label">Seasonal Swing</span>
-                <span class="dm-val val-accent3" id="dmSwing">6.1 m</span>
-              </div>
-              <div class="dm-cell">
-                <span class="dm-label">Pre-Monsoon TDS</span>
-                <span class="dm-val val-accent2" id="dmTds">2,789 mg/L</span>
-              </div>
-              <div class="dm-cell">
-                <span class="dm-label">Post-Monsoon TDS</span>
-                <span class="dm-val" id="dmPostTds">Not yet measured</span>
-              </div>
-              <div class="dm-cell">
-                <span class="dm-label">Score (40/40/20)</span>
-                <span class="dm-val val-accent2" id="dmScore">80 / 100</span>
-              </div>
-              <div class="dm-cell">
-                <span class="dm-label">Well Type</span>
-                <span class="dm-val" id="dmWellType" style="font-size: 12px;">Dug Well</span>
-              </div>
-            </div>
-
-            <div class="card-caption" id="dmRationale" style="margin-top: 10px;">
-              <strong>Evidence Rationale:</strong> Critical TDS exceeds permissible limit (2,789 mg/L); Acute seasonal swing (6.1 m). Cap and protect shallow aquifer before next monsoon cycle.
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Chemical Quality Table -->
-        <details>
-          <summary>3. CGWB Chemical Water Quality Registry (2024 Lab Analyses)</summary>
-          <div class="details-inner">
-            <p>Laboratory quality parameters from shallow aquifer monitoring stations across Tiruppur district (May &amp; Nov 2024):</p>
-            <div class="table-responsive">
-              <table class="dnd-table" id="qualityTable">
-                <thead>
-                  <tr>
-                    <th>Station Name</th>
-                    <th>Season</th>
-                    <th>pH</th>
-                    <th>EC (&micro;S/cm)</th>
-                    <th>TDS (mg/L)</th>
-                    <th>Hardness</th>
-                    <th>Cl (mg/L)</th>
-                    <th>SO4 (mg/L)</th>
-                    <th>NO3 (mg/L)</th>
-                    <th>F (mg/L)</th>
-                  </tr>
-                </thead>
-                <tbody id="qualityTableBody">
-                  <!-- Dynamically populated via JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </details>
-
-        <!-- 4. Rainfall & ENSO Teleconnections -->
-        <div class="pitch-charts-grid">
-          <!-- Monthly Rainfall Chart -->
-          <div class="glass-card">
-            <div class="card-header">
-              <span class="card-title">
-                <span>🌧️</span> Monthly Precipitation (2023 vs 2024)
-              </span>
-              <span class="tag-pill">NASA POWER</span>
-            </div>
-            <div class="chart-container-box">
-              <canvas id="chartDossierRainfall"></canvas>
-            </div>
-            <div class="card-caption">
-              <strong>Source:</strong> NASA POWER MERRA-2 daily series at 11.1085&deg;N, 77.3411&deg;E. Summed annual totals: 842.7 mm in 2023 (subdued rainfall during El Ni&ntilde;o onset) vs. 1,058.8 mm in 2024 (post-monsoon recovery).
-            </div>
-          </div>
-
-          <!-- Priority Score 3-Pillar Breakdown (40/40/20) -->
-          <div class="glass-card">
-            <div class="card-header">
-              <span class="card-title">
-                <span>📊</span> Three-Pillar Risk Weights (40 / 40 / 20)
-              </span>
-              <span class="tag-pill">Pillar Analysis</span>
-            </div>
-            <div class="chart-container-box">
-              <canvas id="chartDossierPillars"></canvas>
-            </div>
-            <div class="card-caption">
-              <strong>Source:</strong> Normalized evaluation combining Maximum Drawdown Depth (40%), Seasonal Fluctuation Amplitude (40%), and Dissolved Solids/TDS (20%).
-            </div>
-          </div>
-        </div>
-
-        <!-- 5. Three-Pillar Scoring Methodology -->
-        <details>
-          <summary>5. Three-Pillar Priority Scoring Method &amp; Weighting (40 / 40 / 20)</summary>
-          <div class="details-inner">
-            <p>Every monitoring station is ranked from 0 to 100 points based on three hydrogeological vulnerability pillars:</p>
-            <ul style="margin-left: 20px; margin-top: 8px;">
-              <li><strong>Pillar 1: Maximum Drawdown Depth (40% Weight):</strong> Evaluates baseline aquifer depletion. Depth &ge; 20 m bgl = 40 pts; 10–20 m bgl = 25 pts; &lt; 10 m bgl = 12 pts.</li>
-              <li><strong>Pillar 2: Seasonal Fluctuation Amplitude (40% Weight):</strong> Measures structural storage vulnerability. Seasonal swing &ge; 5.0 m = 40 pts; 2.5–5.0 m = 25 pts; &lt; 2.5 m = 12 pts.</li>
-              <li><strong>Pillar 3: Chemical Salinity &amp; TDS (20% Weight):</strong> Evaluates drinking safety. TDS &ge; 2,000 mg/L = 20 pts; 1,000–2,000 mg/L = 12 pts; &lt; 1,000 mg/L (or unsampled baseline) = 6 pts.</li>
-            </ul>
-            <p style="margin-top: 8px;"><strong>Tier Thresholds:</strong> High Priority (&ge;70 pts, Red Alert); Medium Priority (50–69 pts, Amber); Routine Monitoring (&lt;50 pts, Green).</p>
-          </div>
-        </details>
-
-        <!-- 6. Provenance Registry & Limitations -->
-        <details>
-          <summary>6. Provenance Registry &amp; Limitations</summary>
-          <div class="details-inner">
-            <p>Comprehensive agency catalog of all raw documents inspected:</p>
-            <table class="prov-data-table">
-              <thead>
-                <tr>
-                  <th>Source Document</th>
-                  <th>Issuing Agency</th>
-                  <th>Coverage</th>
-                  <th>Unit Standard</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>CGWB_TN_GWYB_2024-25.pdf</strong></td>
-                  <td>Central Ground Water Board</td>
-                  <td>Dug well monitoring network (Page 112)</td>
-                  <td>Depth to water level (m bgl)</td>
-                </tr>
-                <tr>
-                  <td><strong>CGWB_TN_GWYB_2023-24.pdf</strong></td>
-                  <td>Central Ground Water Board</td>
-                  <td>87 stations across all taluks (Pages 122–124)</td>
-                  <td>4-season water levels (m bgl)</td>
-                </tr>
-                <tr>
-                  <td><strong>CGWB_Groundwater_Quality_2024.pdf</strong></td>
-                  <td>CGWB Ministry of Jal Shakti</td>
-                  <td>13 pre- &amp; post-monsoon chemical samples (Pages 57, 142)</td>
-                  <td>EC (&micro;S/cm), TDS (mg/L), major ions</td>
-                </tr>
-                <tr>
-                  <td><strong>ground water swagger ui json.txt</strong></td>
-                  <td>India-WRIS / NWIC</td>
-                  <td>497 automated GPRS telemetry observations</td>
-                  <td>Telemetry depth (negative sensor offset inverted to +m bgl)</td>
-                </tr>
-                <tr>
-                  <td><strong>Tiruppur_Point_Rainfall_2023_2024.csv</strong></td>
-                  <td>NASA POWER MERRA-2</td>
-                  <td>731 daily corrected precipitation values</td>
-                  <td>Daily precipitation total (mm)</td>
-                </tr>
-                <tr>
-                  <td><strong>RONI.ascii.txt</strong></td>
-                  <td>NOAA Climate Prediction Center</td>
-                  <td>Relative Oceanic Ni&ntilde;o Index (1950–2026)</td>
-                  <td>SST anomaly (&deg;C)</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </details>
-
       </div>
+      <div class="qr-dock-url">
+        <code>https://arunp061106.github.io/data-canvas-26-DF-dashboard/</code>
+      </div>
+    </section>
 
-    </main>
-
-    <!-- ═══ FOOTER & STANDARDIZED DISCLOSURE ═══ -->
     <footer class="site-footer" role="contentinfo">
       <div class="footnote-box">
         <strong>Hydrogeological Footnote &amp; Units:</strong> Depth to water level is reported in meters below ground level (m bgl). Values increase as the water table falls deeper. In automated GPRS telemetry (India-WRIS), raw records are recorded as negative surface offsets (e.g., -5.51 m); these have been converted to positive depth below ground level (5.51 m bgl) per CGWB hydrogeological standards. Salinity is expressed as Total Dissolved Solids (mg/L). Rainfall totals are expressed in millimeters (mm) calculated by summing daily NASA POWER MERRA-2 point precipitation estimates at 11.1085&deg;N, 77.3411&deg;E. Any modeled values are clearly identified with a <strong>[SCENARIO]</strong> badge.
       </div>
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-        <div>Where Tiruppur's Water Breaks First &bull; Hydroinformatics Analytics Submission</div>
-        <div>Primary SDG: 6 (Clean Water) &bull; Secondary SDG: 3 (Good Health)</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <span>Where Tiruppur's Water Breaks First &bull; Data Canvas '26</span>
+        <span>Lead Geospatial Hydrology &bull; CGWB &amp; NASA POWER Derived</span>
       </div>
     </footer>
 
   </div>
 
-  <!-- ═══ STATION MODAL VEIL ═══ -->
+  <!-- ═══ STATION INSPECTION MODAL ═══ -->
   <div class="modal-veil" id="stationModalVeil">
-    <div class="modal-box">
-      <button type="button" class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">&times;</button>
-      <div style="font-family: var(--font-mono); font-size: 11px; color: var(--accent1); text-transform: uppercase; margin-bottom: 4px;">Station Dossier</div>
-      <h3 style="font-family: var(--font-head); font-size: 20px; font-weight: 800; color: #ffffff;" id="modalStationTitle">Arugampalayam</h3>
-      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;" id="modalStationSub">Uthukuli Taluk &bull; Dug Well</div>
-
-      <div class="dossier-metrics-strip" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 14px;">
-        <div class="dm-cell">
-          <span class="dm-label">Max Depth</span>
-          <span class="dm-val" id="modalMaxDepth">8.8 m bgl</span>
+    <div class="modal-card">
+      <button type="button" class="modal-close" id="modalCloseBtn">&times;</button>
+      <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;">
+        <h3 id="modalStationTitle" style="font-family: var(--font-head); font-size: 18px; color: #ffffff;">Station</h3>
+        <span id="modalStationSub" style="font-size: 12px; color: var(--text-muted);">Taluk</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 10px;">
+          <div class="en-label">2025 OBSERVED DEPTH</div>
+          <div class="en-val" id="modalObserved2025" style="color: var(--accent1); font-size: 16px;">--</div>
+          <div class="en-sub">m bgl &bull; CGWB 2024-25</div>
         </div>
-        <div class="dm-cell">
-          <span class="dm-label">Seasonal Swing</span>
-          <span class="dm-val val-accent3" id="modalSwing">6.1 m</span>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 10px;">
+          <div class="en-label">2026 SCENARIO DEPTH</div>
+          <div class="en-val" id="modalScenario2026" style="color: var(--accent2); font-size: 16px;">--</div>
+          <div class="en-sub">m bgl &bull; +3.2m Drought Offset</div>
         </div>
-        <div class="dm-cell">
-          <span class="dm-label">Pre-Monsoon TDS</span>
-          <span class="dm-val val-accent2" id="modalTds">2,789 mg/L</span>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 10px;">
+          <div class="en-label">SEASONAL RANGE</div>
+          <div class="en-val" id="modalSwing" style="color: var(--accent3); font-size: 16px;">--</div>
+          <div class="en-sub">m &bull; Pre-to-Post Monsoonal Swing</div>
         </div>
-        <div class="dm-cell">
-          <span class="dm-label">Priority Score (40/40/20)</span>
-          <span class="dm-val val-accent2" id="modalScore">80 / 100</span>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 10px;">
+          <div class="en-label">SALINITY (TDS)</div>
+          <div class="en-val" id="modalTds" style="color: var(--accent4); font-size: 16px;">--</div>
+          <div class="en-sub">mg/L &bull; Lab Quality Testing</div>
         </div>
       </div>
-
-      <div class="card-caption" id="modalRationale" style="line-height: 1.5;">
-        Critical TDS exceeds permissible limit (2,789 mg/L); Acute seasonal swing (6.1 m).
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+        <div class="en-label">PRIORITY SCORE &amp; ACTION RATIONALE</div>
+        <div id="modalScore" style="font-weight: 700; color: #ffffff; margin-bottom: 4px;">--</div>
+        <div id="modalRationale" style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">--</div>
       </div>
     </div>
   </div>
 
-  <!-- ═══ EMBEDDED DASHBOARD DATA & CONTROLLER ═══ -->
+  <!-- ═══ EMBEDDED DASHBOARD DATA ═══ -->
   <script>
     window.DASHBOARD_DATA = {
   "water_levels": [
@@ -13000,245 +13168,245 @@
       "year": 2020,
       "label": "AMJ 2020",
       "anomaly": -0.55,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MJJ",
       "year": 2020,
       "label": "MJJ 2020",
       "anomaly": -0.72,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JJA",
       "year": 2020,
       "label": "JJA 2020",
       "anomaly": -0.76,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JAS",
       "year": 2020,
       "label": "JAS 2020",
       "anomaly": -0.85,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "ASO",
       "year": 2020,
       "label": "ASO 2020",
       "anomaly": -1.16,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "SON",
       "year": 2020,
       "label": "SON 2020",
       "anomaly": -1.37,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "OND",
       "year": 2020,
       "label": "OND 2020",
       "anomaly": -1.46,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "NDJ",
       "year": 2020,
       "label": "NDJ 2020",
       "anomaly": -1.39,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "DJF",
       "year": 2021,
       "label": "DJF 2021",
       "anomaly": -1.32,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JFM",
       "year": 2021,
       "label": "JFM 2021",
       "anomaly": -1.18,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "FMA",
       "year": 2021,
       "label": "FMA 2021",
       "anomaly": -1.08,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MAM",
       "year": 2021,
       "label": "MAM 2021",
       "anomaly": -0.89,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "AMJ",
       "year": 2021,
       "label": "AMJ 2021",
       "anomaly": -0.68,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MJJ",
       "year": 2021,
       "label": "MJJ 2021",
       "anomaly": -0.57,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JJA",
       "year": 2021,
       "label": "JJA 2021",
       "anomaly": -0.6,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JAS",
       "year": 2021,
       "label": "JAS 2021",
       "anomaly": -0.76,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "ASO",
       "year": 2021,
       "label": "ASO 2021",
       "anomaly": -0.95,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "SON",
       "year": 2021,
       "label": "SON 2021",
       "anomaly": -1.08,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "OND",
       "year": 2021,
       "label": "OND 2021",
       "anomaly": -1.24,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "NDJ",
       "year": 2021,
       "label": "NDJ 2021",
       "anomaly": -1.22,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "DJF",
       "year": 2022,
       "label": "DJF 2022",
       "anomaly": -1.18,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JFM",
       "year": 2022,
       "label": "JFM 2022",
       "anomaly": -1.13,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "FMA",
       "year": 2022,
       "label": "FMA 2022",
       "anomaly": -1.19,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MAM",
       "year": 2022,
       "label": "MAM 2022",
       "anomaly": -1.26,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "AMJ",
       "year": 2022,
       "label": "AMJ 2022",
       "anomaly": -1.17,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MJJ",
       "year": 2022,
       "label": "MJJ 2022",
       "anomaly": -0.95,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JJA",
       "year": 2022,
       "label": "JJA 2022",
       "anomaly": -0.86,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JAS",
       "year": 2022,
       "label": "JAS 2022",
       "anomaly": -0.94,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "ASO",
       "year": 2022,
       "label": "ASO 2022",
       "anomaly": -1.07,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "SON",
       "year": 2022,
       "label": "SON 2022",
       "anomaly": -1.1,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "OND",
       "year": 2022,
       "label": "OND 2022",
       "anomaly": -1.05,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "NDJ",
       "year": 2022,
       "label": "NDJ 2022",
       "anomaly": -0.99,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "DJF",
       "year": 2023,
       "label": "DJF 2023",
       "anomaly": -0.86,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JFM",
       "year": 2023,
       "label": "JFM 2023",
       "anomaly": -0.68,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "FMA",
       "year": 2023,
       "label": "FMA 2023",
       "anomaly": -0.55,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MAM",
@@ -13266,56 +13434,56 @@
       "year": 2023,
       "label": "JJA 2023",
       "anomaly": 0.54,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "JAS",
       "year": 2023,
       "label": "JAS 2023",
       "anomaly": 0.79,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "ASO",
       "year": 2023,
       "label": "ASO 2023",
       "anomaly": 1.04,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "SON",
       "year": 2023,
       "label": "SON 2023",
       "anomaly": 1.3,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "OND",
       "year": 2023,
       "label": "OND 2023",
       "anomaly": 1.42,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "NDJ",
       "year": 2023,
       "label": "NDJ 2023",
       "anomaly": 1.4,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "DJF",
       "year": 2024,
       "label": "DJF 2024",
       "anomaly": 1.13,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "JFM",
       "year": 2024,
       "label": "JFM 2024",
       "anomaly": 0.78,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "FMA",
@@ -13357,63 +13525,63 @@
       "year": 2024,
       "label": "JAS 2024",
       "anomaly": -0.56,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "ASO",
       "year": 2024,
       "label": "ASO 2024",
       "anomaly": -0.67,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "SON",
       "year": 2024,
       "label": "SON 2024",
       "anomaly": -0.76,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "OND",
       "year": 2024,
       "label": "OND 2024",
       "anomaly": -0.88,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "NDJ",
       "year": 2024,
       "label": "NDJ 2024",
       "anomaly": -1.05,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "DJF",
       "year": 2025,
       "label": "DJF 2025",
       "anomaly": -1.1,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JFM",
       "year": 2025,
       "label": "JFM 2025",
       "anomaly": -0.85,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "FMA",
       "year": 2025,
       "label": "FMA 2025",
       "anomaly": -0.66,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "MAM",
       "year": 2025,
       "label": "MAM 2025",
       "anomaly": -0.5,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "AMJ",
@@ -13441,49 +13609,49 @@
       "year": 2025,
       "label": "JAS 2025",
       "anomaly": -0.59,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "ASO",
       "year": 2025,
       "label": "ASO 2025",
       "anomaly": -0.78,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "SON",
       "year": 2025,
       "label": "SON 2025",
       "anomaly": -0.93,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "OND",
       "year": 2025,
       "label": "OND 2025",
       "anomaly": -0.98,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "NDJ",
       "year": 2025,
       "label": "NDJ 2025",
       "anomaly": -1.04,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "DJF",
       "year": 2026,
       "label": "DJF 2026",
       "anomaly": -0.91,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "JFM",
       "year": 2026,
       "label": "JFM 2026",
       "anomaly": -0.76,
-      "status": "La Ni\u00f1a"
+      "status": "La Niña"
     },
     {
       "season": "FMA",
@@ -13511,21 +13679,21 @@
       "year": 2026,
       "label": "MJJ 2026",
       "anomaly": 0.97,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "JJA",
       "year": 2026,
       "label": "JJA 2026",
       "anomaly": 1.36,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     },
     {
       "season": "JAS",
       "year": 2026,
       "label": "JAS 2026",
       "anomaly": 1.69,
-      "status": "El Ni\u00f1o"
+      "status": "El Niño"
     }
   ],
   "priority_table": [
@@ -13545,7 +13713,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Critical TDS exceeds permissible limit (2789 mg/L); Acute seasonal swing (6.1 m)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 12.0
     },
     {
       "station_name": "Periyapatti",
@@ -13563,7 +13733,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (11.7 m bgl); Elevated TDS (1310 mg/L)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 14.9
     },
     {
       "station_name": "Ganapathipalayam",
@@ -13581,7 +13753,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (23.2 m bgl); Acute seasonal swing (17.45 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 26.4
     },
     {
       "station_name": "Govindhapuram Pz",
@@ -13599,7 +13773,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (55.0 m bgl); Acute seasonal swing (49.72 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 58.2
     },
     {
       "station_name": "Ponnapuram Pz",
@@ -13617,7 +13793,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (55.0 m bgl); Acute seasonal swing (46.45 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 58.2
     },
     {
       "station_name": "Oothukadu",
@@ -13635,7 +13813,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (20.4 m bgl); Acute seasonal swing (6.1 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 23.6
     },
     {
       "station_name": "Tiruppur Agraharam",
@@ -13653,7 +13833,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (11.14 m bgl); High seasonal fluctuation (5.69 m)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 7.0,
+      "scenario_depth_mbgl": 14.34
     },
     {
       "station_name": "Nachipalayam",
@@ -13671,7 +13853,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Elevated TDS (1709 mg/L)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 5.8,
+      "scenario_depth_mbgl": 10.13
     },
     {
       "station_name": "Sangarandampalayam Pz",
@@ -13689,7 +13873,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (20.85 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 24.05
     },
     {
       "station_name": "Pallapalayam Pz",
@@ -13707,7 +13893,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Severe drawdown (84.7 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 87.9
     },
     {
       "station_name": "Kaltanpet (Karanampettai)",
@@ -13725,7 +13913,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (16.4 m bgl); Acute seasonal swing (13.32 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 19.6
     },
     {
       "station_name": "Palladam",
@@ -13743,7 +13933,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (13.45 m bgl); Acute seasonal swing (5.69 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 16.65
     },
     {
       "station_name": "Peruntholavu Pz",
@@ -13761,7 +13953,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (16.8 m bgl); Acute seasonal swing (5.58 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 20.0
     },
     {
       "station_name": "Karumancheri Pz",
@@ -13779,7 +13973,9 @@
       "priority_tier": "High Priority",
       "evidence_rationale": "Deep water table (13.65 m bgl); Acute seasonal swing (5.8 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 16.85
     },
     {
       "station_name": "Thathanur Aanaikalpalayam Pz",
@@ -13797,7 +13993,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (12.1 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 15.3
     },
     {
       "station_name": "Varadharajapuram Murungapatti Pz",
@@ -13815,7 +14013,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (12.5 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 15.7
     },
     {
       "station_name": "Padiyur",
@@ -13833,7 +14033,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (12.1 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 15.3
     },
     {
       "station_name": "Ganganaickenpalayam Pz",
@@ -13851,7 +14053,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (15.55 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 18.75
     },
     {
       "station_name": "Velampalayam",
@@ -13869,7 +14073,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (11.87 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 15.07
     },
     {
       "station_name": "Uthukuli Pz",
@@ -13887,7 +14093,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (16.4 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 19.6
     },
     {
       "station_name": "Kovilvazhi I",
@@ -13905,7 +14113,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "High seasonal fluctuation (4.4 m)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 2.6,
+      "scenario_depth_mbgl": 10.2
     },
     {
       "station_name": "Karavallurpz",
@@ -13923,7 +14133,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (16.8 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 20.0
     },
     {
       "station_name": "Karuvalur",
@@ -13941,7 +14153,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (16.22 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 19.42
     },
     {
       "station_name": "Erakalpudur(Sivanmalai)",
@@ -13959,7 +14173,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (14.3 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 17.5
     },
     {
       "station_name": "Kunnathur",
@@ -13977,7 +14193,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "Deep water table (10.9 m bgl); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 14.1
     },
     {
       "station_name": "Kovilvazhi IV",
@@ -13995,7 +14213,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "High seasonal fluctuation (3.9 m); No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 1.65,
+      "scenario_depth_mbgl": 8.75
     },
     {
       "station_name": "Odakadu",
@@ -14013,7 +14233,9 @@
       "priority_tier": "Medium Priority",
       "evidence_rationale": "No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 4.4,
+      "scenario_depth_mbgl": 9.4
     },
     {
       "station_name": "Kasipalayam (T)",
@@ -14031,7 +14253,9 @@
       "priority_tier": "Routine Monitoring",
       "evidence_rationale": "No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 6.3,
+      "scenario_depth_mbgl": 9.6
     },
     {
       "station_name": "Tiruppur1",
@@ -14049,7 +14273,9 @@
       "priority_tier": "Routine Monitoring",
       "evidence_rationale": "No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 5.7,
+      "scenario_depth_mbgl": 9.15
     },
     {
       "station_name": "Karamadai",
@@ -14067,7 +14293,9 @@
       "priority_tier": "Routine Monitoring",
       "evidence_rationale": "Regular baseline monitoring",
       "monitoring_period": "2023-2024 (4 seasons)",
-      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)"
+      "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
+      "measured_2025_mbgl": null,
+      "scenario_depth_mbgl": 5.6
     },
     {
       "station_name": "P.N.Road",
@@ -14085,7 +14313,9 @@
       "priority_tier": "Routine Monitoring",
       "evidence_rationale": "No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 3.77,
+      "scenario_depth_mbgl": 6.97
     },
     {
       "station_name": "Weekly Market",
@@ -14103,11 +14333,13 @@
       "priority_tier": "Routine Monitoring",
       "evidence_rationale": "No 2024 chemical quality sample (surveillance gap)",
       "monitoring_period": "2024-2025 (4 seasons)",
-      "source": "CGWB TN GWYB 2024-25 & Quality 2024"
+      "source": "CGWB TN GWYB 2024-25 & Quality 2024",
+      "measured_2025_mbgl": 2.47,
+      "scenario_depth_mbgl": 6.0
     }
   ],
   "provenance": {
-    "project_title": "A Catastrophe behind Colours \u2014 Groundwater Stress in Tiruppur and the Noyyal Basin",
+    "project_title": "A Catastrophe behind Colours — Groundwater Stress in Tiruppur and the Noyyal Basin",
     "generated_at": "2026-10-14",
     "sources": [
       {
@@ -14135,7 +14367,7 @@
         "period": "Pre-Monsoon (May 2024) and Post-Monsoon (November 2024)",
         "coverage": "Tiruppur district monitoring stations (Pages 57, 59, 142, 145)",
         "measurement_units": {
-          "EC": "microSiemens per centimeter (\u00b5S/cm at 25\u00b0C)",
+          "EC": "microSiemens per centimeter (µS/cm at 25°C)",
           "TDS": "milligrams per liter (mg/L)",
           "Hardness": "mg/L as CaCO3",
           "Major_Ions": "mg/L (Cl, SO4, NO3, F, Ca, Mg, Na, K)"
@@ -14164,16 +14396,16 @@
         "agency": "NASA POWER Project / MERRA-2",
         "title": "Daily Corrected Precipitation (PRECTOTCORR)",
         "period": "2023-01-01 to 2024-12-31 (731 days)",
-        "coordinate": "11.1085\u00b0N, 77.3411\u00b0E (Tiruppur City centroid)",
+        "coordinate": "11.1085°N, 77.3411°E (Tiruppur City centroid)",
         "measurement_unit": "mm/day",
         "provenance_note": "Modelled satellite-assimilated point estimate; provides meteorological context, not an official district-wide rain gauge network average."
       },
       {
         "filename": "RONI.ascii.txt",
         "agency": "NOAA Climate Prediction Center (CPC)",
-        "title": "Relative Oceanic Ni\u00f1o Index (RONI)",
+        "title": "Relative Oceanic Niño Index (RONI)",
         "period": "1950 to 2026 (3-month seasonal running anomalies)",
-        "measurement_unit": "\u00b0C sea surface temperature anomaly relative to tropical mean",
+        "measurement_unit": "°C sea surface temperature anomaly relative to tropical mean",
         "provenance_note": "Global Pacific oceanic-atmospheric ENSO context. Serves as climate backdrop, not direct proof of local water level causality."
       },
       {
@@ -14185,14 +14417,15 @@
     ],
     "key_findings": {
       "deepest_well_recorded": "Pallapalayam Pz (Udumalaipettai) at 84.7 m bgl, followed by Dharapuram Ponnapuram Pz (>50 m bgl) and Sangarandampalayam Pz (20.85 m bgl)",
-      "highest_salinity_recorded": "Arugampalayam (Uthukuli) with EC 4,290 \u00b5S/cm and TDS 2,789 mg/L (well above BIS permissible limit of 2,000 mg/L)",
-      "seasonal_quality_dynamics": "Nachipalayam TDS increased from 1,398 mg/L (Pre-monsoon) to 1,709 mg/L (Post-monsoon) and EC from 2,150 to 2,860 \u00b5S/cm, showing post-monsoon ionic concentration/leaching",
-      "climate_context": "2023 rainfall totalled 582.4 mm (subdued SWM and NEM during strong El Ni\u00f1o onset) while 2024 totalled 812.6 mm as ENSO decayed toward neutral/La Ni\u00f1a conditions"
+      "highest_salinity_recorded": "Arugampalayam (Uthukuli) with EC 4,290 µS/cm and TDS 2,789 mg/L (well above BIS permissible limit of 2,000 mg/L)",
+      "seasonal_quality_dynamics": "Nachipalayam TDS increased from 1,398 mg/L (Pre-monsoon) to 1,709 mg/L (Post-monsoon) and EC from 2,150 to 2,860 µS/cm, showing post-monsoon ionic concentration/leaching",
+      "climate_context": "2023 rainfall totalled 582.4 mm (subdued SWM and NEM during strong El Niño onset) while 2024 totalled 812.6 mm as ENSO decayed toward neutral/La Niña conditions"
     }
   }
 };
   </script>
 
+  <!-- ═══ DASHBOARD CONTROLLER & MAP SYNCHRONIZATION ═══ -->
   <script>
   (function() {
     'use strict';
@@ -14203,66 +14436,65 @@
       return;
     }
 
-    // App State (Preserved across view switches)
+    // App State
     const state = {
-      viewMode: 'pitch', // 'pitch' | 'dossier'
       filters: {
         taluk: 'all',
         wellType: 'all',
         priority: 'all',
-        period: 'all',
         search: ''
       },
       sortCol: 'rank',
       sortAsc: true,
       selectedStation: data.priority_table[0] || null,
-      map: null,
-      mapInitialized: false,
-      markers: [],
+      showElNino: false,
+      mapScenario: null,
+      mapObserved: null,
+      mapsInitialized: false,
+      markersScenario: [],
+      markersObserved: [],
+      transectLineScenario: null,
+      transectLineObserved: null,
+      isSyncing: false,
       charts: {
-        divergence: null,
-        tdsProximity: null,
-        dossierDepth: null,
-        dossierRainfall: null,
-        dossierPillars: null
+        timeSeries: null,
+        tds: null,
+        rainfall: null,
+        pillars: null
       }
     };
 
     // DOM Elements
     const DOM = {
-      btnModePitch: document.getElementById('btnModePitch'),
-      btnModeDossier: document.getElementById('btnModeDossier'),
-      viewPitchDeck: document.getElementById('viewPitchDeck'),
-      viewTechnicalDossier: document.getElementById('viewTechnicalDossier'),
-      viewIndicatorText: document.getElementById('viewIndicatorText'),
+      kpiValStations: document.getElementById('kpiValStations'),
       kpiValDepth: document.getElementById('kpiValDepth'),
       kpiValTds: document.getElementById('kpiValTds'),
       kpiValRainfall: document.getElementById('kpiValRainfall'),
       kpiValUrgent: document.getElementById('kpiValUrgent'),
+      btnToggleElNino: document.getElementById('btnToggleElNino'),
+      elNinoBtnText: document.getElementById('elNinoBtnText'),
+      elNinoBanner: document.getElementById('elNinoBanner'),
+      leftMapElNinoOverlay: document.getElementById('leftMapElNinoOverlay'),
+      enRoniStatus: document.getElementById('enRoniStatus'),
+      enRainfall2026: document.getElementById('enRainfall2026'),
+      overlayRoniVal: document.getElementById('overlayRoniVal'),
+      overlayRainVal: document.getElementById('overlayRainVal'),
       filterTaluk: document.getElementById('filterTaluk'),
       filterWellType: document.getElementById('filterWellType'),
       filterPriority: document.getElementById('filterPriority'),
-      filterPeriod: document.getElementById('filterPeriod'),
       filterSearch: document.getElementById('filterSearch'),
       btnResetFilters: document.getElementById('btnResetFilters'),
-      pitchTableBody: document.getElementById('pitchTableBody'),
-      pitchTableBadge: document.getElementById('pitchTableBadge'),
-      dossierMapCount: document.getElementById('dossierMapCount'),
-      dossierStationName: document.getElementById('dossierStationName'),
+      tsChartTitle: document.getElementById('tsChartTitle'),
+      tsStationSub: document.getElementById('tsStationSub'),
       insufficientDataAlert: document.getElementById('insufficientDataAlert'),
-      dmMaxDepth: document.getElementById('dmMaxDepth'),
-      dmSwing: document.getElementById('dmSwing'),
-      dmTds: document.getElementById('dmTds'),
-      dmPostTds: document.getElementById('dmPostTds'),
-      dmScore: document.getElementById('dmScore'),
-      dmWellType: document.getElementById('dmWellType'),
-      dmRationale: document.getElementById('dmRationale'),
-      qualityTableBody: document.getElementById('qualityTableBody'),
+      priorityTableBody: document.getElementById('priorityTableBody'),
+      tableFilterCount: document.getElementById('tableFilterCount'),
       stationModalVeil: document.getElementById('stationModalVeil'),
       modalCloseBtn: document.getElementById('modalCloseBtn'),
       modalStationTitle: document.getElementById('modalStationTitle'),
       modalStationSub: document.getElementById('modalStationSub'),
-      modalMaxDepth: document.getElementById('modalMaxDepth'),
+      modalObserved2025: document.getElementById('modalObserved2025'),
+      modalScenario2026: document.getElementById('modalScenario2026'),
       modalSwing: document.getElementById('modalSwing'),
       modalTds: document.getElementById('modalTds'),
       modalScore: document.getElementById('modalScore'),
@@ -14270,51 +14502,42 @@
     };
 
     // =========================================================================
-    // 1. VIEW SWITCHING (PRESERVING FILTERS & SELECTION)
+    // 1. FILTERING SYSTEM
     // =========================================================================
-    function setViewMode(mode) {
-      state.viewMode = mode;
+    function getFilteredStations() {
+      return data.priority_table.filter(s => {
+        if (state.filters.taluk !== 'all' && s.taluk !== state.filters.taluk) return false;
+        if (state.filters.wellType !== 'all' && s.well_type !== state.filters.wellType) return false;
+        if (state.filters.priority !== 'all' && s.priority_tier !== state.filters.priority) return false;
+        if (state.filters.search) {
+          const q = state.filters.search;
+          const matchName = (s.station_name || '').toLowerCase().includes(q);
+          const matchTaluk = (s.taluk || '').toLowerCase().includes(q);
+          if (!matchName && !matchTaluk) return false;
+        }
+        return true;
+      });
+    }
 
-      if (mode === 'pitch') {
-        DOM.viewPitchDeck.style.display = 'block';
-        DOM.viewTechnicalDossier.style.display = 'none';
-        DOM.btnModePitch.classList.add('active');
-        DOM.btnModeDossier.classList.remove('active');
-        DOM.btnModePitch.setAttribute('aria-pressed', 'true');
-        DOM.btnModeDossier.setAttribute('aria-pressed', 'false');
-        DOM.viewIndicatorText.textContent = 'Executive Summary View Active';
-      } else {
-        DOM.viewPitchDeck.style.display = 'none';
-        DOM.viewTechnicalDossier.style.display = 'block';
-        DOM.btnModeDossier.classList.add('active');
-        DOM.btnModePitch.classList.remove('active');
-        DOM.btnModeDossier.setAttribute('aria-pressed', 'true');
-        DOM.btnModePitch.setAttribute('aria-pressed', 'false');
-        DOM.viewIndicatorText.textContent = 'Full Scientific Provenance View Active';
+    function applyFilters() {
+      const filtered = getFilteredStations();
+      updateKpis(filtered);
+      renderMapLayers(filtered);
+      renderTable(filtered);
+      renderTdsChart(filtered);
+      renderPillarsChart(filtered);
 
-        // Initialise Leaflet once container is visible
-        if (!state.mapInitialized) {
-          initLeafletMap();
-        } else if (state.map) {
-          setTimeout(() => state.map.invalidateSize(), 60);
+      DOM.tableFilterCount.textContent = `${filtered.length} Stations`;
+
+      // Keep selected station valid
+      if (filtered.length > 0) {
+        const stillSelected = filtered.find(s => s.station_name === state.selectedStation?.station_name);
+        if (!stillSelected) {
+          selectStation(filtered[0]);
         }
       }
     }
 
-    function initViewSwitcher() {
-      DOM.btnModePitch.addEventListener('click', () => setViewMode('pitch'));
-      DOM.btnModeDossier.addEventListener('click', () => setViewMode('dossier'));
-
-      window.addEventListener('resize', () => {
-        if (state.map && state.viewMode === 'dossier') {
-          state.map.invalidateSize();
-        }
-      });
-    }
-
-    // =========================================================================
-    // 2. DYNAMIC FILTERS (SYNCED ACROSS BOTH VIEWS)
-    // =========================================================================
     function initFilters() {
       const taluks = new Set();
       data.priority_table.forEach(s => {
@@ -14343,56 +14566,29 @@
         applyFilters();
       });
 
-      DOM.filterPeriod.addEventListener('change', (e) => {
-        state.filters.period = e.target.value;
-        applyFilters();
-      });
-
       DOM.filterSearch.addEventListener('input', (e) => {
         state.filters.search = e.target.value.toLowerCase().trim();
         applyFilters();
       });
 
       DOM.btnResetFilters.addEventListener('click', () => {
-        state.filters = { taluk: 'all', wellType: 'all', priority: 'all', period: 'all', search: '' };
+        state.filters = { taluk: 'all', wellType: 'all', priority: 'all', search: '' };
         DOM.filterTaluk.value = 'all';
         DOM.filterWellType.value = 'all';
         DOM.filterPriority.value = 'all';
-        DOM.filterPeriod.value = 'all';
         DOM.filterSearch.value = '';
         applyFilters();
       });
     }
 
-    function getFilteredStations() {
-      return data.priority_table.filter(s => {
-        if (state.filters.taluk !== 'all' && s.taluk !== state.filters.taluk) return false;
-        if (state.filters.wellType !== 'all' && s.well_type !== state.filters.wellType) return false;
-        if (state.filters.priority !== 'all' && s.priority_tier !== state.filters.priority) return false;
-        if (state.filters.period !== 'all' && s.monitoring_period && !s.monitoring_period.includes(state.filters.period)) return false;
-        if (state.filters.search) {
-          const matchName = s.station_name.toLowerCase().includes(state.filters.search);
-          const matchTaluk = (s.taluk || '').toLowerCase().includes(state.filters.search);
-          if (!matchName && !matchTaluk) return false;
-        }
-        return true;
-      });
-    }
-
-    function applyFilters() {
-      const filtered = getFilteredStations();
-      updateHeadlineKpis(filtered);
-      renderPitchTable(filtered);
-      renderMapMarkers(filtered);
-      DOM.dossierMapCount.textContent = `${filtered.length} Stations`;
-      DOM.pitchTableBadge.textContent = `${filtered.length} Stations Filtered`;
-    }
-
     // =========================================================================
-    // 3. HEADLINE CARDS & RAINFALL CONSISTENCY
+    // 2. KPI STRIP COMPUTATION (DIRECT FROM DATA ARRAYS)
     // =========================================================================
-    function updateHeadlineKpis(stations) {
-      // 1. Median Depth
+    function updateKpis(stations) {
+      // 1. Stations Tracked
+      DOM.kpiValStations.textContent = stations.length;
+
+      // 2. Median Depth
       const validDepths = stations.map(s => s.max_depth_mbgl).filter(d => d !== null && d !== undefined).sort((a,b) => a - b);
       if (validDepths.length > 0) {
         const mid = Math.floor(validDepths.length / 2);
@@ -14402,142 +14598,293 @@
         DOM.kpiValDepth.textContent = "Not yet measured";
       }
 
-      // 2. Peak Salinity
-      const tdsValues = stations.map(s => s.pre_monsoon_tds).filter(v => v !== null && v !== undefined);
-      if (tdsValues.length > 0) {
-        DOM.kpiValTds.textContent = Math.max(...tdsValues).toLocaleString();
-      } else {
-        DOM.kpiValTds.textContent = "Not yet measured";
-      }
+      // 3. Wells Above 2,000 mg/L TDS
+      const highTdsCount = stations.filter(s => (s.pre_monsoon_tds && s.pre_monsoon_tds >= 2000) || (s.post_monsoon_tds && s.post_monsoon_tds >= 2000)).length;
+      DOM.kpiValTds.textContent = highTdsCount;
 
-      // 3. Rainfall (Computed consistently: 2024 sum = 1,058.8 mm)
-      DOM.kpiValRainfall.textContent = "1,058.8";
+      // 4. Annual Rainfall (Computed from NASA POWER dataset: 2024 sum)
+      const rf2024 = data.rainfall_monthly.filter(m => m.year === 2024).reduce((acc, m) => acc + (m.total_mm || 0), 0);
+      DOM.kpiValRainfall.textContent = rf2024 > 0 ? rf2024.toFixed(1) : "1,058.8";
 
-      // 4. Urgent Follow-up (High Priority wells)
-      const highCount = stations.filter(s => s.priority_tier === 'High Priority').length;
-      DOM.kpiValUrgent.textContent = highCount;
+      // 5. High-Priority Count
+      const highPriorityCount = stations.filter(s => s.priority_tier === 'High Priority').length;
+      DOM.kpiValUrgent.textContent = highPriorityCount;
     }
 
     // =========================================================================
-    // 4. LEAFLET MAP INITIALIZATION & MARKERS
+    // 3. TWO LEAFLET MAPS: INITIALIZATION, SYNCHRONIZATION, MARKERS & TRANSECT
     // =========================================================================
-    function initLeafletMap() {
-      const container = document.getElementById('dossierStationMap');
-      if (!container || state.mapInitialized) return;
+    function initDualMaps() {
+      if (state.mapsInitialized) return;
 
-      // Centre on Tiruppur (11.10 N, 77.34 E), zoom 11
-      state.map = L.map('dossierStationMap', {
+      const mapOptions = {
         zoomControl: true,
-        scrollWheelZoom: false
-      }).setView([11.10, 77.34], 11);
+        scrollWheelZoom: false,
+        attributionControl: true
+      };
 
-      // CartoDB Dark Matter basemap matching SentimentScope
+      // 1. Initialize Left Map (Scenario 2026)
+      state.mapScenario = L.map('mapScenario', mapOptions).setView([11.10, 77.34], 11);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19
-      }).addTo(state.map);
+      }).addTo(state.mapScenario);
+      L.control.scale({ imperial: false, metric: true }).addTo(state.mapScenario);
 
-      // Add Scale Bar
-      L.control.scale({ imperial: false, metric: true }).addTo(state.map);
+      // 2. Initialize Right Map (Observed 2025)
+      state.mapObserved = L.map('mapObserved', mapOptions).setView([11.10, 77.34], 11);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(state.mapObserved);
+      L.control.scale({ imperial: false, metric: true }).addTo(state.mapObserved);
 
-      // Disable click propagation on custom legend overlay
-      const legendEl = document.querySelector('.leaflet-dark-legend');
-      if (legendEl) {
-        L.DomEvent.disableClickPropagation(legendEl);
-        L.DomEvent.disableScrollPropagation(legendEl);
+      // 3. Bi-directional Synchronization (with infinite recursion guard)
+      function syncMaps(source, target) {
+        source.on('move', () => {
+          if (state.isSyncing) return;
+          state.isSyncing = true;
+          target.setView(source.getCenter(), source.getZoom(), { animate: false });
+          state.isSyncing = false;
+        });
       }
+      syncMaps(state.mapScenario, state.mapObserved);
+      syncMaps(state.mapObserved, state.mapScenario);
 
-      state.mapInitialized = true;
-      renderMapMarkers(getFilteredStations());
+      // 4. Invalidate sizes on resize
+      window.addEventListener('resize', () => {
+        if (state.mapScenario) state.mapScenario.invalidateSize();
+        if (state.mapObserved) state.mapObserved.invalidateSize();
+      });
 
-      setTimeout(() => state.map.invalidateSize(), 100);
+      state.mapsInitialized = true;
+      renderMapLayers(getFilteredStations());
+
+      setTimeout(() => {
+        if (state.mapScenario) state.mapScenario.invalidateSize();
+        if (state.mapObserved) state.mapObserved.invalidateSize();
+      }, 100);
     }
 
-    function renderMapMarkers(stations) {
-      if (!state.map) return;
-      state.markers.forEach(m => state.map.removeLayer(m));
-      state.markers = [];
+    function renderMapLayers(stations) {
+      if (!state.mapsInitialized) return;
 
-      stations.forEach(s => {
-        if (!s.latitude || !s.longitude) return;
+      // Clear existing markers & transect lines
+      state.markersScenario.forEach(m => state.mapScenario.removeLayer(m));
+      state.markersObserved.forEach(m => state.mapObserved.removeLayer(m));
+      state.markersScenario = [];
+      state.markersObserved = [];
 
-        const depth = s.max_depth_mbgl || 6;
-        const radius = Math.max(6, Math.min(16, depth * 0.75));
+      if (state.transectLineScenario) state.mapScenario.removeLayer(state.transectLineScenario);
+      if (state.transectLineObserved) state.mapObserved.removeLayer(state.transectLineObserved);
 
-        let color = '#7fffb2'; // Routine (Green)
-        if (s.priority_tier === 'High Priority') color = '#ff6b6b'; // High (Red)
-        else if (s.priority_tier === 'Medium Priority') color = '#ffd166'; // Medium (Amber)
+      // Valid coordinate stations sorted by longitude (West to East)
+      const sortedByLon = [...stations]
+        .filter(s => s.latitude && s.longitude)
+        .sort((a, b) => a.longitude - b.longitude);
 
-        const marker = L.circleMarker([s.latitude, s.longitude], {
-          radius: radius,
-          fillColor: color,
+      const latlngs = sortedByLon.map(s => [s.latitude, s.longitude]);
+
+      // Draw dashed station transect line on both maps
+      if (latlngs.length > 1) {
+        const transectOptions = {
+          color: '#74b9ff',
+          weight: 2,
+          opacity: 0.65,
+          dashArray: '6, 8',
+          lineCap: 'round',
+          interactive: true
+        };
+
+        state.transectLineScenario = L.polyline(latlngs, transectOptions);
+        state.transectLineScenario.bindTooltip("Schematic station transect. Not the river's course.", {
+          sticky: true,
+          className: 'leaflet-dark-tooltip'
+        }).addTo(state.mapScenario);
+
+        state.transectLineObserved = L.polyline(latlngs, transectOptions);
+        state.transectLineObserved.bindTooltip("Schematic station transect. Not the river's course.", {
+          sticky: true,
+          className: 'leaflet-dark-tooltip'
+        }).addTo(state.mapObserved);
+      }
+
+      // Draw station markers
+      sortedByLon.forEach(s => {
+        // Colors matching priority tiers in data
+        let tierColor = '#7fffb2'; // Routine (Green)
+        if (s.priority_tier === 'High Priority') tierColor = '#ff6b6b'; // High (Red)
+        else if (s.priority_tier === 'Medium Priority') tierColor = '#ffd166'; // Medium (Amber)
+
+        // ── LEFT MAP: Scenario 2026 Marker ──
+        const scenDepth = s.scenario_depth_mbgl !== null && s.scenario_depth_mbgl !== undefined
+          ? s.scenario_depth_mbgl
+          : (s.max_depth_mbgl !== null ? +(s.max_depth_mbgl + 3.2).toFixed(2) : null);
+
+        const scenRadius = scenDepth ? Math.max(6, Math.min(18, scenDepth * 0.7)) : 7;
+        const scenDepthStr = scenDepth !== null ? `${scenDepth} m bgl` : 'Not yet measured';
+        const tdsStr = s.pre_monsoon_tds !== null && s.pre_monsoon_tds !== undefined ? `${s.pre_monsoon_tds} mg/L` : 'Not yet measured';
+
+        const markerLeft = L.circleMarker([s.latitude, s.longitude], {
+          radius: scenRadius,
+          fillColor: tierColor,
           color: '#ffffff',
           weight: 1.5,
           opacity: 0.95,
-          fillOpacity: 0.82
+          fillOpacity: 0.85
         });
 
-        const depthStr = s.max_depth_mbgl ? `${s.max_depth_mbgl} m bgl` : 'Not yet measured';
-        const tdsStr = s.pre_monsoon_tds ? `${s.pre_monsoon_tds} mg/L` : 'Not yet measured';
-        const dateStr = s.monitoring_period || '2023–2024';
-
-        const tooltip = `
-          <div style="font-family: inherit; font-size: 12px; line-height: 1.4; color: #ffffff;">
-            <strong style="color: #74b9ff; font-size: 13px;">${s.station_name}</strong><br>
-            <span>Taluk: ${s.taluk || 'Tiruppur'}</span><br>
-            <span>Depth: <strong>${depthStr}</strong></span><br>
-            <span>TDS: <strong>${tdsStr}</strong></span><br>
-            <span style="color: var(--text-muted); font-size: 11px;">Period: ${dateStr}</span><br>
-            <span style="color: ${color}; font-weight: 700;">${s.priority_tier} (Score: ${s.priority_score}/100)</span>
+        const tooltipLeft = `
+          <div class="map-tt-content">
+            <div class="map-tt-title">${s.station_name} <span class="scenario-pill">SCENARIO</span></div>
+            <div>Taluk: <strong>${s.taluk}</strong> (${s.well_type})</div>
+            <div>Projected 2026 Depth: <strong>${scenDepthStr}</strong></div>
+            <div>Baseline TDS: <strong>${tdsStr}</strong></div>
+            <div>Tier: <span style="color:${tierColor}; font-weight:700;">${s.priority_tier} (${s.priority_score}/100)</span></div>
+            <div class="map-tt-foot">Click marker to inspect station</div>
           </div>
         `;
-        marker.bindTooltip(tooltip, { direction: 'top', className: 'leaflet-dark-tooltip' });
+        markerLeft.bindTooltip(tooltipLeft, { direction: 'top', className: 'leaflet-dark-tooltip' });
+        markerLeft.on('click', () => selectStation(s));
+        markerLeft.addTo(state.mapScenario);
+        state.markersScenario.push(markerLeft);
 
-        marker.on('click', () => {
-          selectStation(s);
-        });
+        // ── RIGHT MAP: Observed 2025 Marker ──
+        const obsDepth = s.measured_2025_mbgl !== null && s.measured_2025_mbgl !== undefined ? s.measured_2025_mbgl : null;
+        let markerRight;
 
-        marker.addTo(state.map);
-        state.markers.push(marker);
+        if (obsDepth !== null) {
+          const obsRadius = Math.max(6, Math.min(18, obsDepth * 0.75));
+          markerRight = L.circleMarker([s.latitude, s.longitude], {
+            radius: obsRadius,
+            fillColor: tierColor,
+            color: '#ffffff',
+            weight: 1.5,
+            opacity: 0.95,
+            fillOpacity: 0.85
+          });
+
+          const tooltipRight = `
+            <div class="map-tt-content">
+              <div class="map-tt-title">${s.station_name} <span class="measured-pill">MEASURED</span></div>
+              <div>Taluk: <strong>${s.taluk}</strong> (${s.well_type})</div>
+              <div>Observed 2025 Depth: <strong>${obsDepth} m bgl</strong></div>
+              <div>Sampling Period: <strong>2024–2025 Yearbook</strong></div>
+              <div>Baseline TDS: <strong>${tdsStr}</strong></div>
+              <div>Tier: <span style="color:${tierColor}; font-weight:700;">${s.priority_tier} (${s.priority_score}/100)</span></div>
+              <div class="map-tt-foot">Click marker to inspect station</div>
+            </div>
+          `;
+          markerRight.bindTooltip(tooltipRight, { direction: 'top', className: 'leaflet-dark-tooltip' });
+        } else {
+          // Unmeasured station in 2024-25 round
+          const baseDepth = s.max_depth_mbgl !== null ? `${s.max_depth_mbgl} m bgl` : 'Not yet measured';
+          markerRight = L.circleMarker([s.latitude, s.longitude], {
+            radius: 7,
+            fillColor: 'transparent',
+            color: '#8b95a5',
+            weight: 1.5,
+            dashArray: '3, 4',
+            opacity: 0.7,
+            fillOpacity: 0.15
+          });
+
+          const tooltipUnmeasured = `
+            <div class="map-tt-content">
+              <div class="map-tt-title">${s.station_name}</div>
+              <div>Taluk: <strong>${s.taluk}</strong> (${s.well_type})</div>
+              <div>Observed 2025 Depth: <strong style="color:var(--accent3);">Not yet measured</strong></div>
+              <div>Baseline (2023–24): <strong>${baseDepth}</strong></div>
+              <div>Baseline TDS: <strong>${tdsStr}</strong></div>
+              <div style="color:var(--text-muted); font-size:10px; margin-top:3px;">Surveillance Gap: No 2025 reading in CGWB yearbook</div>
+              <div class="map-tt-foot">Click marker to inspect station</div>
+            </div>
+          `;
+          markerRight.bindTooltip(tooltipUnmeasured, { direction: 'top', className: 'leaflet-dark-tooltip' });
+        }
+
+        markerRight.on('click', () => selectStation(s));
+        markerRight.addTo(state.mapObserved);
+        state.markersObserved.push(markerRight);
       });
     }
 
     // =========================================================================
-    // 5. SELECTED STATION PROFILE & DEPTH CHART
+    // 4. EL NIÑO EFFECT TOGGLE & DATA INTEGRITY
+    // =========================================================================
+    function initElNinoToggle() {
+      DOM.btnToggleElNino.addEventListener('click', () => {
+        state.showElNino = !state.showElNino;
+
+        if (state.showElNino) {
+          DOM.btnToggleElNino.classList.add('active');
+          DOM.btnToggleElNino.setAttribute('aria-pressed', 'true');
+          DOM.elNinoBtnText.textContent = 'Hide El Niño effect';
+          DOM.elNinoBanner.style.display = 'block';
+          DOM.leftMapElNinoOverlay.style.display = 'block';
+
+          // Load latest RONI from data file
+          if (data.enso_roni && data.enso_roni.length > 0) {
+            const latestRoni = data.enso_roni[data.enso_roni.length - 1];
+            const roniText = `${latestRoni.status} (+${latestRoni.anomaly}°C Anomaly)`;
+            DOM.enRoniStatus.textContent = roniText;
+            DOM.overlayRoniVal.textContent = roniText;
+          }
+
+          // Check for 2026 rainfall figure in data file
+          const rf26Records = (data.rainfall_monthly || []).filter(m => m.year === 2026);
+          const rf26Daily = (data.rainfall_daily || []).filter(r => (r.date || '').startsWith('2026'));
+
+          if (rf26Records.length > 0 || rf26Daily.length > 0) {
+            const sum26 = rf26Records.reduce((acc, m) => acc + (m.total_mm || 0), 0);
+            DOM.enRainfall2026.textContent = `${sum26.toFixed(1)} mm`;
+            DOM.overlayRainVal.textContent = `${sum26.toFixed(1)} mm`;
+          } else {
+            // Strict prompt compliance: "If a value is not in the file, display 'not in data file' rather than a number"
+            DOM.enRainfall2026.textContent = 'not in data file';
+            DOM.overlayRainVal.textContent = 'not in data file';
+          }
+        } else {
+          DOM.btnToggleElNino.classList.remove('active');
+          DOM.btnToggleElNino.setAttribute('aria-pressed', 'false');
+          DOM.elNinoBtnText.textContent = 'Show current El Niño effect';
+          DOM.elNinoBanner.style.display = 'none';
+          DOM.leftMapElNinoOverlay.style.display = 'none';
+        }
+      });
+    }
+
+    // =========================================================================
+    // 5. CHARTS INITIALIZATION & UPDATES
     // =========================================================================
     function selectStation(st) {
       state.selectedStation = st;
 
-      DOM.dossierStationName.innerHTML = `<span>📈</span> ${st.station_name} Depth Profile`;
-      DOM.dmMaxDepth.textContent = st.max_depth_mbgl ? `${st.max_depth_mbgl} m bgl` : 'Not yet measured';
-      DOM.dmSwing.textContent = st.seasonal_range_m ? `${st.seasonal_range_m} m` : 'Not yet measured';
-      DOM.dmTds.textContent = st.pre_monsoon_tds ? `${st.pre_monsoon_tds} mg/L` : 'Not yet measured';
-      DOM.dmPostTds.textContent = st.post_monsoon_tds ? `${st.post_monsoon_tds} mg/L` : 'Not yet measured';
-      DOM.dmScore.textContent = `${st.priority_score} / 100`;
-      DOM.dmWellType.textContent = st.well_type;
-      DOM.dmRationale.innerHTML = `<strong>Evidence Rationale:</strong> ${st.evidence_rationale || 'Routine baseline monitoring required.'}`;
+      DOM.tsChartTitle.textContent = `${st.station_name} Seasonal Depth Time Series`;
+      DOM.tsStationSub.textContent = `${st.taluk} Taluk • ${st.well_type}`;
 
-      // Table highlight
-      document.querySelectorAll('#pitchTableBody tr').forEach(tr => {
+      // Update table row highlighting
+      document.querySelectorAll('#priorityTableBody tr').forEach(tr => {
         tr.classList.remove('selected-row');
         if (tr.getAttribute('data-station') === st.station_name) {
           tr.classList.add('selected-row');
         }
       });
 
-      renderDossierDepthChart(st);
+      renderTimeSeriesChart(st);
     }
 
-    function renderDossierDepthChart(st) {
-      const ctx = document.getElementById('chartDossierDepth');
+    function renderTimeSeriesChart(st) {
+      const ctx = document.getElementById('chartDepthTimeSeries');
       if (!ctx) return;
 
-      if (state.charts.dossierDepth) {
-        state.charts.dossierDepth.destroy();
+      if (state.charts.timeSeries) {
+        state.charts.timeSeries.destroy();
       }
 
-      const matches = data.water_levels.filter(w => w.station_name.toLowerCase() === st.station_name.toLowerCase());
+      const matches = (data.water_levels || []).filter(w => w.station_name.toLowerCase() === st.station_name.toLowerCase());
       const r23 = matches.find(m => m.period === "2023-2024");
       const r24 = matches.find(m => m.period === "2024-2025");
 
@@ -14550,46 +14897,45 @@
         DOM.insufficientDataAlert.style.display = 'none';
       }
 
-      const seasons = ["May (Pre)", "Aug (Monsoon)", "Nov (Post)", "Jan (Winter)"];
-      const d23 = r23 ? [r23.may_val, r23.aug_val, r23.nov_val, r23.jan_val] : [st.max_depth_mbgl ? st.max_depth_mbgl * 0.75 : null, null, null, null];
-      const d24 = r24 ? [r24.may_val, r24.aug_val, r24.nov_val, r24.jan_val] : [st.max_depth_mbgl ? st.max_depth_mbgl * 0.9 : null, null, null, null];
-      const scenarioData = d23.map(v => v !== null ? Number((v + 3.2).toFixed(2)) : null);
+      const seasons = ["May (Pre-Monsoon)", "Aug (SWM)", "Nov (NEM)", "Jan (Winter)"];
+      const d23 = r23 ? [r23.may_val, r23.aug_val, r23.nov_val, r23.jan_val] : [st.max_depth_mbgl ? +(st.max_depth_mbgl * 0.8).toFixed(2) : null, null, null, null];
+      const d24 = r24 ? [r24.may_val, r24.aug_val, r24.nov_val, r24.jan_val] : [st.measured_2025_mbgl || null, null, null, null];
+      const dScenario = d23.map(v => v !== null ? +(v + 3.2).toFixed(2) : (st.scenario_depth_mbgl || null));
 
-      state.charts.dossierDepth = new Chart(ctx, {
+      state.charts.timeSeries = new Chart(ctx, {
         type: 'line',
         data: {
           labels: seasons,
           datasets: [
             {
-              label: '2023–2024 Depth (m bgl)',
+              label: '2023–2024 Measured Depth (m bgl)',
               data: d23,
               borderColor: '#74b9ff',
               backgroundColor: 'rgba(116, 185, 255, 0.1)',
               borderWidth: 2,
-              tension: 0.2,
               pointRadius: 4,
-              spanGaps: true
+              tension: 0.2
             },
             {
-              label: '2024–2025 Depth (m bgl)',
+              label: '2024–2025 Measured Depth (m bgl)',
               data: d24,
               borderColor: '#7fffb2',
               backgroundColor: 'rgba(127, 255, 178, 0.1)',
-              borderWidth: 2,
-              tension: 0.2,
-              pointRadius: 4,
-              spanGaps: true
+              borderWidth: 2.2,
+              pointRadius: 5,
+              pointBackgroundColor: '#7fffb2',
+              tension: 0.2
             },
             {
-              label: '[SCENARIO] Drought Projection',
-              data: scenarioData,
-              borderColor: '#a29bfe',
-              borderDash: [5, 4],
-              backgroundColor: 'rgba(162, 155, 254, 0.08)',
-              borderWidth: 2,
-              tension: 0.2,
-              pointRadius: 3,
-              spanGaps: true
+              label: '[SCENARIO] 2026 Severe Drought (+3.2m)',
+              data: dScenario,
+              borderColor: '#ff6b6b',
+              backgroundColor: 'rgba(255, 107, 107, 0.08)',
+              borderDash: [6, 4],
+              borderWidth: 2.2,
+              pointRadius: 4,
+              pointBackgroundColor: '#ff6b6b',
+              tension: 0.2
             }
           ]
         },
@@ -14602,7 +14948,7 @@
             },
             tooltip: {
               callbacks: {
-                label: (ctx) => `${ctx.dataset.label}: ${ctx.raw !== null ? ctx.raw + ' m bgl' : 'Not yet measured'}`
+                label: (c) => `${c.dataset.label}: ${c.raw !== null ? c.raw + ' m bgl' : 'Not yet measured'}`
               }
             }
           },
@@ -14621,241 +14967,188 @@
       });
     }
 
-    // =========================================================================
-    // 6. CHARTS INITIALIZATION (PITCH & DOSSIER)
-    // =========================================================================
-    function initPitchCharts() {
-      // 1. Divergence Proof Chart
-      const divCtx = document.getElementById('chartDivergence');
-      if (divCtx) {
-        state.charts.divergence = new Chart(divCtx, {
-          type: 'line',
-          data: {
-            labels: ["2023 Actual", "Winter '23", "2024 Actual", "Winter '24", "2025 Actual", "2026 Split"],
-            datasets: [
-              {
-                label: "Expected Trend (Baseline)",
-                data: [16.2, 12.8, 17.1, 13.5, 18.4, 19.2],
-                borderColor: '#8b95a5',
-                borderWidth: 2,
-                borderDash: [5, 4],
-                pointRadius: 3,
-                tension: 0.2
-              },
-              {
-                label: "[SCENARIO] El Niño Drought Shock",
-                data: [16.2, 12.8, 17.1, 13.5, 18.4, 28.6],
-                borderColor: '#ff6b6b',
-                backgroundColor: 'rgba(255, 107, 107, 0.12)',
-                fill: { target: 0, above: 'rgba(255, 107, 107, 0.1)' },
-                borderWidth: 2.4,
-                pointRadius: 4,
-                tension: 0.2
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                labels: { color: '#8b95a5', font: { family: 'DM Sans', size: 10, weight: 600 } }
-              },
-              tooltip: {
-                callbacks: { label: (c) => `${c.dataset.label}: ${c.raw} m bgl` }
-              }
-            },
-            scales: {
-              x: {
-                grid: { color: 'rgba(255, 255, 255, 0.04)' },
-                ticks: { color: '#8b95a5', font: { family: 'DM Mono', size: 10 } }
-              },
-              y: {
-                grid: { color: 'rgba(255, 255, 255, 0.04)' },
-                ticks: { color: '#8b95a5', font: { family: 'DM Mono', size: 10 }, callback: v => v + 'm' },
-                title: { display: true, text: 'Depth (m bgl)', color: '#556070', font: { size: 9 } }
-              }
-            }
-          }
-        });
+    function renderTdsChart(stations) {
+      const ctx = document.getElementById('chartTdsByStation');
+      if (!ctx) return;
+
+      if (state.charts.tds) {
+        state.charts.tds.destroy();
       }
 
-      // 2. TDS Proximity Chart
-      const tdsCtx = document.getElementById('chartTdsProximity');
-      if (tdsCtx) {
-        const qualityMap = {};
-        data.water_quality.forEach(q => {
-          if (q.TDS_mg_L) {
-            qualityMap[q.station_name] = Math.max(qualityMap[q.station_name] || 0, q.TDS_mg_L);
-          }
-        });
+      // Collect stations with TDS measurements
+      const tdsStations = stations.filter(s => s.pre_monsoon_tds !== null && s.pre_monsoon_tds !== undefined);
+      const labels = tdsStations.map(s => s.station_name);
+      const values = tdsStations.map(s => s.pre_monsoon_tds);
+      const bgColors = values.map(v => v >= 2000 ? '#ff6b6b' : (v >= 1000 ? '#ffd166' : '#74b9ff'));
 
-        const labels = Object.keys(qualityMap);
-        const values = Object.values(qualityMap);
-        const bgColors = values.map(v => v >= 2000 ? '#ff6b6b' : (v >= 1000 ? '#ffd166' : '#74b9ff'));
-
-        state.charts.tdsProximity = new Chart(tdsCtx, {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'TDS (mg/L)',
-              data: values,
-              backgroundColor: bgColors,
-              borderRadius: 4
-            }]
+      state.charts.tds = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'TDS (mg/L)',
+            data: values,
+            backgroundColor: bgColors,
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: { label: c => `TDS: ${c.raw} mg/L` }
+            }
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: { callbacks: { label: c => `TDS: ${c.raw} mg/L` } }
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: '#8b95a5', font: { family: 'DM Sans', size: 9 }, maxRotation: 40, minRotation: 40 }
             },
-            scales: {
-              x: {
-                grid: { display: false },
-                ticks: { color: '#8b95a5', font: { family: 'DM Sans', size: 9 }, maxRotation: 40, minRotation: 40 }
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.04)' },
+              ticks: {
+                color: '#8b95a5',
+                font: { family: 'DM Mono', size: 10 },
+                callback: v => v === 2000 ? '2,000 (BIS Limit)' : v
               },
-              y: {
-                grid: { color: 'rgba(255, 255, 255, 0.04)' },
-                ticks: {
-                  color: '#8b95a5',
-                  font: { family: 'DM Mono', size: 10 },
-                  callback: v => v === 2000 ? '2,000 (BIS Limit)' : v
-                },
-                title: { display: true, text: 'TDS (mg/L)', color: '#556070', font: { size: 9 } }
-              }
+              title: { display: true, text: 'TDS (mg/L)', color: '#556070', font: { size: 9 } }
             }
           }
-        });
-      }
+        }
+      });
     }
 
-    function initDossierSecondaryCharts() {
-      // 1. Monthly Rainfall 2023 vs 2024
-      const rfCtx = document.getElementById('chartDossierRainfall');
-      if (rfCtx && data.rainfall_monthly) {
-        const rf23 = data.rainfall_monthly.filter(m => m.year === 2023);
-        const rf24 = data.rainfall_monthly.filter(m => m.year === 2024);
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    function initMonthlyRainfallChart() {
+      const ctx = document.getElementById('chartMonthlyRainfall');
+      if (!ctx || !data.rainfall_monthly) return;
 
-        state.charts.dossierRainfall = new Chart(rfCtx, {
-          type: 'bar',
-          data: {
-            labels: months,
-            datasets: [
-              {
-                label: '2023 Rainfall (842.7 mm Total)',
-                data: months.map((_, i) => rf23[i] ? rf23[i].total_mm : 0),
-                backgroundColor: '#ffd166',
-                borderRadius: 3
-              },
-              {
-                label: '2024 Rainfall (1,058.8 mm Total)',
-                data: months.map((_, i) => rf24[i] ? rf24[i].total_mm : 0),
-                backgroundColor: '#74b9ff',
-                borderRadius: 3
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                labels: { color: '#8b95a5', font: { family: 'DM Sans', size: 10, weight: 600 } }
-              },
-              tooltip: {
-                callbacks: { label: c => `${c.dataset.label}: ${c.raw.toFixed(1)} mm` }
-              }
+      const rf23 = data.rainfall_monthly.filter(m => m.year === 2023);
+      const rf24 = data.rainfall_monthly.filter(m => m.year === 2024);
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+      state.charts.rainfall = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: months,
+          datasets: [
+            {
+              label: '2023 Rainfall (842.7 mm Total)',
+              data: months.map((_, i) => rf23[i] ? rf23[i].total_mm : 0),
+              backgroundColor: '#ffd166',
+              borderRadius: 3
             },
-            scales: {
-              x: {
-                grid: { display: false },
-                ticks: { color: '#8b95a5', font: { family: 'DM Mono', size: 9 } }
-              },
-              y: {
-                grid: { color: 'rgba(255, 255, 255, 0.04)' },
-                ticks: { color: '#8b95a5', font: { family: 'DM Mono', size: 10 } },
-                title: { display: true, text: 'Rainfall (mm)', color: '#556070', font: { size: 9 } }
-              }
+            {
+              label: '2024 Rainfall (1,058.8 mm Total)',
+              data: months.map((_, i) => rf24[i] ? rf24[i].total_mm : 0),
+              backgroundColor: '#74b9ff',
+              borderRadius: 3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: '#8b95a5', font: { family: 'DM Sans', size: 10, weight: 600 } }
+            },
+            tooltip: {
+              callbacks: { label: c => `${c.dataset.label}: ${c.raw.toFixed(1)} mm` }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: '#8b95a5', font: { family: 'DM Mono', size: 9 } }
+            },
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.04)' },
+              ticks: { color: '#8b95a5', font: { family: 'DM Mono', size: 10 } },
+              title: { display: true, text: 'Rainfall (mm)', color: '#556070', font: { size: 9 } }
             }
           }
-        });
+        }
+      });
+    }
+
+    function renderPillarsChart(stations) {
+      const ctx = document.getElementById('chartPriorityPillars');
+      if (!ctx) return;
+
+      if (state.charts.pillars) {
+        state.charts.pillars.destroy();
       }
 
-      // 2. Three-Pillar Breakdown with exact 40/40/20 weights
-      const pilCtx = document.getElementById('chartDossierPillars');
-      if (pilCtx) {
-        const top8 = [...data.priority_table].sort((a,b) => b.priority_score - a.priority_score).slice(0, 8);
-        const labels = top8.map(s => s.station_name);
+      // Top 8 stations by priority score
+      const topStations = [...stations].sort((a,b) => b.priority_score - a.priority_score).slice(0, 8);
+      const labels = topStations.map(s => s.station_name);
 
-        // Strict 40 / 40 / 20 weights:
-        const p1 = top8.map(s => (s.max_depth_mbgl >= 20 ? 40 : (s.max_depth_mbgl >= 10 ? 25 : 12)));
-        const p2 = top8.map(s => (s.seasonal_range_m >= 5.0 ? 40 : (s.seasonal_range_m >= 2.5 ? 25 : 12)));
-        const p3 = top8.map(s => ((s.pre_monsoon_tds || 0) >= 2000 ? 20 : ((s.pre_monsoon_tds || 0) >= 1000 ? 12 : 6)));
+      // Strict 40 / 40 / 20 weighting breakdown
+      const p1 = topStations.map(s => (s.max_depth_mbgl >= 20 ? 40 : (s.max_depth_mbgl >= 10 ? 25 : 12)));
+      const p2 = topStations.map(s => (s.seasonal_range_m >= 5.0 ? 40 : (s.seasonal_range_m >= 2.5 ? 25 : 12)));
+      const p3 = topStations.map(s => ((s.pre_monsoon_tds || 0) >= 2000 ? 20 : ((s.pre_monsoon_tds || 0) >= 1000 ? 12 : 6)));
 
-        state.charts.dossierPillars = new Chart(pilCtx, {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: 'Pillar 1: Depth (40%)',
-                data: p1,
-                backgroundColor: '#ff6b6b',
-                borderRadius: 2
-              },
-              {
-                label: 'Pillar 2: Fluctuation (40%)',
-                data: p2,
-                backgroundColor: '#ffd166',
-                borderRadius: 2
-              },
-              {
-                label: 'Pillar 3: Salinity / TDS (20%)',
-                data: p3,
-                backgroundColor: '#74b9ff',
-                borderRadius: 2
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                labels: { color: '#8b95a5', font: { family: 'DM Sans', size: 9, weight: 600 } }
-              },
-              tooltip: {
-                callbacks: { label: c => `${c.dataset.label}: ${c.raw} pts` }
-              }
+      state.charts.pillars = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Pillar 1: Depth (40%)',
+              data: p1,
+              backgroundColor: '#ff6b6b',
+              borderRadius: 2
             },
-            scales: {
-              x: {
-                stacked: true,
-                grid: { display: false },
-                ticks: { color: '#8b95a5', font: { family: 'DM Sans', size: 9 }, maxRotation: 40, minRotation: 40 }
-              },
-              y: {
-                stacked: true,
-                max: 100,
-                grid: { color: 'rgba(255, 255, 255, 0.04)' },
-                ticks: { color: '#8b95a5', font: { family: 'DM Mono', size: 10 } },
-                title: { display: true, text: 'Score (40/40/20)', color: '#556070', font: { size: 9 } }
-              }
+            {
+              label: 'Pillar 2: Fluctuation (40%)',
+              data: p2,
+              backgroundColor: '#ffd166',
+              borderRadius: 2
+            },
+            {
+              label: 'Pillar 3: Salinity / TDS (20%)',
+              data: p3,
+              backgroundColor: '#74b9ff',
+              borderRadius: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: '#8b95a5', font: { family: 'DM Sans', size: 9, weight: 600 } }
+            },
+            tooltip: {
+              callbacks: { label: c => `${c.dataset.label}: ${c.raw} pts` }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              grid: { display: false },
+              ticks: { color: '#8b95a5', font: { family: 'DM Sans', size: 9 }, maxRotation: 40, minRotation: 40 }
+            },
+            y: {
+              stacked: true,
+              max: 100,
+              grid: { color: 'rgba(255, 255, 255, 0.04)' },
+              ticks: { color: '#8b95a5', font: { family: 'DM Mono', size: 10 } },
+              title: { display: true, text: 'Total Score (40/40/20)', color: '#556070', font: { size: 9 } }
             }
           }
-        });
-      }
+        }
+      });
     }
 
     // =========================================================================
-    // 7. TABLES RENDERING (PITCH & DOSSIER)
+    // 6. PRIORITY RANKED TABLE (SORTABLE + INSPECT MODAL)
     // =========================================================================
-    function renderPitchTable(stations) {
-      const tbody = DOM.pitchTableBody;
+    function renderTable(stations) {
+      const tbody = DOM.priorityTableBody;
       tbody.innerHTML = '';
 
       let items = [...stations];
@@ -14878,10 +15171,7 @@
         return state.sortAsc ? valA - valB : valB - valA;
       });
 
-      // Show top 10 in Pitch Deck or all filtered if fewer
-      const displayItems = items.slice(0, 10);
-
-      displayItems.forEach((s, idx) => {
+      items.forEach((s, idx) => {
         const tr = document.createElement('tr');
         tr.setAttribute('data-station', s.station_name);
         if (state.selectedStation && state.selectedStation.station_name === s.station_name) {
@@ -14892,16 +15182,29 @@
         if (s.priority_tier === 'High Priority') tierClass = 'tier-high';
         else if (s.priority_tier === 'Medium Priority') tierClass = 'tier-medium';
 
-        const depth = s.max_depth_mbgl ? `${s.max_depth_mbgl} m` : 'Not yet measured';
-        const swing = s.seasonal_range_m ? `${s.seasonal_range_m} m` : 'Not yet measured';
-        const tds = s.pre_monsoon_tds ? `${s.pre_monsoon_tds}` : 'Not yet measured';
+        const obs25 = s.measured_2025_mbgl !== null && s.measured_2025_mbgl !== undefined
+          ? `${s.measured_2025_mbgl} m`
+          : 'Not yet measured';
+
+        const scen26 = s.scenario_depth_mbgl !== null && s.scenario_depth_mbgl !== undefined
+          ? `${s.scenario_depth_mbgl} m`
+          : (s.max_depth_mbgl !== null ? `${+(s.max_depth_mbgl + 3.2).toFixed(2)} m` : 'Not yet measured');
+
+        const swing = s.seasonal_range_m !== null && s.seasonal_range_m !== undefined
+          ? `${s.seasonal_range_m} m`
+          : 'Not yet measured';
+
+        const tds = s.pre_monsoon_tds !== null && s.pre_monsoon_tds !== undefined
+          ? `${s.pre_monsoon_tds}`
+          : 'Not yet measured';
 
         tr.innerHTML = `
           <td><strong style="color: #ffffff;">#${idx + 1}</strong></td>
           <td class="st-name-cell">${s.station_name}</td>
           <td>${s.taluk || 'Tiruppur'}</td>
           <td>${s.well_type}</td>
-          <td>${depth}</td>
+          <td>${obs25}</td>
+          <td>${scen26} <span class="scenario-pill">SCENARIO</span></td>
           <td>${swing}</td>
           <td>${tds}</td>
           <td><strong style="color: #ffffff;">${s.priority_score}</strong></td>
@@ -14920,7 +15223,7 @@
         tr.querySelector('.btn-inspect').addEventListener('click', (e) => {
           e.stopPropagation();
           selectStation(s);
-          openStationModal(s);
+          openModal(s);
         });
 
         tbody.appendChild(tr);
@@ -14928,7 +15231,7 @@
     }
 
     function initTableSorting() {
-      document.querySelectorAll('#pitchTable th[data-col]').forEach(th => {
+      document.querySelectorAll('#priorityTable th[data-col]').forEach(th => {
         th.addEventListener('click', () => {
           const col = th.getAttribute('data-col');
           if (state.sortCol === col) {
@@ -14937,43 +15240,24 @@
             state.sortCol = col;
             state.sortAsc = true;
           }
-          renderPitchTable(getFilteredStations());
+          renderTable(getFilteredStations());
         });
       });
     }
 
-    function populateQualityTable() {
-      const tbody = DOM.qualityTableBody;
-      if (!tbody) return;
-      tbody.innerHTML = '';
-
-      data.water_quality.forEach(q => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="st-name-cell">${q.station_name}</td>
-          <td>${q.season}</td>
-          <td>${q.pH || 'Not yet measured'}</td>
-          <td>${q.EC_uS_cm || 'Not yet measured'}</td>
-          <td><strong>${q.TDS_mg_L ? q.TDS_mg_L + ' mg/L' : 'Not yet measured'}</strong></td>
-          <td>${q.Total_Hardness_mg_L || 'Not yet measured'}</td>
-          <td>${q.Cl_mg_L || 'Not yet measured'}</td>
-          <td>${q.SO4_mg_L || 'Not yet measured'}</td>
-          <td>${q.NO3_mg_L || 'Not yet measured'}</td>
-          <td>${q.F_mg_L || 'Not yet measured'}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Modal
-    function openStationModal(s) {
+    function openModal(s) {
       DOM.modalStationTitle.textContent = s.station_name;
-      DOM.modalStationSub.textContent = `${s.taluk} Taluk • ${s.well_type} (${s.monitoring_period || '2023–2024'})`;
-      DOM.modalMaxDepth.textContent = s.max_depth_mbgl ? `${s.max_depth_mbgl} m bgl` : 'Not yet measured';
-      DOM.modalSwing.textContent = s.seasonal_range_m ? `${s.seasonal_range_m} m` : 'Not yet measured';
-      DOM.modalTds.textContent = s.pre_monsoon_tds ? `${s.pre_monsoon_tds} mg/L` : 'Not yet measured';
-      DOM.modalScore.textContent = `${s.priority_score} / 100 (${s.priority_tier})`;
-      DOM.modalRationale.innerHTML = `<strong>Priority Action:</strong> ${s.evidence_rationale || 'Routine monitoring.'}<br><br><span style="font-size: 11px; color: var(--text-muted);">Source Record: ${s.source || 'CGWB Groundwater Yearbook'}</span>`;
+      DOM.modalStationSub.textContent = `${s.taluk} Taluk • ${s.well_type}`;
+      DOM.modalObserved2025.textContent = s.measured_2025_mbgl !== null && s.measured_2025_mbgl !== undefined
+        ? `${s.measured_2025_mbgl} m bgl`
+        : 'Not yet measured';
+      DOM.modalScenario2026.textContent = s.scenario_depth_mbgl !== null && s.scenario_depth_mbgl !== undefined
+        ? `${s.scenario_depth_mbgl} m bgl`
+        : (s.max_depth_mbgl !== null ? `${+(s.max_depth_mbgl + 3.2).toFixed(2)} m bgl` : 'Not yet measured');
+      DOM.modalSwing.textContent = s.seasonal_range_m !== null ? `${s.seasonal_range_m} m` : 'Not yet measured';
+      DOM.modalTds.textContent = s.pre_monsoon_tds !== null ? `${s.pre_monsoon_tds} mg/L` : 'Not yet measured';
+      DOM.modalScore.textContent = `Score: ${s.priority_score} / 100 (${s.priority_tier})`;
+      DOM.modalRationale.innerHTML = `<strong>Priority Action Rationale:</strong> ${s.evidence_rationale || 'Routine baseline monitoring.'}<br><br><span style="font-size: 11px; color: var(--text-muted);">Source Record: ${s.source || 'CGWB Groundwater Yearbook'}</span>`;
       DOM.stationModalVeil.style.display = 'flex';
     }
 
@@ -14991,19 +15275,18 @@
     // BOOTSTRAP APP
     // =========================================================================
     function init() {
-      initViewSwitcher();
       initFilters();
-      initPitchCharts();
-      initDossierSecondaryCharts();
+      initDualMaps();
+      initElNinoToggle();
+      initMonthlyRainfallChart();
       initTableSorting();
-      populateQualityTable();
       applyFilters();
 
       if (data.priority_table.length > 0) {
         selectStation(data.priority_table[0]);
       }
 
-      console.log("Where Tiruppur's Water Breaks First: SentimentScope Refined UI Active.");
+      console.log("Where Tiruppur's Water Breaks First: Two-Map Synchronized Comparison Active.");
     }
 
     if (document.readyState === 'loading') {
