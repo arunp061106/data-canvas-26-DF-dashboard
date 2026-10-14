@@ -1172,3 +1172,454 @@ html, body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   VIEW SWITCHER SEGMENTED TABS (PITCH DECK vs DETAILED TAKEDOWN)
+   ========================================================================== */
+.view-mode-tabs {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-control);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 5px 13px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--text-slate);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background: #1e2d48;
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* ==========================================================================
+   MAP POINTS DATA PILLS & TOP-LEFT CORNER HUD DOCK
+   ========================================================================== */
+.node-pill-tag {
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.18s ease;
+}
+
+.node-pill-tag:hover {
+  transform: scale(1.12);
+}
+
+.pill-bg {
+  fill: rgba(11, 17, 30, 0.92);
+  stroke: rgba(148, 163, 184, 0.32);
+  stroke-width: 1px;
+}
+
+.node-shock .pill-bg {
+  stroke: rgba(245, 158, 11, 0.55);
+  fill: rgba(17, 25, 43, 0.96);
+}
+
+.pill-name {
+  fill: #e2e8f0;
+  font-family: var(--font-ui);
+  font-size: 8.5px;
+  font-weight: 600;
+}
+
+.pill-val {
+  fill: var(--accent-glacier);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+}
+
+.node-shock .pill-val {
+  fill: var(--accent-amber);
+}
+
+/* Enhanced Floating HUD in Left-Top Corner */
+.floating-hud-chips {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  max-width: 270px;
+  width: calc(100% - 20px);
+  background: rgba(17, 25, 43, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-card);
+  border-radius: 9px;
+  padding: 9px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 15;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hud-station-dossier {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hud-station-dossier.active {
+  display: flex;
+}
+
+.hud-dossier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 4px;
+}
+
+.hud-station-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.hud-station-taluk {
+  font-size: 10px;
+  color: var(--text-slate);
+  font-family: var(--font-mono);
+}
+
+.btn-hud-reset {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-slate);
+  font-size: 9.5px;
+  font-family: var(--font-mono);
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-hud-reset:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   DETAILED TAKEDOWN (NARRATIVE STORY, HYDROGEOLOGY, SOLUTIONS & SOURCES)
+   ========================================================================== */
+.detailed-takedown-section {
+  display: none;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 6px;
+  margin-bottom: 24px;
+}
+
+.detailed-takedown-section.active {
+  display: flex;
+}
+
+.takedown-hero {
+  background: linear-gradient(135deg, rgba(22, 34, 56, 0.95), rgba(17, 25, 43, 0.95));
+  border: 1px solid var(--border-card);
+  border-radius: 14px;
+  padding: 28px 32px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.takedown-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 380px;
+  height: 100%;
+  background: radial-gradient(circle at 100% 0%, rgba(245, 158, 11, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.takedown-hero-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-amber);
+  background: var(--accent-amber-dim);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  padding: 4px 10px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.takedown-hero-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+
+.takedown-hero-lead {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 960px;
+}
+
+/* Narrative Story Chapters Grid */
+.narrative-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.narrative-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.narrative-card.full-width {
+  grid-column: span 2;
+}
+
+.narrative-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 10px;
+}
+
+.chapter-number {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-glacier);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.chapter-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+.story-body {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.story-body strong {
+  color: #ffffff;
+}
+
+.story-body .highlight-amber {
+  color: var(--accent-amber);
+  font-weight: 600;
+}
+
+.story-body .highlight-glacier {
+  color: var(--accent-glacier);
+  font-weight: 600;
+}
+
+.metric-strip-box {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+}
+
+.ms-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.ms-num {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent-amber);
+}
+
+.ms-label {
+  font-size: 10.5px;
+  color: var(--text-slate);
+}
+
+/* Solutions Grid */
+.solutions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.solution-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.solution-card:hover {
+  border-color: var(--accent-glacier);
+  transform: translateY(-2px);
+}
+
+.sol-pillar-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-glacier);
+  background: var(--accent-glacier-dim);
+  padding: 2px 7px;
+  border-radius: 4px;
+  display: inline-block;
+  align-self: flex-start;
+}
+
+.sol-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.35;
+}
+
+.sol-desc {
+  font-size: 12px;
+  color: var(--text-slate);
+  line-height: 1.55;
+}
+
+.sol-impact-pill {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--accent-mint);
+  background: var(--accent-mint-dim);
+  border: 1px solid rgba(45, 212, 191, 0.3);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* Provenance Table */
+.provenance-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.provenance-table-wrap {
+  overflow-x: auto;
+  margin-top: 14px;
+}
+
+.provenance-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.provenance-table th {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border-card);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.provenance-table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.provenance-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.source-agency-badge {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--accent-glacier);
+  background: var(--accent-glacier-dim);
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.source-param {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-amber);
+}
+
+@media (max-width: 1100px) {
+  .solutions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .narrative-grid {
+    grid-template-columns: 1fr;
+  }
+  .narrative-card.full-width {
+    grid-column: span 1;
+  }
+  .solutions-grid {
+    grid-template-columns: 1fr;
+  }
+}

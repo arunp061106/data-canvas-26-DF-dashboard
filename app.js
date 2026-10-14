@@ -1,7 +1,9 @@
 /**
  * CATASTROPHE BEHIND THE COLOURS
  * Bklit UI + Oceanic Hydro-Thermal Telemetry Dashboard Engine
- * Zero-paragraph, high-impact geospatial analytics controller
+ * Implements View Switcher (Pitch Deck vs Detailed Takedown),
+ * Rock-solid SVG Map Points with Live Data Pills, Top-Left HUD Docking on Double-Click,
+ * Continuous ENSO Simulation, and Interactive Provenance Dossier.
  */
 
 (function () {
@@ -11,6 +13,7 @@
   // 1. TELEMETRY REGISTRY & INITIAL STATE
   // ==========================================================================
   const state = {
+    currentView: 'pitch', // 'pitch' | 'detailed'
     elNinoActive: true,
     ensoValue: 2.4, // 0.0 (Normal) -> 1.2 (Moderate) -> 2.4 (Severe)
     severity: 'severe', // 'normal' | 'moderate' | 'severe'
@@ -33,13 +36,14 @@
       id: "w-01",
       rank: "01",
       name: "Tiruppur South (Nallur)",
+      shortName: "Nallur",
       taluk: "Tirupur Taluk",
       distNoyyalKm: 0.4,
       baseTds: 1580,
       shockTds: 3120,
       surgePct: "+97.4%",
       depth: 28.8,
-      action: "CAP & TEST",
+      action: "CAP & TEST FIRST",
       actionClass: "tag-cap",
       x: 345,
       y: 375,
@@ -49,13 +53,14 @@
       id: "w-02",
       rank: "02",
       name: "Tiruppur North (Kasipalayam)",
+      shortName: "Kasipalayam",
       taluk: "Tirupur Taluk",
       distNoyyalKm: 0.6,
       baseTds: 1510,
       shockTds: 2940,
       surgePct: "+94.7%",
       depth: 27.4,
-      action: "CAP & TEST",
+      action: "CAP & TEST FIRST",
       actionClass: "tag-cap",
       x: 310,
       y: 340,
@@ -65,13 +70,14 @@
       id: "w-03",
       rank: "03",
       name: "Veerapandi Corridor",
+      shortName: "Veerapandi",
       taluk: "Tirupur Taluk",
       distNoyyalKm: 0.8,
       baseTds: 1490,
       shockTds: 2840,
       surgePct: "+90.6%",
       depth: 26.5,
-      action: "CAP & TEST",
+      action: "CAP & TEST FIRST",
       actionClass: "tag-cap",
       x: 380,
       y: 390,
@@ -80,14 +86,15 @@
     {
       id: "w-04",
       rank: "04",
-      name: "Kangayam (Orathupalayam Belt)",
+      name: "Kangayam (Orathupalayam)",
+      shortName: "Orathupalayam",
       taluk: "Kangayam Taluk",
       distNoyyalKm: 1.1,
       baseTds: 1610,
       shockTds: 2980,
       surgePct: "+85.1%",
       depth: 29.2,
-      action: "CAP & TEST",
+      action: "CAP & TEST FIRST",
       actionClass: "tag-cap",
       x: 530,
       y: 410,
@@ -97,6 +104,7 @@
       id: "w-05",
       rank: "05",
       name: "Avinashi East Buffer",
+      shortName: "Avinashi",
       taluk: "Avinashi Taluk",
       distNoyyalKm: 1.6,
       baseTds: 1390,
@@ -113,13 +121,14 @@
       id: "w-06",
       rank: "06",
       name: "Palladam Border Zone",
+      shortName: "Palladam",
       taluk: "Palladam Taluk",
       distNoyyalKm: 2.4,
       baseTds: 1470,
       shockTds: 1890,
       surgePct: "+28.4%",
       depth: 20.4,
-      action: "WEEKLY LOG",
+      action: "MONITOR",
       actionClass: "tag-log",
       x: 230,
       y: 420,
@@ -128,7 +137,8 @@
     {
       id: "w-07",
       rank: "07",
-      name: "Dharapuram Central Aquifer",
+      name: "Dharapuram Central",
+      shortName: "Dharapuram",
       taluk: "Dharapuram Taluk",
       distNoyyalKm: 5.2,
       baseTds: 1120,
@@ -144,7 +154,8 @@
     {
       id: "w-08",
       rank: "08",
-      name: "Udumalpet Foothills Basin",
+      name: "Udumalpet Foothills",
+      shortName: "Udumalpet",
       taluk: "Udumalpet Taluk",
       distNoyyalKm: 8.4,
       baseTds: 860,
@@ -163,6 +174,12 @@
   const DOM = {};
 
   function initDOM() {
+    // View Switcher Elements
+    DOM.tabPitchDeck = document.getElementById('tabPitchDeck');
+    DOM.tabDetailedTakedown = document.getElementById('tabDetailedTakedown');
+    DOM.viewPitchDeck = document.getElementById('viewPitchDeck');
+    DOM.viewDetailedTakedown = document.getElementById('viewDetailedTakedown');
+
     DOM.statusOrb = document.getElementById('statusOrb');
     DOM.btnElNinoToggle = document.getElementById('btnElNinoToggle');
     DOM.ensoSlider = document.getElementById('ensoSlider');
@@ -176,10 +193,20 @@
     DOM.rightRiverParticles = document.getElementById('rightRiverParticles');
     DOM.rightPinsGroup = document.getElementById('rightPinsGroup');
     DOM.leftPinsGroup = document.getElementById('leftPinsGroup');
+
+    // Top-Left HUD Modes
+    DOM.hudSummaryMode = document.getElementById('hudSummaryMode');
+    DOM.hudStationDossier = document.getElementById('hudStationDossier');
     DOM.hudExpectedVal = document.getElementById('hudExpectedVal');
     DOM.hudRealityVal = document.getElementById('hudRealityVal');
     DOM.hudDropAnomaly = document.getElementById('hudDropAnomaly');
     DOM.hudSalinityAnomaly = document.getElementById('hudSalinityAnomaly');
+    DOM.hudDossierName = document.getElementById('hudDossierName');
+    DOM.hudDossierSub = document.getElementById('hudDossierSub');
+    DOM.hudDossierTds = document.getElementById('hudDossierTds');
+    DOM.hudDossierDepth = document.getElementById('hudDossierDepth');
+    DOM.hudDossierAction = document.getElementById('hudDossierAction');
+    DOM.btnResetHud = document.getElementById('btnResetHud');
 
     // Aquifer X-Ray Elements
     DOM.xrayBadgeStatus = document.getElementById('xrayBadgeStatus');
@@ -220,7 +247,27 @@
   }
 
   // ==========================================================================
-  // 2. 60FPS CUBIC ODOMETER COUNT-UP ANIMATION
+  // 2. VIEW SWITCHER ENGINE (PITCH DECK vs DETAILED TAKEDOWN)
+  // ==========================================================================
+  function switchView(viewName) {
+    state.currentView = viewName;
+
+    if (viewName === 'pitch') {
+      if (DOM.tabPitchDeck) DOM.tabPitchDeck.classList.add('active');
+      if (DOM.tabDetailedTakedown) DOM.tabDetailedTakedown.classList.remove('active');
+      if (DOM.viewPitchDeck) DOM.viewPitchDeck.style.display = 'block';
+      if (DOM.viewDetailedTakedown) DOM.viewDetailedTakedown.classList.remove('active');
+    } else {
+      if (DOM.tabDetailedTakedown) DOM.tabDetailedTakedown.classList.add('active');
+      if (DOM.tabPitchDeck) DOM.tabPitchDeck.classList.remove('active');
+      if (DOM.viewPitchDeck) DOM.viewPitchDeck.style.display = 'none';
+      if (DOM.viewDetailedTakedown) DOM.viewDetailedTakedown.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  // ==========================================================================
+  // 3. 60FPS CUBIC ODOMETER COUNT-UP ANIMATION
   // ==========================================================================
   function animateOdometer(el, start, end, duration = 380, decimals = 0, suffix = "") {
     if (!el) return;
@@ -229,7 +276,6 @@
     function frame(now) {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Cubic ease-out
       const ease = 1 - Math.pow(1 - progress, 3);
       const current = start + (end - start) * ease;
 
@@ -246,7 +292,7 @@
   }
 
   // ==========================================================================
-  // 3. HTML5 CANVAS MAP SHADER ENGINE (STRIP EXTERIOR WHITE + INVERT LABELS)
+  // 4. HTML5 CANVAS MAP SHADER ENGINE (STRIP EXTERIOR WHITE + INVERT LABELS)
   // ==========================================================================
   function initMapShaders() {
     const img = new Image();
@@ -261,7 +307,6 @@
       console.warn("Canvas shader fallback: image loading error, fallback active.");
     };
 
-    // Load user's cleaned Tiruppur 6-Taluk map
     img.src = "image_8454d9.jpg";
   }
 
@@ -283,45 +328,43 @@
         const g = data[i + 1];
         const b = data[i + 2];
 
-        // 1. Exterior White / Light Margin Pixels -> 100% Transparent
+        // 1. Exterior White Margins -> Transparent
         if (r > 236 && g > 236 && b > 236) {
           data[i + 3] = 0;
         }
-        // 2. Black Taluk Text Labels & Dark Boundaries -> Invert to Ice-White (#E2E8F0)
+        // 2. Black Taluk Text Labels & Boundaries -> Ice-White (#E2E8F0)
         else if (r < 75 && g < 75 && b < 75) {
           data[i] = 226;
           data[i + 1] = 232;
           data[i + 2] = 240;
           data[i + 3] = 255;
         }
-        // 3. Dotted Internal Boundaries / Medium Grey
+        // 3. Dotted Boundaries
         else if (Math.abs(r - g) < 18 && Math.abs(g - b) < 18 && r < 165) {
           data[i] = 203;
           data[i + 1] = 213;
           data[i + 2] = 225;
           data[i + 3] = 255;
         }
-        // 4. Pastel Taluk Fills -> Shift into deep slate-indigo hues (#162238 to #1E293B)
+        // 4. Pastel Taluk Fills -> Slate-Indigo (#162238 to #1E293B)
         else {
           const lum = 0.299 * r + 0.587 * g + 0.114 * b;
           const factor = lum / 255;
-          data[i] = Math.round(18 + factor * 14);     // Red 18-32
-          data[i + 1] = Math.round(28 + factor * 22); // Green 28-50
-          data[i + 2] = Math.round(44 + factor * 30); // Blue 44-74
+          data[i] = Math.round(18 + factor * 14);
+          data[i + 1] = Math.round(28 + factor * 22);
+          data[i + 2] = Math.round(44 + factor * 30);
           data[i + 3] = 245;
         }
       }
 
       ctx.putImageData(imgData, 0, 0);
 
-      // Hide fallback layer as shader rendered successfully
       const viewport = canvas.closest('.map-viewport');
       if (viewport) {
         const fallback = viewport.querySelector('.tiruppur-map-img');
         if (fallback) fallback.style.display = 'none';
       }
     } catch (err) {
-      // If local origin security prevents getImageData, CSS filter handles transparency
       console.warn("Canvas getImageData origin restricted, using CSS filter fallback:", err);
       canvas.style.display = 'none';
       const viewport = canvas.closest('.map-viewport');
@@ -333,63 +376,159 @@
   }
 
   // ==========================================================================
-  // 4. MAP PINS & EXPANDING SONAR SHOCKWAVES
+  // 5. ROCK-SOLID MAP POINTS WITH DATA PILLS & TOP-LEFT CORNER HUD DOCKING
   // ==========================================================================
   function renderMapPins() {
+    // Left Map Baseline Pins (Rendered ONCE with stable positioning & visible data badges)
     if (DOM.leftPinsGroup) {
       DOM.leftPinsGroup.innerHTML = WARDS_DATA.map(w => `
-        <g class="borewell-node" data-id="${w.id}" transform="translate(${w.x}, ${w.y})">
-          <circle class="node-ring" cx="0" cy="0" r="9" />
-          <circle class="node-core" cx="0" cy="0" r="4.5" />
+        <g class="borewell-node" id="left-pin-${w.id}" data-id="${w.id}" transform="translate(${w.x}, ${w.y})">
+          <circle class="node-ring" cx="0" cy="0" r="8" />
+          <circle class="node-core" cx="0" cy="0" r="4" />
+          <g class="node-pill-tag" transform="translate(10, -9)">
+            <rect class="pill-bg" rx="3" width="76" height="18" />
+            <text class="pill-name" x="5" y="12">${w.shortName}</text>
+            <text class="pill-val" x="48" y="12">${(w.baseTds / 1000).toFixed(1)}k</text>
+          </g>
           <title>${w.name} (${w.taluk})&#10;2025 Baseline TDS: ${w.baseTds} mg/L&#10;Depth: ${(w.depth - 9.4).toFixed(1)}m bgl</title>
         </g>
       `).join('');
     }
 
-    updateRightMapPins();
-  }
-
-  function updateRightMapPins() {
-    if (!DOM.rightPinsGroup) return;
-
-    const isShock = state.ensoValue >= 0.8;
-    const isSevere = state.ensoValue >= 1.8;
-
-    DOM.rightPinsGroup.innerHTML = WARDS_DATA.map(w => {
-      const isCorridor = w.distNoyyalKm <= 1.5;
-      const isShockNode = isShock && isCorridor;
-      const nodeClass = isShockNode ? 'borewell-node node-shock' : 'borewell-node';
-
-      const currentTds = isShock ? (isSevere ? w.shockTds : Math.round(w.baseTds * 1.45)) : w.baseTds;
-      const currentDepth = isShock ? (isSevere ? w.depth : (w.depth - 4.5).toFixed(1)) : (w.depth - 9.4).toFixed(1);
-
-      return `
-        <g class="${nodeClass}" data-id="${w.id}" transform="translate(${w.x}, ${w.y})">
-          ${isShockNode ? `
-            <circle class="sonar-wave sonar-wave-1" cx="0" cy="0" r="6" />
-            <circle class="sonar-wave sonar-wave-2" cx="0" cy="0" r="6" />
-          ` : ''}
-          <circle class="node-ring" cx="0" cy="0" r="9" />
-          <circle class="node-core" cx="0" cy="0" r="4.5" />
-          <title>${w.name} (${w.taluk})&#10;Distance to Noyyal: ${w.distNoyyalKm} km&#10;TDS: ${currentTds} mg/L (${w.surgePct})&#10;Water Table: ${currentDepth}m bgl</title>
+    // Right Map Reality Pins (Rendered ONCE with permanent data pills & sonar waves)
+    if (DOM.rightPinsGroup) {
+      DOM.rightPinsGroup.innerHTML = WARDS_DATA.map(w => `
+        <g class="borewell-node" id="right-pin-${w.id}" data-id="${w.id}" transform="translate(${w.x}, ${w.y})">
+          <circle class="sonar-wave sonar-wave-1" cx="0" cy="0" r="6" />
+          <circle class="sonar-wave sonar-wave-2" cx="0" cy="0" r="6" />
+          <circle class="node-ring" cx="0" cy="0" r="8" />
+          <circle class="node-core" cx="0" cy="0" r="4" />
+          <g class="node-pill-tag" transform="translate(10, -9)">
+            <rect class="pill-bg" rx="3" width="76" height="18" />
+            <text class="pill-name" x="5" y="12">${w.shortName}</text>
+            <text class="pill-val" id="pill-val-${w.id}" x="48" y="12">${(w.shockTds / 1000).toFixed(1)}k</text>
+          </g>
+          <title>${w.name} (${w.taluk})&#10;Distance to Noyyal: ${w.distNoyyalKm} km&#10;TDS: ${w.shockTds} mg/L&#10;Depth: ${w.depth}m bgl</title>
         </g>
-      `;
-    }).join('');
+      `).join('');
+    }
 
     attachPinEvents();
   }
 
-  function attachPinEvents() {
-    document.querySelectorAll('.borewell-node').forEach(node => {
-      node.addEventListener('click', () => {
-        const id = node.getAttribute('data-id');
-        highlightWard(id);
-      });
+  // Updates existing nodes WITHOUT recreation to ensure zero jitter or instability
+  function updateRightMapPins() {
+    const isShock = state.ensoValue >= 0.8;
+    const isSevere = state.ensoValue >= 1.8;
+
+    WARDS_DATA.forEach(w => {
+      const node = document.getElementById(`right-pin-${w.id}`);
+      const pillVal = document.getElementById(`pill-val-${w.id}`);
+      if (!node) return;
+
+      const isCorridor = w.distNoyyalKm <= 1.5;
+      const isShockNode = isShock && isCorridor;
+
+      if (isShockNode) {
+        node.classList.add('node-shock');
+      } else {
+        node.classList.remove('node-shock');
+      }
+
+      const currentTds = isShock ? (isSevere ? w.shockTds : Math.round(w.baseTds * 1.45)) : w.baseTds;
+      if (pillVal) {
+        pillVal.textContent = currentTds >= 1000 ? `${(currentTds / 1000).toFixed(1)}k` : currentTds;
+      }
+    });
+
+    // If a station is currently docked in top-left HUD, update its live values
+    if (state.activeWardId) {
+      dockStationToTopLeft(state.activeWardId, false);
+    }
+  }
+
+  // Docks station details to top-left corner HUD on double-click or click
+  function dockStationToTopLeft(wardId, triggerPulse = true) {
+    state.activeWardId = wardId;
+    const ward = WARDS_DATA.find(w => w.id === wardId);
+    if (!ward) return;
+
+    if (DOM.hudSummaryMode) DOM.hudSummaryMode.style.display = 'none';
+    if (DOM.hudStationDossier) DOM.hudStationDossier.classList.add('active');
+
+    const isShock = state.ensoValue >= 0.8;
+    const isSevere = state.ensoValue >= 1.8;
+    const currentTds = isShock ? (isSevere ? ward.shockTds : Math.round(ward.baseTds * 1.45)) : ward.baseTds;
+    const currentDepth = isShock ? (isSevere ? ward.depth : (ward.depth - 4.5).toFixed(1)) : (ward.depth - 9.4).toFixed(1);
+
+    if (DOM.hudDossierName) DOM.hudDossierName.textContent = ward.name;
+    if (DOM.hudDossierSub) DOM.hudDossierSub.textContent = `${ward.taluk} • ${ward.distNoyyalKm} km to Noyyal Channel`;
+    if (DOM.hudDossierTds) {
+      DOM.hudDossierTds.textContent = `${currentTds.toLocaleString()} mg/L (${isShock ? ward.surgePct : 'Baseline'})`;
+      DOM.hudDossierTds.style.color = currentTds >= 2000 ? 'var(--accent-coral)' : 'var(--accent-amber)';
+    }
+    if (DOM.hudDossierDepth) {
+      DOM.hudDossierDepth.textContent = `${currentDepth}m bgl (${isShock ? '-9.4m extra' : 'Normal'})`;
+    }
+    if (DOM.hudDossierAction) {
+      DOM.hudDossierAction.textContent = `[${ward.action}]`;
+      DOM.hudDossierAction.className = `lb-action-tag ${ward.actionClass}`;
+    }
+
+    // Highlight row in leaderboard
+    document.querySelectorAll('.leaderboard-item').forEach(item => {
+      if (item.getAttribute('data-id') === wardId) {
+        item.classList.add('selected');
+      } else {
+        item.classList.remove('selected');
+      }
+    });
+
+    // Trigger visual pulse on node
+    if (triggerPulse) {
+      const pinNode = document.getElementById(`right-pin-${wardId}`);
+      if (pinNode) {
+        pinNode.style.transform = `translate(${ward.x}px, ${ward.y}px) scale(1.75)`;
+        setTimeout(() => {
+          pinNode.style.transform = `translate(${ward.x}px, ${ward.y}px)`;
+        }, 900);
+      }
+    }
+  }
+
+  function resetTopLeftHudToSummary() {
+    state.activeWardId = null;
+    if (DOM.hudStationDossier) DOM.hudStationDossier.classList.remove('active');
+    if (DOM.hudSummaryMode) DOM.hudSummaryMode.style.display = 'block';
+
+    document.querySelectorAll('.leaderboard-item').forEach(item => {
+      item.classList.remove('selected');
     });
   }
 
+  function attachPinEvents() {
+    // Single click & double click both cleanly dock station to top-left corner HUD
+    document.querySelectorAll('.borewell-node').forEach(node => {
+      node.addEventListener('click', () => {
+        const id = node.getAttribute('data-id');
+        dockStationToTopLeft(id, true);
+      });
+      node.addEventListener('dblclick', () => {
+        const id = node.getAttribute('data-id');
+        dockStationToTopLeft(id, true);
+      });
+    });
+
+    if (DOM.btnResetHud) {
+      DOM.btnResetHud.addEventListener('click', (e) => {
+        e.stopPropagation();
+        resetTopLeftHudToSummary();
+      });
+    }
+  }
+
   // ==========================================================================
-  // 5. CONTINUOUS SIMULATION ENGINE (DRIVEN BY ENSO ANOMALY)
+  // 6. CONTINUOUS SIMULATION ENGINE (DRIVEN BY ENSO ANOMALY)
   // ==========================================================================
   function applySimulation(enso, triggerSource = 'slider') {
     state.ensoValue = enso;
@@ -411,7 +550,7 @@
     const targetSewage = +(42.0 + (78.4 - 42.0) * p).toFixed(1);
     const targetWards = Math.round(5 + (14 - 5) * p);
 
-    // 1. Update Top Nav Status Orb
+    // 1. Top Nav Status Orb
     if (DOM.statusOrb) {
       if (state.elNinoActive) {
         DOM.statusOrb.classList.add('shock');
@@ -420,7 +559,7 @@
       }
     }
 
-    // 2. Update Floating Dock Controls
+    // 2. Floating Dock Controls
     if (DOM.btnElNinoToggle) {
       if (state.elNinoActive) {
         DOM.btnElNinoToggle.classList.remove('inactive');
@@ -443,7 +582,7 @@
       DOM.ensoSlider.value = enso;
     }
 
-    // 3. Update Center Map Header & HUD Comparison Chips
+    // 3. Center Map Header & HUD Chips
     if (DOM.rightMapTag) {
       if (state.severity === 'normal') {
         DOM.rightMapTag.textContent = "Expected Trend";
@@ -471,7 +610,7 @@
       DOM.hudSalinityAnomaly.textContent = `▲ +${((targetSalinity - 1550) / 1550 * 100).toFixed(1)}% Salinity Surge`;
     }
 
-    // 4. Update Center Map Ambient Heat Aura & River Flow
+    // 4. Center Map Ambient Heat Aura & River Flow
     if (DOM.rightMapHeatAura) {
       DOM.rightMapHeatAura.style.opacity = (p * 0.42).toFixed(3);
     }
@@ -516,7 +655,6 @@
       }
     }
 
-    // Animate Mini Sparkline in Card 1
     if (DOM.sparklineDot && DOM.sparklineLine && DOM.sparklineArea) {
       const sparkY = Math.round(28 - 24 * p);
       DOM.sparklineDot.setAttribute('cy', sparkY);
@@ -526,9 +664,7 @@
       DOM.sparklineLine.setAttribute('stroke', p > 0.5 ? '#f97316' : '#f59e0b');
     }
 
-    // KPI 2: Water Table Radial Ring
     if (DOM.ringDepletion) {
-      // Offset: 100 is 0%, 51.1 is 48.9%
       const offset = 100 - (48.9 * p);
       DOM.ringDepletion.style.strokeDashoffset = offset;
       DOM.ringDepletion.style.stroke = p > 0.5 ? 'var(--accent-coral)' : 'var(--accent-amber)';
@@ -541,7 +677,6 @@
       }
     }
 
-    // KPI 3: Untreated Sewage Radial Ring
     if (DOM.ringSewage) {
       const offset = 100 - targetSewage;
       DOM.ringSewage.style.strokeDashoffset = offset;
@@ -555,7 +690,6 @@
       }
     }
 
-    // KPI 4: Critical Wards Radial Ring
     if (DOM.ringWards) {
       const offset = 100 - ((targetWards / 60) * 100);
       DOM.ringWards.style.strokeDashoffset = offset;
@@ -572,7 +706,7 @@
     // 6. Update Aquifer X-Ray
     updateXray(p, targetDepth);
 
-    // 7. Update Map Pins
+    // 7. Update Map Pins with rock-solid stability
     updateRightMapPins();
 
     // 8. Update Chart.js Series
@@ -583,15 +717,13 @@
   }
 
   // ==========================================================================
-  // 6. LIVE UNDERGROUND AQUIFER X-RAY CUTAWAY (0m to 35m DEPTH)
+  // 7. LIVE UNDERGROUND AQUIFER X-RAY CUTAWAY (0m to 35m DEPTH)
   // ==========================================================================
   function updateXray(p, depth) {
     if (!DOM.xrayWaterFill || !DOM.xrayWaterLine || !DOM.xrayWaterLabel) return;
 
     // ViewBox: 0 0 340 380
-    // Ground level at Y=45 (0m). 35m at Y=315. Scale: ~7.71 px per meter.
-    // 19.2m -> Y = 45 + (19.2 * 7.71) = 193
-    // 28.6m -> Y = 45 + (28.6 * 7.71) = 265
+    // Ground level at Y=45 (0m). 35m at Y=315.
     const targetY = Math.round(193 + (265 - 193) * p);
     const targetHeight = Math.max(380 - targetY, 20);
 
@@ -632,15 +764,13 @@
   }
 
   // ==========================================================================
-  // 7. BKLIT SPLINE & PILL-BAR CHARTS INITIALIZATION
+  // 8. BKLIT SPLINE & PILL-BAR CHARTS INITIALIZATION
   // ==========================================================================
   function initCharts() {
-    // 1. Chart 1: Bklit Dual-Gradient Spline Area Chart
+    // Chart 1: Dual-Gradient Spline Area Chart
     const ctxDiv = document.getElementById('chartDivergence');
     if (ctxDiv) {
       const ctx = ctxDiv.getContext('2d');
-
-      // Create Solar-Amber vertical gradient
       const amberGrad = ctx.createLinearGradient(0, 0, 0, 220);
       amberGrad.addColorStop(0, 'rgba(245, 158, 11, 0.35)');
       amberGrad.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
@@ -730,7 +860,7 @@
       });
     }
 
-    // 2. Chart 2: Bklit Grouped Pill-Bar Chart
+    // Chart 2: Grouped Pill-Bar Chart
     const ctxProx = document.getElementById('chartProximity');
     if (ctxProx) {
       const ctx = ctxProx.getContext('2d');
@@ -815,7 +945,6 @@
     }
 
     if (state.charts.proximity) {
-      // Dynamic scaling of shock bars
       state.charts.proximity.data.datasets[1].data = [
         +(9.2 + (97.4 - 9.2) * p).toFixed(1),
         +(8.5 + (90.6 - 8.5) * p).toFixed(1),
@@ -827,7 +956,7 @@
   }
 
   // ==========================================================================
-  // 8. BKLIT HORIZONTAL PROGRESS LEADERBOARD
+  // 9. BKLIT HORIZONTAL PROGRESS LEADERBOARD
   // ==========================================================================
   function renderLeaderboard() {
     if (!DOM.leaderboardList) return;
@@ -856,7 +985,7 @@
     DOM.leaderboardList.querySelectorAll('.leaderboard-item').forEach(item => {
       item.addEventListener('click', () => {
         const id = item.getAttribute('data-id');
-        highlightWard(id);
+        dockStationToTopLeft(id, true);
       });
     });
   }
@@ -876,29 +1005,8 @@
     });
   }
 
-  function highlightWard(id) {
-    state.activeWardId = id;
-
-    // Highlight row in leaderboard
-    document.querySelectorAll('.leaderboard-item').forEach(item => {
-      if (item.getAttribute('data-id') === id) {
-        item.classList.add('selected');
-      } else {
-        item.classList.remove('selected');
-      }
-    });
-
-    // Pulse corresponding pin on Center Map
-    document.querySelectorAll('.borewell-node').forEach(node => {
-      if (node.getAttribute('data-id') === id) {
-        node.style.transform = 'scale(1.85)';
-        setTimeout(() => { node.style.transform = ''; }, 1200);
-      }
-    });
-  }
-
   // ==========================================================================
-  // 9. QR PITCH MODAL HANDLERS
+  // 10. QR PITCH MODAL HANDLERS
   // ==========================================================================
   function initQrModal() {
     if (!DOM.qrModal) return;
@@ -929,9 +1037,17 @@
   }
 
   // ==========================================================================
-  // 10. EVENT LISTENERS & BOOTSTRAP
+  // 11. EVENT LISTENERS & BOOTSTRAP
   // ==========================================================================
   function attachControls() {
+    // View Switcher Tabs
+    if (DOM.tabPitchDeck) {
+      DOM.tabPitchDeck.addEventListener('click', () => switchView('pitch'));
+    }
+    if (DOM.tabDetailedTakedown) {
+      DOM.tabDetailedTakedown.addEventListener('click', () => switchView('detailed'));
+    }
+
     // ENSO continuous slider scrub
     if (DOM.ensoSlider) {
       DOM.ensoSlider.addEventListener('input', (e) => {
@@ -951,6 +1067,9 @@
       });
     }
   }
+
+  // Global window hook for tab switching if needed
+  window.switchDashboardView = switchView;
 
   // DOMContentLoaded initialization
   document.addEventListener('DOMContentLoaded', () => {
