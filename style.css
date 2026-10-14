@@ -303,8 +303,9 @@ html, body {
   position: relative;
   width: 100%;
   aspect-ratio: 748 / 1024;
-  max-height: 480px;
-  background: #0d1320;
+  max-height: 520px;
+  background: radial-gradient(circle at 50% 45%, #152238 0%, #0d1525 65%, #080d18 100%);
+  border-radius: 0 0 10px 10px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -320,10 +321,11 @@ html, body {
   height: 100%;
   object-fit: contain;
   display: block;
-  z-index: 1;
+  z-index: 2;
+  pointer-events: none;
 }
 
-/* CSS Map Layer (Displays high-contrast dark map with crisp ice-white lines) */
+/* CSS Map Layer (Displays luminous map with crisp ice-white lines) */
 .tiruppur-map-img {
   position: absolute;
   top: 0;
@@ -334,7 +336,7 @@ html, body {
   display: block;
   pointer-events: none;
   user-select: none;
-  z-index: 0;
+  z-index: 1;
 }
 
 /* SVG Vector Overlay Layer */
@@ -406,32 +408,84 @@ html, body {
   opacity: 1;
 }
 
-/* Borewell Pins with Solar Sonar Rings */
+/* Borewell Pins with Solar Sonar Rings (Rock-Solid Coordinates, No Transform Jumping) */
 .borewell-node {
   pointer-events: auto;
   cursor: pointer;
-  transition: transform 0.2s ease;
 }
 
-.borewell-node:hover {
-  transform: scale(1.35);
+.borewell-node * {
+  cursor: pointer;
+}
+
+.node-hit-area {
+  fill: rgba(0, 0, 0, 0.001);
+  cursor: pointer;
 }
 
 .node-core {
-  r: 5;
-  fill: var(--accent-mint);
+  r: 5px;
+  fill: var(--accent-glacier);
   stroke: #0b111e;
-  stroke-width: 1.5;
+  stroke-width: 2px;
+  transition: r 0.18s cubic-bezier(0.16, 1, 0.3, 1), fill 0.18s ease, filter 0.18s ease;
 }
 
 .node-ring {
-  r: 10;
-  fill: none;
-  stroke: var(--accent-mint);
-  stroke-width: 1.2;
-  opacity: 0.5;
+  r: 10px;
+  fill: rgba(56, 189, 248, 0.12);
+  stroke: var(--accent-glacier);
+  stroke-width: 1.2px;
+  opacity: 0.6;
+  transition: r 0.18s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.18s ease, stroke-width 0.18s ease;
 }
 
+/* Hover State: Scaled Circle Radii, ZERO Transform on <g> (100% Rock-Solid Stability!) */
+.borewell-node:hover .node-core {
+  r: 7.5px;
+  fill: #ffffff;
+  stroke: var(--accent-glacier);
+  stroke-width: 2.5px;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.9));
+}
+
+.borewell-node:hover .node-ring {
+  r: 16px;
+  stroke: #ffffff;
+  stroke-width: 2px;
+  fill: rgba(56, 189, 248, 0.25);
+  opacity: 1;
+}
+
+.borewell-node:hover .pill-bg {
+  stroke: var(--accent-glacier);
+  stroke-width: 1.5px;
+  fill: rgba(15, 23, 42, 0.98);
+}
+
+/* Active / Selected Pin State */
+.borewell-node.node-selected .node-core {
+  r: 8px;
+  fill: #ffffff;
+  stroke: var(--accent-coral);
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 12px var(--accent-coral));
+}
+
+.borewell-node.node-selected .node-ring {
+  r: 18px;
+  stroke: var(--accent-coral);
+  stroke-width: 2.2px;
+  opacity: 1;
+}
+
+.borewell-node.node-selected .pill-bg {
+  stroke: var(--accent-coral);
+  stroke-width: 1.8px;
+  fill: rgba(22, 34, 56, 0.98);
+}
+
+/* Sonar Wave Rings on Right Map */
 .sonar-wave {
   fill: none;
   stroke-linecap: round;
@@ -456,6 +510,60 @@ html, body {
 @keyframes sonarWaveLoop {
   0% { r: 6px; opacity: 1; stroke-width: 2px; }
   100% { r: 28px; opacity: 0; stroke-width: 0.5px; }
+}
+
+/* Data Pills Attached to Map Pins */
+.node-pill-tag {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.pill-bg {
+  fill: rgba(11, 17, 30, 0.88);
+  stroke: rgba(148, 163, 184, 0.35);
+  stroke-width: 1px;
+  rx: 4px;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.6));
+  transition: stroke 0.2s ease, fill 0.2s ease;
+}
+
+.pill-name {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  fill: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.pill-val {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  fill: var(--accent-glacier);
+}
+
+.node-shock .pill-bg {
+  stroke: rgba(245, 158, 11, 0.45);
+}
+
+.node-shock .pill-val {
+  fill: var(--accent-amber);
+}
+
+/* Vector Taluk Labels */
+.taluk-label-group text {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 700;
+  fill: #ffffff;
+  letter-spacing: 0.09em;
+  text-anchor: middle;
+  pointer-events: none;
+  paint-order: stroke fill;
+  stroke: #0b111e;
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
 }
 
 /* Sleek Horizontal Telemetry Bar (Relocated Above Map Viewport — Zero Map Obstruction) */

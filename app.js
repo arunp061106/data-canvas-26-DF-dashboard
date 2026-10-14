@@ -47,6 +47,8 @@
       actionClass: "tag-cap",
       x: 345,
       y: 375,
+      tagDx: 12,
+      tagDy: 4,
       barPct: 98
     },
     {
@@ -62,8 +64,10 @@
       depth: 27.4,
       action: "CAP & TEST FIRST",
       actionClass: "tag-cap",
-      x: 310,
-      y: 340,
+      x: 305,
+      y: 330,
+      tagDx: -96,
+      tagDy: -18,
       barPct: 94
     },
     {
@@ -79,8 +83,10 @@
       depth: 26.5,
       action: "CAP & TEST FIRST",
       actionClass: "tag-cap",
-      x: 380,
-      y: 390,
+      x: 385,
+      y: 395,
+      tagDx: 12,
+      tagDy: -18,
       barPct: 91
     },
     {
@@ -96,8 +102,10 @@
       depth: 29.2,
       action: "CAP & TEST FIRST",
       actionClass: "tag-cap",
-      x: 530,
-      y: 410,
+      x: 525,
+      y: 415,
+      tagDx: 12,
+      tagDy: 4,
       barPct: 85
     },
     {
@@ -115,6 +123,8 @@
       actionClass: "tag-log",
       x: 260,
       y: 245,
+      tagDx: 12,
+      tagDy: -8,
       barPct: 66
     },
     {
@@ -130,8 +140,10 @@
       depth: 20.4,
       action: "MONITOR",
       actionClass: "tag-log",
-      x: 230,
+      x: 215,
       y: 420,
+      tagDx: -88,
+      tagDy: -8,
       barPct: 28
     },
     {
@@ -148,7 +160,9 @@
       action: "MONITOR",
       actionClass: "tag-log",
       x: 390,
-      y: 580,
+      y: 575,
+      tagDx: 12,
+      tagDy: -8,
       barPct: 15
     },
     {
@@ -165,7 +179,9 @@
       action: "MONITOR",
       actionClass: "tag-log",
       x: 170,
-      y: 780,
+      y: 775,
+      tagDx: 12,
+      tagDy: -8,
       barPct: 10
     }
   ];
@@ -319,13 +335,6 @@
     canvas.height = img.naturalHeight || 1024;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
-
-    // Canvas rendered successfully, hide fallback img
-    const viewport = canvas.closest('.map-viewport');
-    if (viewport) {
-      const fallback = viewport.querySelector('.tiruppur-map-img');
-      if (fallback) fallback.style.display = 'none';
-    }
   }
 
   // ==========================================================================
@@ -336,12 +345,13 @@
     if (DOM.leftPinsGroup) {
       DOM.leftPinsGroup.innerHTML = WARDS_DATA.map(w => `
         <g class="borewell-node" id="left-pin-${w.id}" data-id="${w.id}" transform="translate(${w.x}, ${w.y})">
-          <circle class="node-ring" cx="0" cy="0" r="8" />
-          <circle class="node-core" cx="0" cy="0" r="4" />
-          <g class="node-pill-tag" transform="translate(10, -9)">
-            <rect class="pill-bg" rx="3" width="76" height="18" />
-            <text class="pill-name" x="5" y="12">${w.shortName}</text>
-            <text class="pill-val" x="48" y="12">${(w.baseTds / 1000).toFixed(1)}k</text>
+          <circle class="node-hit-area" cx="0" cy="0" r="22" />
+          <circle class="node-ring" cx="0" cy="0" r="10" />
+          <circle class="node-core" cx="0" cy="0" r="5" />
+          <g class="node-pill-tag" transform="translate(${w.tagDx || 12}, ${w.tagDy || -8})">
+            <rect class="pill-bg" rx="4" width="76" height="18" />
+            <text class="pill-name" x="6" y="13">${w.shortName}</text>
+            <text class="pill-val" x="48" y="13">${(w.baseTds / 1000).toFixed(1)}k</text>
           </g>
           <title>${w.name} (${w.taluk})&#10;2025 Baseline TDS: ${w.baseTds} mg/L&#10;Depth: ${(w.depth - 9.4).toFixed(1)}m bgl</title>
         </g>
@@ -352,14 +362,15 @@
     if (DOM.rightPinsGroup) {
       DOM.rightPinsGroup.innerHTML = WARDS_DATA.map(w => `
         <g class="borewell-node" id="right-pin-${w.id}" data-id="${w.id}" transform="translate(${w.x}, ${w.y})">
+          <circle class="node-hit-area" cx="0" cy="0" r="22" />
           <circle class="sonar-wave sonar-wave-1" cx="0" cy="0" r="6" />
           <circle class="sonar-wave sonar-wave-2" cx="0" cy="0" r="6" />
-          <circle class="node-ring" cx="0" cy="0" r="8" />
-          <circle class="node-core" cx="0" cy="0" r="4" />
-          <g class="node-pill-tag" transform="translate(10, -9)">
-            <rect class="pill-bg" rx="3" width="76" height="18" />
-            <text class="pill-name" x="5" y="12">${w.shortName}</text>
-            <text class="pill-val" id="pill-val-${w.id}" x="48" y="12">${(w.shockTds / 1000).toFixed(1)}k</text>
+          <circle class="node-ring" cx="0" cy="0" r="10" />
+          <circle class="node-core" cx="0" cy="0" r="5" />
+          <g class="node-pill-tag" transform="translate(${w.tagDx || 12}, ${w.tagDy || -8})">
+            <rect class="pill-bg" rx="4" width="76" height="18" />
+            <text class="pill-name" x="6" y="13">${w.shortName}</text>
+            <text class="pill-val" id="pill-val-${w.id}" x="48" y="13">${(w.shockTds / 1000).toFixed(1)}k</text>
           </g>
           <title>${w.name} (${w.taluk})&#10;Distance to Noyyal: ${w.distNoyyalKm} km&#10;TDS: ${w.shockTds} mg/L&#10;Depth: ${w.depth}m bgl</title>
         </g>
@@ -437,16 +448,14 @@
       }
     });
 
-    // Trigger visual pulse on node
-    if (triggerPulse) {
-      const pinNode = document.getElementById(`right-pin-${wardId}`);
-      if (pinNode) {
-        pinNode.style.transform = `translate(${ward.x}px, ${ward.y}px) scale(1.75)`;
-        setTimeout(() => {
-          pinNode.style.transform = `translate(${ward.x}px, ${ward.y}px)`;
-        }, 900);
+    // Mark active pin with node-selected class (never mutate transform)
+    document.querySelectorAll('.borewell-node').forEach(node => {
+      if (node.getAttribute('data-id') === wardId) {
+        node.classList.add('node-selected');
+      } else {
+        node.classList.remove('node-selected');
       }
-    }
+    });
   }
 
   function resetTopLeftHudToSummary() {
@@ -457,19 +466,24 @@
     document.querySelectorAll('.leaderboard-item').forEach(item => {
       item.classList.remove('selected');
     });
+
+    document.querySelectorAll('.borewell-node').forEach(node => {
+      node.classList.remove('node-selected');
+    });
   }
 
   function attachPinEvents() {
-    // Single click & double click both cleanly dock station to top-left corner HUD
+    // Single click, pointerdown, & double click all instantaneously dock station to HUD
     document.querySelectorAll('.borewell-node').forEach(node => {
-      node.addEventListener('click', () => {
+      const handleSelect = (e) => {
+        e.stopPropagation();
         const id = node.getAttribute('data-id');
         dockStationToTopLeft(id, true);
-      });
-      node.addEventListener('dblclick', () => {
-        const id = node.getAttribute('data-id');
-        dockStationToTopLeft(id, true);
-      });
+      };
+
+      node.addEventListener('pointerdown', handleSelect);
+      node.addEventListener('click', handleSelect);
+      node.addEventListener('dblclick', handleSelect);
     });
 
     if (DOM.btnResetHud) {
