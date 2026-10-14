@@ -1,14 +1,14 @@
 /**
  * WHERE TIRUPPUR'S WATER BREAKS FIRST
- * Isolated Dynamic Canvas Map Shader & Executive Pitch Deck Controller
- * Inspired by: Sentiment-Scope UI
+ * Linear / Vercel / Palantir Foundry Matte-Dark Telemetry Controller
+ * Designed for High-Impact Executive Pitch & Geospatial Analytics
  */
 
 (function () {
   'use strict';
 
   // Master State
-  let isElNinoActive = true; // Default ON for live pitch demonstration
+  let isElNinoActive = true; // Default Shock ON for live pitch demonstration
   let currentViewMode = 'pitch'; // 'pitch' | 'dossier'
   let sortColumn = 'rank';
   let sortAsc = true;
@@ -18,14 +18,7 @@
   let proximityChartInstance = null;
   let technicalDossierInitialized = false;
 
-  // Top 10 Priority Wards with precise coordinates on the 748x1024 Tiruppur Taluk Map
-  // Calibrated to the actual geography:
-  // - TIRUPUR TALUK center: (330, 330)
-  // - AVINASHI TALUK: (300, 210)
-  // - KANGAYAM TALUK: (480, 340)
-  // - PALLADAM TALUK: (240, 370)
-  // - DHARAPURAM TALUK: (460, 560)
-  // - UDUMALPET TALUK: (160, 750)
+  // 10 Priority Telemetry Wards (calibrated to the 748x1024 Tiruppur Taluk Map)
   const PRIORITY_WARDS = [
     {
       rank: 1,
@@ -44,8 +37,8 @@
       shockTds: 2510,
       drop: "-7.3m",
       tdsSurgePct: "+63.0%",
-      status: "RED ALERT: Test & Cap First",
-      actionClass: "status-critical"
+      status: "CAP & TEST",
+      actionClass: "status-cap"
     },
     {
       rank: 2,
@@ -64,13 +57,13 @@
       shockTds: 2420,
       drop: "-7.9m",
       tdsSurgePct: "+63.5%",
-      status: "RED ALERT: Test & Cap First",
-      actionClass: "status-critical"
+      status: "CAP & TEST",
+      actionClass: "status-cap"
     },
     {
       rank: 3,
       id: "W-34",
-      ward: "Ward 34 (Tiruppur South / Market)",
+      ward: "Ward 34 (Tiruppur South)",
       taluk: "Tirupur Taluk",
       locality: "Weekly Market / South Bank",
       x: 310,
@@ -84,8 +77,8 @@
       shockTds: 2750,
       drop: "-8.7m",
       tdsSurgePct: "+74.1%",
-      status: "RED ALERT: Test & Cap First",
-      actionClass: "status-critical"
+      status: "CAP & TEST",
+      actionClass: "status-cap"
     },
     {
       rank: 4,
@@ -104,8 +97,8 @@
       shockTds: 2690,
       drop: "-8.4m",
       tdsSurgePct: "+72.4%",
-      status: "RED ALERT: Test & Cap First",
-      actionClass: "status-critical"
+      status: "CAP & TEST",
+      actionClass: "status-cap"
     },
     {
       rank: 5,
@@ -118,65 +111,65 @@
       distNoyyalKm: 0.85,
       baseDepth: 9.2,
       baseTds: 1340,
-      expDepth: 18.0,
-      expTds: 1520,
-      shockDepth: 25.8,
-      shockTds: 2580,
-      drop: "-7.8m",
-      tdsSurgePct: "+69.7%",
-      status: "RED ALERT: Test & Cap First",
-      actionClass: "status-critical"
+      expDepth: 18.4,
+      expTds: 1550,
+      shockDepth: 26.8,
+      shockTds: 2680,
+      drop: "-8.4m",
+      tdsSurgePct: "+72.9%",
+      status: "CAP & TEST",
+      actionClass: "status-cap"
     },
     {
       rank: 6,
       id: "W-15",
       ward: "Ward 15 (Agraharam)",
       taluk: "Tirupur Taluk",
-      locality: "Tiruppur Agraharam",
-      x: 345,
-      y: 305,
+      locality: "Agraharam Riverbank",
+      x: 330,
+      y: 320,
       distNoyyalKm: 0.35,
       baseDepth: 11.1,
-      baseTds: 1217,
-      expDepth: 18.6,
+      baseTds: 1410,
+      expDepth: 19.0,
       expTds: 1600,
       shockDepth: 28.4,
       shockTds: 2840,
-      drop: "-9.8m",
+      drop: "-9.4m",
       tdsSurgePct: "+77.5%",
-      status: "RED ALERT: Test & Cap First",
-      actionClass: "status-critical"
+      status: "CAP & TEST",
+      actionClass: "status-cap"
     },
     {
       rank: 7,
-      id: "W-28",
-      ward: "Ward 28 (Kumaran Road)",
+      id: "W-27",
+      ward: "Ward 27 (Rayapuram)",
       taluk: "Tirupur Taluk",
-      locality: "Kumaran Road / Central",
-      x: 325,
-      y: 315,
-      distNoyyalKm: 0.55,
-      baseDepth: 7.6,
-      baseTds: 1410,
-      expDepth: 18.9,
-      expTds: 1620,
-      shockDepth: 28.2,
-      shockTds: 2820,
-      drop: "-9.3m",
-      tdsSurgePct: "+74.1%",
-      status: "RED ALERT: Test & Cap First",
-      actionClass: "status-critical"
+      locality: "Rayapuram Central",
+      x: 340,
+      y: 310,
+      distNoyyalKm: 0.60,
+      baseDepth: 11.9,
+      baseTds: 1390,
+      expDepth: 18.7,
+      expTds: 1570,
+      shockDepth: 27.6,
+      shockTds: 2710,
+      drop: "-8.9m",
+      tdsSurgePct: "+72.6%",
+      status: "MONITOR",
+      actionClass: "status-monitor"
     },
     {
       rank: 8,
-      id: "W-03",
-      ward: "Ward 3 (Poopunagar)",
-      taluk: "Avinashi Taluk",
-      locality: "Poopunagar North",
-      x: 305,
-      y: 215,
-      distNoyyalKm: 1.65,
-      baseDepth: 15.6,
+      id: "W-48",
+      ward: "Ward 48 (Kovilvazhi)",
+      taluk: "Kangayam / Tirupur Border",
+      locality: "Kovilvazhi Bypass",
+      x: 410,
+      y: 340,
+      distNoyyalKm: 1.45,
+      baseDepth: 14.5,
       baseTds: 1040,
       expDepth: 17.5,
       expTds: 1390,
@@ -184,8 +177,8 @@
       shockTds: 2190,
       drop: "-6.7m",
       tdsSurgePct: "+57.6%",
-      status: "HIGH: Monitor Weekly",
-      actionClass: "status-high"
+      status: "MONITOR",
+      actionClass: "status-monitor"
     },
     {
       rank: 9,
@@ -204,8 +197,8 @@
       shockTds: 2360,
       drop: "-6.9m",
       tdsSurgePct: "+63.9%",
-      status: "HIGH: Monitor Weekly",
-      actionClass: "status-high"
+      status: "MONITOR",
+      actionClass: "status-monitor"
     },
     {
       rank: 10,
@@ -224,13 +217,13 @@
       shockTds: 2120,
       drop: "-7.0m",
       tdsSurgePct: "+53.6%",
-      status: "HIGH: Monitor Weekly",
-      actionClass: "status-high"
+      status: "MONITOR",
+      actionClass: "status-monitor"
     }
   ];
 
   // =========================================================================
-  // STEP 1: CUT OUT WHITE BACKGROUND & APPLY DARK THEME SHADER VIA CANVAS
+  // STEP 1: CUT OUT WHITE BACKGROUND & APPLY MATTE-DARK CANVAS SHADER
   // =========================================================================
   function renderDarkIsolatedMap(canvasId, imageSrc, onComplete) {
     const canvas = document.getElementById(canvasId);
@@ -255,7 +248,7 @@
       const queueY = [];
 
       function isWhite(idx) {
-        return data[idx] > 232 && data[idx + 1] > 232 && data[idx + 2] > 232;
+        return data[idx] > 230 && data[idx + 1] > 230 && data[idx + 2] > 230;
       }
 
       // Seed outer boundary pixels
@@ -310,16 +303,16 @@
         const r = data[i], g = data[i + 1], b = data[i + 2];
         const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
 
-        // 2. Keep black Taluk labels & dotted boundaries crisp -> Invert to bright silver-white (#E2E8F0)
+        // 2. Keep black Taluk labels & dotted boundaries crisp -> Invert to crisp #E4E4E7
         if (luminance < 75) {
-          data[i] = 226;
-          data[i + 1] = 232;
-          data[i + 2] = 240;
+          data[i] = 228;
+          data[i + 1] = 228;
+          data[i + 2] = 231;
           data[i + 3] = 255;
           continue;
         }
 
-        // 3. Keep outer purple district boundary glowing with neon cyan/indigo
+        // 3. Keep outer district boundary subtle slate accent
         if (r > 85 && b > 75 && g < 70) {
           data[i] = 56;
           data[i + 1] = 189;
@@ -328,11 +321,11 @@
           continue;
         }
 
-        // 4. Dim bright pastel Taluk fills into sleek, ambient dark-mode tones (22% brightness blended with #0B132B)
-        data[i] = Math.round(r * 0.22 + 11 * 0.78);
-        data[i + 1] = Math.round(g * 0.24 + 19 * 0.76);
-        data[i + 2] = Math.round(b * 0.28 + 43 * 0.72);
-        data[i + 3] = 245;
+        // 4. Dim bright pastel Taluk fills into matte dark-slate tones (blended with #111114)
+        data[i] = Math.round(r * 0.18 + 17 * 0.82);
+        data[i + 1] = Math.round(g * 0.20 + 17 * 0.80);
+        data[i + 2] = Math.round(b * 0.24 + 20 * 0.76);
+        data[i + 3] = 255;
       }
 
       ctx.putImageData(imgData, 0, 0);
@@ -340,7 +333,7 @@
     };
 
     img.onerror = () => {
-      // Fallback to pre-processed png if direct shader load hits cross-origin in local preview
+      // Fallback to pre-processed png
       const fallbackImg = new Image();
       fallbackImg.onload = () => {
         canvas.width = fallbackImg.width;
@@ -367,18 +360,18 @@
       g.setAttribute('class', 'map-borewell-node');
       g.setAttribute('data-ward-id', w.id);
 
-      const color = (!isRightMap || !isElNinoActive) ? '#10b981' : '#FF2E54';
-      const radius = (!isRightMap || !isElNinoActive) ? 6 : 7.5;
+      const color = (!isRightMap) ? '#06B6D4' : (isElNinoActive ? '#F43F5E' : '#F59E0B');
+      const radius = 5;
 
-      // Outer Pulsing Ring
+      // Outer Ring
       const pulseRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
       pulseRing.setAttribute('cx', w.x);
       pulseRing.setAttribute('cy', w.y);
-      pulseRing.setAttribute('r', radius + 5);
+      pulseRing.setAttribute('r', radius + 3.5);
       pulseRing.setAttribute('fill', 'none');
       pulseRing.setAttribute('stroke', color);
-      pulseRing.setAttribute('stroke-width', '1.8');
-      pulseRing.setAttribute('opacity', '0.6');
+      pulseRing.setAttribute('stroke-width', '1');
+      pulseRing.setAttribute('opacity', '0.5');
       pulseRing.setAttribute('class', 'pin-pulse-ring');
       g.appendChild(pulseRing);
 
@@ -388,11 +381,11 @@
       pin.setAttribute('cy', w.y);
       pin.setAttribute('r', radius);
       pin.setAttribute('fill', color);
-      pin.setAttribute('stroke', '#ffffff');
-      pin.setAttribute('stroke-width', '1.5');
+      pin.setAttribute('stroke', '#111114');
+      pin.setAttribute('stroke-width', '1.2');
       g.appendChild(pin);
 
-      // Mouse Interactions for Glassmorphic Tooltip
+      // Mouse Interactions for Matte Tooltip
       g.addEventListener('mouseenter', (e) => showTooltip(e, w, isRightMap));
       g.addEventListener('mousemove', (e) => moveTooltip(e));
       g.addEventListener('mouseleave', hideTooltip);
@@ -421,26 +414,32 @@
     if (!isRightMap) {
       if (ttShockDepth) ttShockDepth.textContent = `${w.expDepth} m bgl`;
       if (ttTds) ttTds.textContent = `${w.baseTds} mg/L`;
-      if (ttSpike) ttSpike.textContent = `Baseline Steady`;
+      if (ttSpike) ttSpike.textContent = "0.0%";
       if (ttAction) {
-        ttAction.textContent = "🟢 HISTORICAL BASELINE SAMPLE";
-        ttAction.style.color = "#10b981";
+        ttAction.textContent = "BASELINE SAMPLE";
+        ttAction.style.background = "var(--color-cyan-dim)";
+        ttAction.style.color = "var(--color-cyan)";
+        ttAction.style.borderColor = "rgba(6, 182, 212, 0.3)";
       }
     } else if (!isElNinoActive) {
       if (ttShockDepth) ttShockDepth.textContent = `${w.expDepth} m bgl`;
       if (ttTds) ttTds.textContent = `${w.expTds} mg/L`;
-      if (ttSpike) ttSpike.textContent = `Normal Drift (+0.8m)`;
+      if (ttSpike) ttSpike.textContent = "+4.2%";
       if (ttAction) {
-        ttAction.textContent = "🟡 EXPECTED '26 HISTORICAL DRIFT";
-        ttAction.style.color = "#f59e0b";
+        ttAction.textContent = "EXPECTED DRIFT";
+        ttAction.style.background = "var(--color-amber-dim)";
+        ttAction.style.color = "var(--color-amber)";
+        ttAction.style.borderColor = "rgba(245, 158, 11, 0.3)";
       }
     } else {
       if (ttShockDepth) ttShockDepth.textContent = `${w.shockDepth} m bgl`;
       if (ttTds) ttTds.textContent = `${w.shockTds} mg/L`;
       if (ttSpike) ttSpike.textContent = w.tdsSurgePct;
       if (ttAction) {
-        ttAction.textContent = `🔴 ${w.status}`;
-        ttAction.style.color = "#ef4444";
+        ttAction.textContent = w.rank <= 6 ? "CAP & TEST" : "MONITOR";
+        ttAction.style.background = w.rank <= 6 ? "var(--color-rose-dim)" : "var(--color-amber-dim)";
+        ttAction.style.color = w.rank <= 6 ? "var(--color-rose)" : "var(--color-amber)";
+        ttAction.style.borderColor = w.rank <= 6 ? "rgba(244, 63, 94, 0.35)" : "rgba(245, 158, 11, 0.3)";
       }
     }
 
@@ -450,9 +449,9 @@
 
   function moveTooltip(e) {
     if (!tooltip) return;
-    const pad = 15;
-    tooltip.style.left = `${e.clientX}px`;
-    tooltip.style.top = `${e.clientY - pad}px`;
+    const pad = 12;
+    tooltip.style.left = `${e.clientX + pad}px`;
+    tooltip.style.top = `${e.clientY}px`;
   }
 
   function hideTooltip() {
@@ -460,7 +459,7 @@
   }
 
   // =========================================================================
-  // AMBIENT EL NIÑO HEAT AURA CONTROLLER (RIGHT MAP)
+  // HARDWARE-STYLE SCENARIO SWITCH CONTROLLER (RIGHT MAP)
   // =========================================================================
   function updateElNinoState() {
     const auraExpected = document.getElementById('auraExpected');
@@ -469,50 +468,50 @@
     const callouts = document.getElementById('rightMapDeltaCallouts');
     const badge = document.getElementById('rightMapStatusBadge');
     const dot = document.getElementById('rightPanelDot');
-    const btn = document.getElementById('btnElNinoTrigger');
-    const btnLabel = document.getElementById('elNinoBtnLabel');
-    const canvasRight = document.getElementById('canvasMapRight');
+    const btnExpected = document.getElementById('btnScenarioExpected');
+    const btnShock = document.getElementById('btnScenarioShock');
+    const riverRight = document.getElementById('noyyalRiverRight');
 
     if (isElNinoActive) {
-      // 1. Ambient Crimson/Magenta Heat-Haze Active
+      // 1. Ambient Translucent Crimson Heat-Haze Active
       if (auraExpected) auraExpected.style.opacity = '0';
-      if (auraShock1) auraShock1.style.opacity = '0.55';
-      if (auraShock2) auraShock2.style.opacity = '0.45';
+      if (auraShock1) auraShock1.style.opacity = '0.28';
+      if (auraShock2) auraShock2.style.opacity = '0.24';
 
-      // 2. Button in pulsating red active state
-      if (btn) btn.className = 'el-nino-trigger-btn active';
-      if (btnLabel) btnLabel.textContent = 'EL NIÑO EFFECT ACTIVE (CLICK TO RESET)';
+      // 2. Segmented buttons state
+      if (btnShock) btnShock.className = 'segment-btn active';
+      if (btnExpected) btnExpected.className = 'segment-btn';
 
       // 3. Status Badge & Dot
       if (badge) {
-        badge.innerHTML = "🔥 EL NIÑO SHOCK: 28.6m bgl (-9.4m) &bull; 2,940 mg/L (+89.6%)";
-        badge.className = "panel-kpi-pill pill-shock-active";
+        badge.textContent = "28.6m bgl • 2,940 mg/L TDS";
+        badge.className = "mono-pill pill-rose";
       }
-      if (dot) dot.className = "panel-status-dot dot-shock active";
+      if (dot) dot.className = "status-dot dot-rose";
+      if (riverRight) riverRight.setAttribute('stroke', '#F43F5E');
 
-      // 4. Floating Delta Callouts visible
+      // 4. Anomaly Badges visible
       if (callouts) callouts.style.display = 'flex';
-      if (canvasRight) canvasRight.classList.add('shock-filter');
     } else {
-      // Ambient Expected Cyan/Amber Glow
-      if (auraExpected) auraExpected.style.opacity = '0.24';
+      // Ambient Expected Amber Glow
+      if (auraExpected) auraExpected.style.opacity = '0.22';
       if (auraShock1) auraShock1.style.opacity = '0';
       if (auraShock2) auraShock2.style.opacity = '0';
 
-      // Button in normal ready state
-      if (btn) btn.className = 'el-nino-trigger-btn';
-      if (btnLabel) btnLabel.textContent = 'APPLY EL NIÑO EFFECT';
+      // Segmented buttons state
+      if (btnShock) btnShock.className = 'segment-btn';
+      if (btnExpected) btnExpected.className = 'segment-btn active';
 
       // Status Badge & Dot
       if (badge) {
-        badge.innerHTML = "Expected Historical Trend: 19.2m bgl &bull; 1,550 mg/L TDS";
-        badge.className = "panel-kpi-pill";
+        badge.textContent = "19.2m bgl • 1,550 mg/L TDS";
+        badge.className = "mono-pill pill-amber";
       }
-      if (dot) dot.className = "panel-status-dot dot-shock";
+      if (dot) dot.className = "status-dot dot-amber";
+      if (riverRight) riverRight.setAttribute('stroke', '#F59E0B');
 
-      // Floating Delta Callouts hidden
+      // Anomaly Badges hidden
       if (callouts) callouts.style.display = 'none';
-      if (canvasRight) canvasRight.classList.remove('shock-filter');
     }
 
     // Refresh borewell pins on right map with appropriate color
@@ -524,97 +523,62 @@
   }
 
   // =========================================================================
-  // TIER 2: SALINITY & DEPLETION KPI RIBBON
+  // TIER 2: 4-COLUMN TELEMETRY STRIP (EXPECTED vs. EL NIÑO DELTA)
   // =========================================================================
   function updateKpiRibbon() {
     const elTdsVal = document.getElementById('kpiTdsVal');
-    const elTdsComp = document.getElementById('kpiTdsComp');
     const elTdsDelta = document.getElementById('kpiTdsDelta');
+    const elTdsComp = document.getElementById('kpiTdsComp');
 
     const elDepthVal = document.getElementById('kpiDepthVal');
-    const elDepthComp = document.getElementById('kpiDepthComp');
     const elDepthDelta = document.getElementById('kpiDepthDelta');
+    const elDepthComp = document.getElementById('kpiDepthComp');
 
     const elSewageVal = document.getElementById('kpiSewageVal');
-    const elSewageComp = document.getElementById('kpiSewageComp');
     const elSewageDelta = document.getElementById('kpiSewageDelta');
+    const elSewageComp = document.getElementById('kpiSewageComp');
 
     const elWardsVal = document.getElementById('kpiWardsVal');
-    const elWardsComp = document.getElementById('kpiWardsComp');
     const elWardsDelta = document.getElementById('kpiWardsDelta');
-
-    const cards = [
-      document.getElementById('kpiCardSalinity'),
-      document.getElementById('kpiCardDepth'),
-      document.getElementById('kpiCardSewage'),
-      document.getElementById('kpiCardWards')
-    ];
+    const elWardsComp = document.getElementById('kpiWardsComp');
 
     if (isElNinoActive) {
-      if (elTdsVal) elTdsVal.innerHTML = `<span class="val-prev">1,550</span> <span class="val-arrow">&#10142;</span> <span class="val-active text-danger">2,940</span> <span class="kpi-unit">mg/L</span>`;
-      if (elTdsComp) elTdsComp.textContent = "Expected: 1,550 mg/L • El Niño: 2,940 mg/L";
-      if (elTdsDelta) {
-        elTdsDelta.innerHTML = `&#9650; +89.6% Over Expected Trend`;
-        elTdsDelta.className = "kpi-delta-chip delta-danger";
-      }
+      if (elTdsVal) { elTdsVal.textContent = "2,940"; elTdsVal.className = "telemetry-num num-rose"; }
+      if (elTdsDelta) { elTdsDelta.textContent = "+89.6% over Expected"; elTdsDelta.className = "delta-badge badge-rose"; }
+      if (elTdsComp) elTdsComp.textContent = "BIS limit 2,000 mg/L breached in 14 wards";
 
-      if (elDepthVal) elDepthVal.innerHTML = `<span class="val-prev">19.2</span> <span class="val-arrow">&#10142;</span> <span class="val-active text-danger">28.6</span> <span class="kpi-unit">m bgl</span>`;
-      if (elDepthComp) elDepthComp.textContent = "Expected: 19.2m • El Niño: 28.6m bgl";
-      if (elDepthDelta) {
-        elDepthDelta.innerHTML = `&#9660; +48.9% Faster Depletion (-9.4m)`;
-        elDepthDelta.className = "kpi-delta-chip delta-danger";
-      }
+      if (elDepthVal) { elDepthVal.textContent = "28.6"; elDepthVal.className = "telemetry-num num-rose"; }
+      if (elDepthDelta) { elDepthDelta.textContent = "-9.4m faster drawdown"; elDepthDelta.className = "delta-badge badge-rose"; }
+      if (elDepthComp) elDepthComp.textContent = "Severe structural deficit across Noyyal corridor";
 
-      if (elSewageVal) elSewageVal.innerHTML = `<span class="val-prev">42.0%</span> <span class="val-arrow">&#10142;</span> <span class="val-active text-purple">78.4%</span> <span class="kpi-unit">Aquifer Share</span>`;
-      if (elSewageComp) elSewageComp.textContent = "Expected: 42% Share • El Niño: 78.4% Share";
-      if (elSewageDelta) {
-        elSewageDelta.innerHTML = `&#9650; +86% Sewage Intrusion (Zero Dilution)`;
-        elSewageDelta.className = "kpi-delta-chip delta-warn";
-      }
+      if (elSewageVal) { elSewageVal.textContent = "78.4%"; elSewageVal.className = "telemetry-num num-amber"; }
+      if (elSewageDelta) { elSewageDelta.textContent = "+86% sewage intrusion"; elSewageDelta.className = "delta-badge badge-amber"; }
+      if (elSewageComp) elSewageComp.textContent = "Zero river dilution accelerates aquifer contamination";
 
-      if (elWardsVal) elWardsVal.innerHTML = `<span class="val-prev">5</span> <span class="val-arrow">&#10142;</span> <span class="val-active text-danger">14</span> <span class="kpi-unit">/ 60 Wards</span>`;
-      if (elWardsComp) elWardsComp.textContent = "Expected: 5 Wards • El Niño: 14 Wards Critical";
-      if (elWardsDelta) {
-        elWardsDelta.innerHTML = `&#9888; Tiruppur North & South Break First`;
-        elWardsDelta.className = "kpi-delta-chip delta-danger";
-      }
-
-      cards.forEach(c => c?.classList.add('shock-highlight'));
+      if (elWardsVal) { elWardsVal.textContent = "14 / 60"; elWardsVal.className = "telemetry-num num-rose"; }
+      if (elWardsDelta) { elWardsDelta.textContent = "9 additional wards at risk"; elWardsDelta.className = "delta-badge badge-rose"; }
+      if (elWardsComp) elWardsComp.textContent = "Tiruppur North and South wards deplete first";
     } else {
-      if (elTdsVal) elTdsVal.innerHTML = `<span class="val-active" style="color: #38bdf8;">1,550</span> <span class="kpi-unit">mg/L</span>`;
-      if (elTdsComp) elTdsComp.textContent = "Expected Summer '26 Historical Trend";
-      if (elTdsDelta) {
-        elTdsDelta.innerHTML = `&#9679; Within Permissible Ceiling (2,000 mg/L)`;
-        elTdsDelta.className = "kpi-delta-chip";
-      }
+      if (elTdsVal) { elTdsVal.textContent = "1,550"; elTdsVal.className = "telemetry-num num-amber"; }
+      if (elTdsDelta) { elTdsDelta.textContent = "+9.2% normal annual drift"; elTdsDelta.className = "delta-badge badge-amber"; }
+      if (elTdsComp) elTdsComp.textContent = "Approaching permissible BIS threshold 2,000 mg/L";
 
-      if (elDepthVal) elDepthVal.innerHTML = `<span class="val-active" style="color: #38bdf8;">19.2</span> <span class="kpi-unit">m bgl</span>`;
-      if (elDepthComp) elDepthComp.textContent = "Expected Summer '26 Historical Trend";
-      if (elDepthDelta) {
-        elDepthDelta.innerHTML = `&#9660; Normal Seasonal Drift (+0.8m drop)`;
-        elDepthDelta.className = "kpi-delta-chip";
-      }
+      if (elDepthVal) { elDepthVal.textContent = "19.2"; elDepthVal.className = "telemetry-num num-cyan"; }
+      if (elDepthDelta) { elDepthDelta.textContent = "+0.8m normal annual drift"; elDepthDelta.className = "delta-badge badge-cyan"; }
+      if (elDepthComp) elDepthComp.textContent = "Standard seasonal drawdown without El Niño shock";
 
-      if (elSewageVal) elSewageVal.innerHTML = `<span class="val-active" style="color: #c084fc;">42.0%</span> <span class="kpi-unit">Aquifer Share</span>`;
-      if (elSewageComp) elSewageComp.textContent = "Normal Monsoon Recharge Active";
-      if (elSewageDelta) {
-        elSewageDelta.innerHTML = `&#9679; Dilution Buffer Intact`;
-        elSewageDelta.className = "kpi-delta-chip";
-      }
+      if (elSewageVal) { elSewageVal.textContent = "42.0%"; elSewageVal.className = "telemetry-num"; }
+      if (elSewageDelta) { elSewageDelta.textContent = "Baseline dry-weather discharge"; elSewageDelta.className = "delta-badge"; }
+      if (elSewageComp) elSewageComp.textContent = "Controlled effluent dilution along municipal banks";
 
-      if (elWardsVal) elWardsVal.innerHTML = `<span class="val-active" style="color: #facc15;">5</span> <span class="kpi-unit">/ 60 Wards</span>`;
-      if (elWardsComp) elWardsComp.textContent = "Localized Shallow Dug Wells Only";
-      if (elWardsDelta) {
-        elWardsDelta.innerHTML = `&#9679; Standard Corporation Maintenance`;
-        elWardsDelta.className = "kpi-delta-chip";
-      }
-
-      cards.forEach(c => c?.classList.remove('shock-highlight'));
+      if (elWardsVal) { elWardsVal.textContent = "5 / 60"; elWardsVal.className = "telemetry-num"; }
+      if (elWardsDelta) { elWardsDelta.textContent = "Core urban bank wards only"; elWardsDelta.className = "delta-badge"; }
+      if (elWardsComp) elWardsComp.textContent = "Isolated stress confined to immediate riverbank";
     }
   }
 
   // =========================================================================
-  // TIER 3: CHARTS (GRAPH 1 DIVERGENCE & GRAPH 2 PROXIMITY)
+  // TIER 3: EMPIRICAL PROOF CHARTS
   // =========================================================================
   function initCharts() {
     initDivergenceChart();
@@ -639,29 +603,28 @@
         labels: labels,
         datasets: [
           {
-            label: "Expected '26 Past Trend (No El Niño)",
+            label: "Expected '26 Trend (Baseline)",
             data: expectedPath,
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.08)',
-            borderWidth: 2,
-            borderDash: [5, 4],
-            pointRadius: 4,
-            pointBackgroundColor: '#10b981',
-            tension: 0.25
+            borderColor: '#71717A',
+            borderWidth: 1.8,
+            borderDash: [4, 4],
+            pointRadius: 3,
+            pointBackgroundColor: '#71717A',
+            tension: 0.2
           },
           {
             label: "El Niño '26 Reality Shock",
             data: elNinoReality,
-            borderColor: '#ef4444',
-            backgroundColor: 'rgba(239, 68, 68, 0.25)',
+            borderColor: '#F43F5E',
+            backgroundColor: 'rgba(244, 63, 94, 0.12)',
             fill: {
               target: 0,
-              above: 'rgba(239, 68, 68, 0.22)'
+              above: 'rgba(244, 63, 94, 0.10)'
             },
-            borderWidth: 2.8,
-            pointRadius: 5,
-            pointBackgroundColor: '#ef4444',
-            tension: 0.25
+            borderWidth: 2.2,
+            pointRadius: 3.5,
+            pointBackgroundColor: '#F43F5E',
+            tension: 0.2
           }
         ]
       },
@@ -672,44 +635,50 @@
           legend: {
             position: 'top',
             labels: {
-              color: '#94a3b8',
-              font: { size: 10, weight: '700' },
-              boxWidth: 12,
-              padding: 8
+              color: '#A1A1AA',
+              font: { family: 'Inter', size: 10, weight: '500' },
+              boxWidth: 10,
+              padding: 10
             }
           },
           tooltip: {
-            backgroundColor: '#0d1424',
-            titleColor: '#38bdf8',
-            bodyColor: '#f8fafc',
-            borderColor: '#2d3c54',
+            backgroundColor: '#18181C',
+            titleColor: '#F4F4F5',
+            bodyColor: '#A1A1AA',
+            borderColor: '#27272A',
             borderWidth: 1,
+            titleFont: { family: 'Inter', size: 11, weight: '600' },
+            bodyFont: { family: 'JetBrains Mono', size: 11 },
+            padding: 8,
             callbacks: {
               label: function (c) {
-                return `${c.dataset.label}: ${c.raw} m bgl`;
+                return `${c.dataset.label}: ${c.raw}m bgl`;
               }
             }
           }
         },
         scales: {
           x: {
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { color: '#64748b', font: { size: 10 } }
+            grid: { color: 'rgba(255, 255, 255, 0.04)' },
+            ticks: {
+              color: '#71717A',
+              font: { family: 'Inter', size: 10 }
+            }
           },
           y: {
             min: 10,
             max: 32,
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            grid: { color: 'rgba(255, 255, 255, 0.04)' },
             ticks: {
-              color: '#64748b',
-              font: { size: 10 },
+              color: '#71717A',
+              font: { family: 'JetBrains Mono', size: 10 },
               callback: function (val) { return val + 'm'; }
             },
             title: {
               display: true,
               text: 'Depth to Water (m bgl)',
-              color: '#64748b',
-              font: { size: 9, weight: '700' }
+              color: '#71717A',
+              font: { family: 'Inter', size: 9, weight: '500' }
             }
           }
         }
@@ -735,20 +704,20 @@
         labels: categories,
         datasets: [
           {
-            label: "Expected '26 Past Trend TDS",
+            label: "Baseline 2025 TDS",
             data: expectedTds,
-            backgroundColor: '#06b6d4',
-            borderRadius: 3,
-            barPercentage: 0.65,
-            categoryPercentage: 0.7
+            backgroundColor: '#06B6D4',
+            borderRadius: 2,
+            barPercentage: 0.55,
+            categoryPercentage: 0.65
           },
           {
-            label: "El Niño '26 Reality TDS",
+            label: "El Niño 2026 Reality TDS",
             data: shockTds,
-            backgroundColor: '#ef4444',
-            borderRadius: 3,
-            barPercentage: 0.65,
-            categoryPercentage: 0.7
+            backgroundColor: '#F43F5E',
+            borderRadius: 2,
+            barPercentage: 0.55,
+            categoryPercentage: 0.65
           }
         ]
       },
@@ -759,18 +728,21 @@
           legend: {
             position: 'top',
             labels: {
-              color: '#94a3b8',
-              font: { size: 10, weight: '700' },
-              boxWidth: 12,
-              padding: 8
+              color: '#A1A1AA',
+              font: { family: 'Inter', size: 10, weight: '500' },
+              boxWidth: 10,
+              padding: 10
             }
           },
           tooltip: {
-            backgroundColor: '#0d1424',
-            titleColor: '#38bdf8',
-            bodyColor: '#f8fafc',
-            borderColor: '#2d3c54',
+            backgroundColor: '#18181C',
+            titleColor: '#F4F4F5',
+            bodyColor: '#A1A1AA',
+            borderColor: '#27272A',
             borderWidth: 1,
+            titleFont: { family: 'Inter', size: 11, weight: '600' },
+            bodyFont: { family: 'JetBrains Mono', size: 11 },
+            padding: 8,
             callbacks: {
               label: function (c) {
                 return `${c.dataset.label}: ${c.raw} mg/L`;
@@ -781,31 +753,34 @@
         scales: {
           x: {
             grid: { display: false },
-            ticks: { color: '#64748b', font: { size: 10 } },
+            ticks: {
+              color: '#71717A',
+              font: { family: 'Inter', size: 10 }
+            },
             title: {
               display: true,
               text: 'Distance from Noyyal Sewage Corridor',
-              color: '#64748b',
-              font: { size: 9, weight: '700' }
+              color: '#71717A',
+              font: { family: 'Inter', size: 9, weight: '500' }
             }
           },
           y: {
             min: 0,
             max: 3300,
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            grid: { color: 'rgba(255, 255, 255, 0.04)' },
             ticks: {
-              color: '#64748b',
-              font: { size: 10 },
+              color: '#71717A',
+              font: { family: 'JetBrains Mono', size: 10 },
               callback: function (val) {
-                if (val === 2000) return '2,000 (BIS Limit)';
+                if (val === 2000) return '2,000 (BIS)';
                 return val;
               }
             },
             title: {
               display: true,
               text: 'TDS Salinity (mg/L)',
-              color: '#64748b',
-              font: { size: 9, weight: '700' }
+              color: '#71717A',
+              font: { family: 'Inter', size: 9, weight: '500' }
             }
           }
         }
@@ -837,19 +812,20 @@
       const tr = document.createElement('tr');
       const depthVal = isElNinoActive ? `${w.shockDepth}m (${w.drop})` : `${w.expDepth}m`;
       const tdsVal = isElNinoActive ? `${w.shockTds} (${w.tdsSurgePct})` : `${w.expTds} mg/L`;
-      const statusText = isElNinoActive ? `<span class="status-badge status-critical">🔴 TEST & CAP FIRST</span>` : `<span class="status-badge status-high">MONITOR PRE-MONSOON</span>`;
+      const statusPill = (isElNinoActive && w.rank <= 6)
+        ? '<span class="status-pill status-cap">CAP &amp; TEST</span>'
+        : '<span class="status-pill status-monitor">MONITOR</span>';
 
       tr.innerHTML = `
-        <td><span class="rank-badge">#${w.rank}</span></td>
-        <td><strong style="color: #ffffff;">${w.ward}</strong><br><span style="font-size: 0.64rem; color: var(--text-dim);">${w.locality}</span></td>
-        <td><span style="color: ${w.distNoyyalKm <= 1.0 ? '#ef4444' : 'inherit'}; font-weight: 700;">${w.distNoyyalKm} km</span></td>
-        <td><span style="color: #f87171; font-weight: 700;">${depthVal}</span></td>
-        <td><strong style="color: ${w.shockTds >= 2000 ? '#ef4444' : '#facc15'};">${tdsVal}</strong></td>
-        <td>${statusText}</td>
+        <td>#${w.rank}</td>
+        <td><strong>${w.ward}</strong> &bull; <span style="color: var(--text-muted); font-size: 10px;">${w.taluk}</span></td>
+        <td>${w.distNoyyalKm} km</td>
+        <td style="color: ${isElNinoActive ? 'var(--color-rose)' : 'inherit'};">${depthVal}</td>
+        <td style="color: ${w.shockTds >= 2000 && isElNinoActive ? 'var(--color-rose)' : 'var(--color-amber)'};">${tdsVal}</td>
+        <td>${statusPill}</td>
       `;
 
       tr.addEventListener('mouseenter', () => {
-        // Highlight corresponding pins
         document.querySelectorAll(`[data-ward-id="${w.id}"]`).forEach(node => {
           node.classList.add('node-focused');
         });
@@ -866,51 +842,34 @@
   }
 
   // =========================================================================
-  // SATELLITE BASEMAP TOGGLE
-  // =========================================================================
-  function setBasemapLayer(side, layerType) {
-    const backdropId = side === 'left' ? 'satelliteLeft' : 'satelliteRight';
-    const backdrop = document.getElementById(backdropId);
-    if (!backdrop) return;
-
-    if (layerType === 'satellite') {
-      backdrop.classList.add('satellite-active');
-    } else {
-      backdrop.classList.remove('satellite-active');
-    }
-  }
-
-  // =========================================================================
   // EVENT BINDINGS
   // =========================================================================
   function initEvents() {
-    // 1. Bottom El Niño Trigger Button
-    const btnTrigger = document.getElementById('btnElNinoTrigger');
-    if (btnTrigger) {
-      btnTrigger.addEventListener('click', () => {
-        isElNinoActive = !isElNinoActive;
+    // 1. Hardware-style Segmented Scenario Switch
+    const btnExpected = document.getElementById('btnScenarioExpected');
+    const btnShock = document.getElementById('btnScenarioShock');
+
+    if (btnExpected) {
+      btnExpected.addEventListener('click', () => {
+        isElNinoActive = false;
         updateElNinoState();
       });
     }
 
-    // 2. Basemap Layer Switches (Clean Vector vs Masked Satellite)
-    document.querySelectorAll('.basemap-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const side = btn.getAttribute('data-map');
-        const layer = btn.getAttribute('data-layer');
-        document.querySelectorAll(`.basemap-btn[data-map="${side}"]`).forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        setBasemapLayer(side, layer);
+    if (btnShock) {
+      btnShock.addEventListener('click', () => {
+        isElNinoActive = true;
+        updateElNinoState();
       });
-    });
+    }
 
-    // 3. Live Pitch Deck QR Dock & Modal
-    const qrDock = document.getElementById('qrDockCard');
+    // 2. Live Pitch Deck QR Trigger & Modal
+    const btnQrTrigger = document.getElementById('btnQrTrigger');
     const qrModal = document.getElementById('qrModal');
     const qrClose = document.getElementById('btnQrModalClose');
 
-    if (qrDock && qrModal) {
-      qrDock.addEventListener('click', () => qrModal.showModal());
+    if (btnQrTrigger && qrModal) {
+      btnQrTrigger.addEventListener('click', () => qrModal.showModal());
     }
     if (qrClose && qrModal) {
       qrClose.addEventListener('click', () => qrModal.close());
@@ -921,10 +880,10 @@
       });
     }
 
-    // 4. Action Table Search
+    // 3. Action Table Search
     document.getElementById('tableSearch')?.addEventListener('input', renderActionTable);
 
-    // 5. Global View Mode Switcher (Pitch Deck vs Technical Dossier)
+    // 4. Global View Mode Switcher (Pitch Deck vs Technical Dossier)
     document.getElementById('btnModePitch')?.addEventListener('click', () => switchViewMode('pitch'));
     document.getElementById('btnModeDossier')?.addEventListener('click', () => switchViewMode('dossier'));
     document.getElementById('btnBackToPitch')?.addEventListener('click', () => switchViewMode('pitch'));
@@ -957,9 +916,34 @@
   }
 
   // =========================================================================
-  // PRESERVED TECHNICAL DOSSIER INITIALIZER
+  // BOOTSTRAP APP
   // =========================================================================
-  function initTechnicalDossier() {
+  function init() {
+    const mapSrc = 'assets/tiruppur-taluk-map.png';
+
+    renderDarkIsolatedMap('canvasMapLeft', mapSrc, () => {
+      renderBorewellPins('borewellNodesLeft', false);
+    });
+
+    renderDarkIsolatedMap('canvasMapRight', mapSrc, () => {
+      updateElNinoState();
+    });
+
+    initCharts();
+    renderActionTable();
+    initEvents();
+
+    console.log("Where Tiruppur's Water Breaks First: Linear/Palantir Matte Controller Active.");
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+
+function initTechnicalDossier() {
     console.log("Initializing technical dossier scientific controller...");
     try {
       /**
