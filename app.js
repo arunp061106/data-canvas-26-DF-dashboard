@@ -1,6 +1,6 @@
 /**
  * WHERE TIRUPPUR'S WATER BREAKS FIRST
- * Isolated Dual-Map Workspace & Executive Pitch Deck Controller
+ * Isolated Dynamic Canvas Map Shader & Executive Pitch Deck Controller
  * Inspired by: Sentiment-Scope UI
  */
 
@@ -8,53 +8,36 @@
   'use strict';
 
   // Master State
-  let isElNinoActive = true; // Default ON for pitch deck impact
+  let isElNinoActive = true; // Default ON for live pitch demonstration
   let currentViewMode = 'pitch'; // 'pitch' | 'dossier'
   let sortColumn = 'rank';
   let sortAsc = true;
-
-  // Leaflet Map Objects
-  let mapLeft = null;
-  let mapRight = null;
-  let satLayerLeft = null;
-  let satLayerRight = null;
-  let rightTaluksLayer = null;
-  let rightBorewellsLayer = null;
-  let leftBorewellsLayer = null;
 
   // Chart Objects
   let divergenceChartInstance = null;
   let proximityChartInstance = null;
   let technicalDossierInitialized = false;
 
-  // Center of Tiruppur District
-  const TIRUPPUR_CENTER = [10.88, 77.44];
-  const DEFAULT_ZOOM = 9.8;
-
-  // Noyyal River Geometry across Tiruppur
-  const NOYYAL_RIVER_COORDS = [
-    [11.0820, 77.2600],
-    [11.0890, 77.2920],
-    [11.0980, 77.3200],
-    [11.1040, 77.3420],
-    [11.1085, 77.3650],
-    [11.1140, 77.3950],
-    [11.1190, 77.4320],
-    [11.1235, 77.4680],
-    [11.1270, 77.5100],
-    [11.1300, 77.5450]
-  ];
-
-  // Top 10 Priority Wards & Firkas ranked by Expected vs El Niño Delta %
+  // Top 10 Priority Wards with precise coordinates on the 748x1024 Tiruppur Taluk Map
+  // Calibrated to the actual geography:
+  // - TIRUPUR TALUK center: (330, 330)
+  // - AVINASHI TALUK: (300, 210)
+  // - KANGAYAM TALUK: (480, 340)
+  // - PALLADAM TALUK: (240, 370)
+  // - DHARAPURAM TALUK: (460, 560)
+  // - UDUMALPET TALUK: (160, 750)
   const PRIORITY_WARDS = [
     {
       rank: 1,
       id: "W-41",
       ward: "Ward 41 (Nallur)",
+      taluk: "Tirupur Taluk",
       locality: "Nallur Corridor",
+      x: 345,
+      y: 355,
       distNoyyalKm: 0.95,
-      lat: 11.0845,
-      lon: 77.3814,
+      baseDepth: 10.4,
+      baseTds: 1260,
       expDepth: 18.2,
       expTds: 1540,
       shockDepth: 25.5,
@@ -68,10 +51,13 @@
       rank: 2,
       id: "W-08",
       ward: "Ward 8 (Vellampalayam)",
+      taluk: "Avinashi / Tirupur Border",
       locality: "15 Velampalayam",
+      x: 290,
+      y: 260,
       distNoyyalKm: 1.15,
-      lat: 11.1412,
-      lon: 77.3289,
+      baseDepth: 12.3,
+      baseTds: 1180,
       expDepth: 17.8,
       expTds: 1480,
       shockDepth: 25.7,
@@ -85,10 +71,13 @@
       rank: 3,
       id: "W-34",
       ward: "Ward 34 (Tiruppur South / Market)",
+      taluk: "Tirupur Taluk",
       locality: "Weekly Market / South Bank",
+      x: 310,
+      y: 335,
       distNoyyalKm: 0.42,
-      lat: 11.0882,
-      lon: 77.3431,
+      baseDepth: 5.8,
+      baseTds: 1380,
       expDepth: 18.8,
       expTds: 1580,
       shockDepth: 27.5,
@@ -102,10 +91,13 @@
       rank: 4,
       id: "W-22",
       ward: "Ward 22 (Kasipalayam)",
+      taluk: "Tirupur Taluk",
       locality: "Kasipalayam East",
+      x: 375,
+      y: 325,
       distNoyyalKm: 0.70,
-      lat: 11.1156,
-      lon: 77.3857,
+      baseDepth: 8.7,
+      baseTds: 1290,
       expDepth: 18.5,
       expTds: 1560,
       shockDepth: 26.9,
@@ -119,10 +111,13 @@
       rank: 5,
       id: "W-52",
       ward: "Ward 52 (Veerapandi)",
+      taluk: "Tirupur Taluk",
       locality: "Veerapandi West",
+      x: 295,
+      y: 360,
       distNoyyalKm: 0.85,
-      lat: 11.0721,
-      lon: 77.3612,
+      baseDepth: 9.2,
+      baseTds: 1340,
       expDepth: 18.0,
       expTds: 1520,
       shockDepth: 25.8,
@@ -136,10 +131,13 @@
       rank: 6,
       id: "W-15",
       ward: "Ward 15 (Agraharam)",
+      taluk: "Tirupur Taluk",
       locality: "Tiruppur Agraharam",
+      x: 345,
+      y: 305,
       distNoyyalKm: 0.35,
-      lat: 11.1243,
-      lon: 77.4157,
+      baseDepth: 11.1,
+      baseTds: 1217,
       expDepth: 18.6,
       expTds: 1600,
       shockDepth: 28.4,
@@ -153,10 +151,13 @@
       rank: 7,
       id: "W-28",
       ward: "Ward 28 (Kumaran Road)",
+      taluk: "Tirupur Taluk",
       locality: "Kumaran Road / Central",
+      x: 325,
+      y: 315,
       distNoyyalKm: 0.55,
-      lat: 11.1078,
-      lon: 77.3542,
+      baseDepth: 7.6,
+      baseTds: 1410,
       expDepth: 18.9,
       expTds: 1620,
       shockDepth: 28.2,
@@ -170,10 +171,13 @@
       rank: 8,
       id: "W-03",
       ward: "Ward 3 (Poopunagar)",
+      taluk: "Avinashi Taluk",
       locality: "Poopunagar North",
+      x: 305,
+      y: 215,
       distNoyyalKm: 1.65,
-      lat: 11.1589,
-      lon: 77.3412,
+      baseDepth: 15.6,
+      baseTds: 1040,
       expDepth: 17.5,
       expTds: 1390,
       shockDepth: 24.2,
@@ -187,10 +191,13 @@
       rank: 9,
       id: "W-19",
       ward: "Ward 19 (Mannarai)",
+      taluk: "Tirupur Taluk",
       locality: "Mannarai North",
+      x: 370,
+      y: 285,
       distNoyyalKm: 1.30,
-      lat: 11.1354,
-      lon: 77.3621,
+      baseDepth: 13.8,
+      baseTds: 1120,
       expDepth: 17.9,
       expTds: 1440,
       shockDepth: 24.8,
@@ -204,10 +211,13 @@
       rank: 10,
       id: "W-58",
       ward: "Ward 58 (Andipalayam)",
+      taluk: "Palladam / Tirupur Border",
       locality: "Andipalayam Lake Belt",
+      x: 275,
+      y: 385,
       distNoyyalKm: 1.80,
-      lat: 11.0543,
-      lon: 77.3210,
+      baseDepth: 16.9,
+      baseTds: 1010,
       expDepth: 18.1,
       expTds: 1380,
       shockDepth: 25.1,
@@ -220,295 +230,301 @@
   ];
 
   // =========================================================================
-  // 1. INITIALIZE ISOLATED DUAL MAP WORKSPACE
+  // STEP 1: CUT OUT WHITE BACKGROUND & APPLY DARK THEME SHADER VIA CANVAS
   // =========================================================================
-  function initDualMaps() {
-    initLeftMap();
-    initRightMap();
+  function renderDarkIsolatedMap(canvasId, imageSrc, onComplete) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // Flood-Fill BFS from exterior borders to cut out white background
+      const visited = new Uint8Array(w * h);
+      const queueX = [];
+      const queueY = [];
+
+      function isWhite(idx) {
+        return data[idx] > 232 && data[idx + 1] > 232 && data[idx + 2] > 232;
+      }
+
+      // Seed outer boundary pixels
+      for (let x = 0; x < w; x++) {
+        let topIdx = x * 4;
+        if (isWhite(topIdx)) { visited[x] = 1; queueX.push(x); queueY.push(0); }
+        let botIdx = ((h - 1) * w + x) * 4;
+        if (isWhite(botIdx)) { visited[(h - 1) * w + x] = 1; queueX.push(x); queueY.push(h - 1); }
+      }
+      for (let y = 0; y < h; y++) {
+        let leftIdx = (y * w + 0) * 4;
+        if (isWhite(leftIdx) && !visited[y * w + 0]) { visited[y * w + 0] = 1; queueX.push(0); queueY.push(y); }
+        let rightIdx = (y * w + (w - 1)) * 4;
+        if (isWhite(rightIdx) && !visited[y * w + (w - 1)]) { visited[y * w + (w - 1)] = 1; queueX.push(w - 1); queueY.push(y); }
+      }
+
+      let head = 0;
+      while (head < queueX.length) {
+        const cx = queueX[head];
+        const cy = queueY[head];
+        head++;
+
+        const neighbors = [
+          [cx - 1, cy], [cx + 1, cy], [cx, cy - 1], [cx, cy + 1]
+        ];
+        for (let n = 0; n < 4; n++) {
+          const nx = neighbors[n][0];
+          const ny = neighbors[n][1];
+          if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+            const npos = ny * w + nx;
+            if (!visited[npos]) {
+              const nidx = npos * 4;
+              if (isWhite(nidx)) {
+                visited[npos] = 1;
+                queueX.push(nx);
+                queueY.push(ny);
+              }
+            }
+          }
+        }
+      }
+
+      for (let i = 0; i < data.length; i += 4) {
+        const pixelPos = i / 4;
+
+        // 1. Cut out exterior white background pixels -> 100% Transparent
+        if (visited[pixelPos]) {
+          data[i + 3] = 0;
+          continue;
+        }
+
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+
+        // 2. Keep black Taluk labels & dotted boundaries crisp -> Invert to bright silver-white (#E2E8F0)
+        if (luminance < 75) {
+          data[i] = 226;
+          data[i + 1] = 232;
+          data[i + 2] = 240;
+          data[i + 3] = 255;
+          continue;
+        }
+
+        // 3. Keep outer purple district boundary glowing with neon cyan/indigo
+        if (r > 85 && b > 75 && g < 70) {
+          data[i] = 56;
+          data[i + 1] = 189;
+          data[i + 2] = 248;
+          data[i + 3] = 240;
+          continue;
+        }
+
+        // 4. Dim bright pastel Taluk fills into sleek, ambient dark-mode tones (22% brightness blended with #0B132B)
+        data[i] = Math.round(r * 0.22 + 11 * 0.78);
+        data[i + 1] = Math.round(g * 0.24 + 19 * 0.76);
+        data[i + 2] = Math.round(b * 0.28 + 43 * 0.72);
+        data[i + 3] = 245;
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+      if (onComplete) onComplete();
+    };
+
+    img.onerror = () => {
+      // Fallback to pre-processed png if direct shader load hits cross-origin in local preview
+      const fallbackImg = new Image();
+      fallbackImg.onload = () => {
+        canvas.width = fallbackImg.width;
+        canvas.height = fallbackImg.height;
+        ctx.drawImage(fallbackImg, 0, 0);
+        if (onComplete) onComplete();
+      };
+      fallbackImg.src = 'assets/tiruppur-dark-processed.png';
+    };
+
+    img.src = imageSrc;
   }
 
-  function initLeftMap() {
-    const el = document.getElementById('mapLeft2025');
-    if (!el) return;
+  // =========================================================================
+  // STEP 2: AMBIENT, NON-DESTRUCTIVE INTERACTIVE SVG LAYER
+  // =========================================================================
+  function renderBorewellPins(svgContainerId, isRightMap) {
+    const group = document.getElementById(svgContainerId);
+    if (!group) return;
+    group.innerHTML = '';
 
-    mapLeft = L.map('mapLeft2025', {
-      zoomControl: true,
-      scrollWheelZoom: false,
-      attributionControl: false
-    }).setView(TIRUPPUR_CENTER, DEFAULT_ZOOM);
-
-    // 1. Inverted Void Mask Layer (Covers everything outside Tiruppur with solid #090D16)
-    if (window.TIRUPPUR_INVERTED_MASK_GEOJSON) {
-      L.geoJSON(window.TIRUPPUR_INVERTED_MASK_GEOJSON, {
-        style: {
-          fillColor: '#090D16',
-          fillOpacity: 1.0,
-          stroke: false,
-          interactive: false
-        }
-      }).addTo(mapLeft);
-    }
-
-    // 2. Summer 2025 Taluk Polygons (Calm Baseline: Cyan / Emerald / mild Amber)
-    if (window.TIRUPPUR_TALUKS_GEOJSON) {
-      L.geoJSON(window.TIRUPPUR_TALUKS_GEOJSON, {
-        style: function (f) {
-          const depth = f.properties.baseline_25_depth;
-          let fill = '#10b981';
-          if (depth > 20) fill = '#f59e0b';
-          else if (depth > 16) fill = '#06b6d4';
-          return {
-            fillColor: fill,
-            weight: 1.5,
-            color: '#38bdf8',
-            opacity: 0.75,
-            fillOpacity: 0.45
-          };
-        },
-        onEachFeature: function (f, layer) {
-          layer.bindTooltip(`<strong>${f.properties.name}</strong><br>2025 Baseline: ${f.properties.baseline_25_depth}m bgl &bull; ${f.properties.baseline_25_tds} mg/L`, {
-            direction: 'top',
-            sticky: true
-          });
-        }
-      }).addTo(mapLeft);
-    }
-
-    // 3. Noyyal River Corridor Vector
-    L.polyline(NOYYAL_RIVER_COORDS, {
-      color: '#06b6d4',
-      weight: 3.5,
-      opacity: 0.95
-    }).addTo(mapLeft);
-
-    // 4. Glowing District Outer Silhouette Border
-    if (window.TIRUPPUR_BOUNDARY_GEOJSON) {
-      L.geoJSON(window.TIRUPPUR_BOUNDARY_GEOJSON, {
-        style: {
-          color: '#38bdf8',
-          weight: 2.2,
-          fill: false,
-          opacity: 0.95,
-          className: 'district-glow-border'
-        }
-      }).addTo(mapLeft);
-    }
-
-    // 5. Left Map Borewells Overlay
-    leftBorewellsLayer = L.layerGroup().addTo(mapLeft);
     PRIORITY_WARDS.forEach(w => {
-      L.circleMarker([w.lat, w.lon], {
-        radius: 5,
-        fillColor: '#10b981',
-        color: '#ffffff',
-        weight: 1.2,
-        fillOpacity: 0.85
-      }).bindTooltip(`${w.ward} &bull; 2025 Depth: 18.4m`).addTo(leftBorewellsLayer);
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('class', 'map-borewell-node');
+      g.setAttribute('data-ward-id', w.id);
+
+      const color = (!isRightMap || !isElNinoActive) ? '#10b981' : '#FF2E54';
+      const radius = (!isRightMap || !isElNinoActive) ? 6 : 7.5;
+
+      // Outer Pulsing Ring
+      const pulseRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      pulseRing.setAttribute('cx', w.x);
+      pulseRing.setAttribute('cy', w.y);
+      pulseRing.setAttribute('r', radius + 5);
+      pulseRing.setAttribute('fill', 'none');
+      pulseRing.setAttribute('stroke', color);
+      pulseRing.setAttribute('stroke-width', '1.8');
+      pulseRing.setAttribute('opacity', '0.6');
+      pulseRing.setAttribute('class', 'pin-pulse-ring');
+      g.appendChild(pulseRing);
+
+      // Core Solid Pin
+      const pin = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      pin.setAttribute('cx', w.x);
+      pin.setAttribute('cy', w.y);
+      pin.setAttribute('r', radius);
+      pin.setAttribute('fill', color);
+      pin.setAttribute('stroke', '#ffffff');
+      pin.setAttribute('stroke-width', '1.5');
+      g.appendChild(pin);
+
+      // Mouse Interactions for Glassmorphic Tooltip
+      g.addEventListener('mouseenter', (e) => showTooltip(e, w, isRightMap));
+      g.addEventListener('mousemove', (e) => moveTooltip(e));
+      g.addEventListener('mouseleave', hideTooltip);
+
+      group.appendChild(g);
     });
   }
 
-  function initRightMap() {
-    const el = document.getElementById('mapRight2026');
-    if (!el) return;
+  // Tooltip Controller
+  const tooltip = document.getElementById('mapGlassTooltip');
 
-    mapRight = L.map('mapRight2026', {
-      zoomControl: true,
-      scrollWheelZoom: false,
-      attributionControl: false
-    }).setView(TIRUPPUR_CENTER, DEFAULT_ZOOM);
+  function showTooltip(e, w, isRightMap) {
+    if (!tooltip) return;
+    const ttHeader = document.getElementById('ttHeader');
+    const ttSub = document.getElementById('ttSub');
+    const ttBaseDepth = document.getElementById('ttBaseDepth');
+    const ttShockDepth = document.getElementById('ttShockDepth');
+    const ttTds = document.getElementById('ttTds');
+    const ttSpike = document.getElementById('ttSpike');
+    const ttAction = document.getElementById('ttAction');
 
-    // 1. Inverted Void Mask Layer
-    if (window.TIRUPPUR_INVERTED_MASK_GEOJSON) {
-      L.geoJSON(window.TIRUPPUR_INVERTED_MASK_GEOJSON, {
-        style: {
-          fillColor: '#090D16',
-          fillOpacity: 1.0,
-          stroke: false,
-          interactive: false
-        }
-      }).addTo(mapRight);
-    }
+    if (ttHeader) ttHeader.textContent = w.ward;
+    if (ttSub) ttSub.textContent = `${w.taluk} • ${w.distNoyyalKm} km to Noyyal`;
+    if (ttBaseDepth) ttBaseDepth.textContent = `${w.baseDepth} m bgl`;
 
-    // 2. Noyyal River Line & Critical 1km Leachate Buffer
-    L.polyline(NOYYAL_RIVER_COORDS, {
-      color: '#ef4444',
-      weight: 18,
-      opacity: 0.22,
-      lineCap: 'round',
-      lineJoin: 'round'
-    }).addTo(mapRight);
-
-    L.polyline(NOYYAL_RIVER_COORDS, {
-      color: '#06b6d4',
-      weight: 3.5,
-      opacity: 0.95
-    }).addTo(mapRight);
-
-    // 3. Glowing District Silhouette
-    if (window.TIRUPPUR_BOUNDARY_GEOJSON) {
-      L.geoJSON(window.TIRUPPUR_BOUNDARY_GEOJSON, {
-        style: {
-          color: '#ef4444',
-          weight: 2.4,
-          fill: false,
-          opacity: 0.95,
-          className: 'district-glow-border-shock'
-        }
-      }).addTo(mapRight);
-    }
-
-    // 4. Render Dynamic Right Map Layer (Expected vs El Niño)
-    updateRightMapDisplay();
-  }
-
-  function getRightTalukStyle(feature) {
-    const p = feature.properties;
-    const isCritical = p.critical_flag; // Tiruppur North, South, Uthukkuli, Kangayam
-
-    if (!isElNinoActive) {
-      // Expected 2026 Historical Trend (Gentle drift)
-      return {
-        fillColor: '#f59e0b',
-        weight: 1.5,
-        color: '#facc15',
-        opacity: 0.75,
-        fillOpacity: 0.40,
-        className: ''
-      };
+    if (!isRightMap) {
+      if (ttShockDepth) ttShockDepth.textContent = `${w.expDepth} m bgl`;
+      if (ttTds) ttTds.textContent = `${w.baseTds} mg/L`;
+      if (ttSpike) ttSpike.textContent = `Baseline Steady`;
+      if (ttAction) {
+        ttAction.textContent = "🟢 HISTORICAL BASELINE SAMPLE";
+        ttAction.style.color = "#10b981";
+      }
+    } else if (!isElNinoActive) {
+      if (ttShockDepth) ttShockDepth.textContent = `${w.expDepth} m bgl`;
+      if (ttTds) ttTds.textContent = `${w.expTds} mg/L`;
+      if (ttSpike) ttSpike.textContent = `Normal Drift (+0.8m)`;
+      if (ttAction) {
+        ttAction.textContent = "🟡 EXPECTED '26 HISTORICAL DRIFT";
+        ttAction.style.color = "#f59e0b";
+      }
     } else {
-      // EL NIÑO STRESS 2026: Pulsing Crimson on Noyyal Corridor
-      return {
-        fillColor: isCritical ? '#ef4444' : '#f97316',
-        weight: isCritical ? 2.8 : 1.6,
-        color: isCritical ? '#ff1a53' : '#fb923c',
-        opacity: 0.95,
-        fillOpacity: isCritical ? 0.72 : 0.48,
-        className: isCritical ? 'pulse-shock-corridor' : ''
-      };
+      if (ttShockDepth) ttShockDepth.textContent = `${w.shockDepth} m bgl`;
+      if (ttTds) ttTds.textContent = `${w.shockTds} mg/L`;
+      if (ttSpike) ttSpike.textContent = w.tdsSurgePct;
+      if (ttAction) {
+        ttAction.textContent = `🔴 ${w.status}`;
+        ttAction.style.color = "#ef4444";
+      }
     }
+
+    tooltip.style.display = 'block';
+    moveTooltip(e);
   }
 
-  function updateRightMapDisplay() {
-    if (!mapRight) return;
+  function moveTooltip(e) {
+    if (!tooltip) return;
+    const pad = 15;
+    tooltip.style.left = `${e.clientX}px`;
+    tooltip.style.top = `${e.clientY - pad}px`;
+  }
 
-    if (rightTaluksLayer) {
-      mapRight.removeLayer(rightTaluksLayer);
-    }
+  function hideTooltip() {
+    if (tooltip) tooltip.style.display = 'none';
+  }
 
-    if (window.TIRUPPUR_TALUKS_GEOJSON) {
-      rightTaluksLayer = L.geoJSON(window.TIRUPPUR_TALUKS_GEOJSON, {
-        style: getRightTalukStyle,
-        onEachFeature: function (f, layer) {
-          const p = f.properties;
-          const depth = isElNinoActive ? p.el_nino_26_depth : p.expected_26_depth;
-          const tds = isElNinoActive ? p.el_nino_26_tds : p.expected_26_tds;
-          const stateTxt = isElNinoActive ? `<strong style="color: #ef4444;">EL NIÑO SHOCK: ${depth}m bgl &bull; ${tds} mg/L TDS (${p.anomaly_depth}m drop)</strong>` : `Expected '26: ${depth}m bgl &bull; ${tds} mg/L TDS`;
-
-          layer.bindTooltip(`<strong>${p.name} Taluk</strong><br>${stateTxt}`, {
-            direction: 'top',
-            sticky: true
-          });
-        }
-      }).addTo(mapRight);
-    }
-
-    // Right Map Borewells
-    if (rightBorewellsLayer) {
-      mapRight.removeLayer(rightBorewellsLayer);
-    }
-    rightBorewellsLayer = L.layerGroup().addTo(mapRight);
-
-    PRIORITY_WARDS.forEach(w => {
-      const color = isElNinoActive ? '#ef4444' : '#f59e0b';
-      const radius = isElNinoActive ? 7 : 5;
-      const depth = isElNinoActive ? w.shockDepth : w.expDepth;
-      const tds = isElNinoActive ? w.shockTds : w.expTds;
-
-      const marker = L.circleMarker([w.lat, w.lon], {
-        radius: radius,
-        fillColor: color,
-        color: '#ffffff',
-        weight: 1.5,
-        fillOpacity: 0.9
-      });
-
-      marker.bindPopup(`
-        <div style="font-size: 0.75rem;">
-          <strong style="color: #38bdf8;">${w.ward}</strong><br>
-          <span style="color: #94a3b8;">${w.locality} &bull; ${w.distNoyyalKm} km to Noyyal</span>
-          <div style="margin-top: 4px; padding: 4px; background: rgba(255,255,255,0.06); border-radius: 4px;">
-            <div><strong>2026 Level:</strong> ${depth} m bgl</div>
-            <div><strong>TDS Salinity:</strong> ${tds} mg/L</div>
-            <div style="color: #ef4444; font-weight: 800;">${isElNinoActive ? w.status : 'Normal Trend'}</div>
-          </div>
-        </div>
-      `);
-
-      marker.addTo(rightBorewellsLayer);
-    });
-
-    // Update Header Pill on Right Map
+  // =========================================================================
+  // AMBIENT EL NIÑO HEAT AURA CONTROLLER (RIGHT MAP)
+  // =========================================================================
+  function updateElNinoState() {
+    const auraExpected = document.getElementById('auraExpected');
+    const auraShock1 = document.getElementById('auraShock1');
+    const auraShock2 = document.getElementById('auraShock2');
+    const callouts = document.getElementById('rightMapDeltaCallouts');
     const badge = document.getElementById('rightMapStatusBadge');
     const dot = document.getElementById('rightPanelDot');
-    const callouts = document.getElementById('rightMapDeltaCallouts');
     const btn = document.getElementById('btnElNinoTrigger');
     const btnLabel = document.getElementById('elNinoBtnLabel');
+    const canvasRight = document.getElementById('canvasMapRight');
 
     if (isElNinoActive) {
+      // 1. Ambient Crimson/Magenta Heat-Haze Active
+      if (auraExpected) auraExpected.style.opacity = '0';
+      if (auraShock1) auraShock1.style.opacity = '0.55';
+      if (auraShock2) auraShock2.style.opacity = '0.45';
+
+      // 2. Button in pulsating red active state
+      if (btn) btn.className = 'el-nino-trigger-btn active';
+      if (btnLabel) btnLabel.textContent = 'EL NIÑO EFFECT ACTIVE (CLICK TO RESET)';
+
+      // 3. Status Badge & Dot
       if (badge) {
         badge.innerHTML = "🔥 EL NIÑO SHOCK: 28.6m bgl (-9.4m) &bull; 2,940 mg/L (+89.6%)";
         badge.className = "panel-kpi-pill pill-shock-active";
       }
       if (dot) dot.className = "panel-status-dot dot-shock active";
-      if (callouts) callouts.style.display = "flex";
-      if (btn) btn.className = "el-nino-trigger-btn active";
-      if (btnLabel) btnLabel.textContent = "EL NIÑO EFFECT ACTIVE (CLICK TO RESET)";
+
+      // 4. Floating Delta Callouts visible
+      if (callouts) callouts.style.display = 'flex';
+      if (canvasRight) canvasRight.classList.add('shock-filter');
     } else {
+      // Ambient Expected Cyan/Amber Glow
+      if (auraExpected) auraExpected.style.opacity = '0.24';
+      if (auraShock1) auraShock1.style.opacity = '0';
+      if (auraShock2) auraShock2.style.opacity = '0';
+
+      // Button in normal ready state
+      if (btn) btn.className = 'el-nino-trigger-btn';
+      if (btnLabel) btnLabel.textContent = 'APPLY EL NIÑO EFFECT';
+
+      // Status Badge & Dot
       if (badge) {
         badge.innerHTML = "Expected Historical Trend: 19.2m bgl &bull; 1,550 mg/L TDS";
         badge.className = "panel-kpi-pill";
       }
       if (dot) dot.className = "panel-status-dot dot-shock";
-      if (callouts) callouts.style.display = "none";
-      if (btn) btn.className = "el-nino-trigger-btn";
-      if (btnLabel) btnLabel.textContent = "APPLY EL NIÑO EFFECT";
+
+      // Floating Delta Callouts hidden
+      if (callouts) callouts.style.display = 'none';
+      if (canvasRight) canvasRight.classList.remove('shock-filter');
     }
+
+    // Refresh borewell pins on right map with appropriate color
+    renderBorewellPins('borewellNodesRight', true);
+
+    // Update Tier 2 KPIs & Tier 3 Charts
+    updateKpiRibbon();
+    renderActionTable();
   }
 
   // =========================================================================
-  // 2. SATELLITE BASEMAP TOGGLE (STRICTLY CLIPPED INSIDE BOUNDARY)
-  // =========================================================================
-  function setBasemapLayer(mapSide, layerType) {
-    const targetMap = mapSide === 'left' ? mapLeft : mapRight;
-    if (!targetMap) return;
-
-    if (layerType === 'satellite') {
-      const tileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
-      if (mapSide === 'left') {
-        if (!satLayerLeft) {
-          satLayerLeft = L.tileLayer(tileUrl, { className: 'satellite-masked-layer', maxZoom: 18 });
-        }
-        satLayerLeft.addTo(targetMap);
-        satLayerLeft.bringToBack();
-      } else {
-        if (!satLayerRight) {
-          satLayerRight = L.tileLayer(tileUrl, { className: 'satellite-masked-layer', maxZoom: 18 });
-        }
-        satLayerRight.addTo(targetMap);
-        satLayerRight.bringToBack();
-      }
-    } else {
-      // Vector: remove satellite
-      if (mapSide === 'left' && satLayerLeft) {
-        targetMap.removeLayer(satLayerLeft);
-      } else if (mapSide === 'right' && satLayerRight) {
-        targetMap.removeLayer(satLayerRight);
-      }
-    }
-  }
-
-  // =========================================================================
-  // 3. TIER 2: UPDATE KPI CARDS ON EL NIÑO TOGGLE
+  // TIER 2: SALINITY & DEPLETION KPI RIBBON
   // =========================================================================
   function updateKpiRibbon() {
     const elTdsVal = document.getElementById('kpiTdsVal');
@@ -535,7 +551,6 @@
     ];
 
     if (isElNinoActive) {
-      // EL NIÑO ACTIVE NUMBERS
       if (elTdsVal) elTdsVal.innerHTML = `<span class="val-prev">1,550</span> <span class="val-arrow">&#10142;</span> <span class="val-active text-danger">2,940</span> <span class="kpi-unit">mg/L</span>`;
       if (elTdsComp) elTdsComp.textContent = "Expected: 1,550 mg/L • El Niño: 2,940 mg/L";
       if (elTdsDelta) {
@@ -566,7 +581,6 @@
 
       cards.forEach(c => c?.classList.add('shock-highlight'));
     } else {
-      // EXPECTED 2026 BASELINE NUMBERS
       if (elTdsVal) elTdsVal.innerHTML = `<span class="val-active" style="color: #38bdf8;">1,550</span> <span class="kpi-unit">mg/L</span>`;
       if (elTdsComp) elTdsComp.textContent = "Expected Summer '26 Historical Trend";
       if (elTdsDelta) {
@@ -600,7 +614,7 @@
   }
 
   // =========================================================================
-  // 4. TIER 3: CHARTS (DIVERGENCE CURVE & PROXIMITY VS SALT SPIKE)
+  // TIER 3: CHARTS (GRAPH 1 DIVERGENCE & GRAPH 2 PROXIMITY)
   // =========================================================================
   function initCharts() {
     initDivergenceChart();
@@ -616,8 +630,6 @@
     }
 
     const labels = ["2023 Actual", "Winter '23", "2024 Actual", "Winter '24", "2025 Actual", "2026 Split"];
-    
-    // Depth in m bgl
     const expectedPath = [16.2, 12.8, 17.1, 13.5, 18.4, 19.2];
     const elNinoReality = [16.2, 12.8, 17.1, 13.5, 18.4, 28.6];
 
@@ -644,7 +656,7 @@
             backgroundColor: 'rgba(239, 68, 68, 0.25)',
             fill: {
               target: 0,
-              above: 'rgba(239, 68, 68, 0.22)' // Fills the 9.4m climate gap
+              above: 'rgba(239, 68, 68, 0.22)'
             },
             borderWidth: 2.8,
             pointRadius: 5,
@@ -802,7 +814,7 @@
   }
 
   // =========================================================================
-  // 5. RANKED PRIORITY ACTION TABLE
+  // RANKED PRIORITY ACTION TABLE
   // =========================================================================
   function renderActionTable() {
     const tbody = document.getElementById('actionTableBody');
@@ -814,7 +826,8 @@
     if (searchVal) {
       items = items.filter(w =>
         w.ward.toLowerCase().includes(searchVal) ||
-        w.locality.toLowerCase().includes(searchVal)
+        w.locality.toLowerCase().includes(searchVal) ||
+        w.taluk.toLowerCase().includes(searchVal)
       );
     }
 
@@ -835,13 +848,17 @@
         <td>${statusText}</td>
       `;
 
-      tr.addEventListener('click', () => {
-        if (mapRight) {
-          mapRight.setView([w.lat, w.lon], 13, { animate: true });
-        }
-        if (mapLeft) {
-          mapLeft.setView([w.lat, w.lon], 13, { animate: true });
-        }
+      tr.addEventListener('mouseenter', () => {
+        // Highlight corresponding pins
+        document.querySelectorAll(`[data-ward-id="${w.id}"]`).forEach(node => {
+          node.classList.add('node-focused');
+        });
+      });
+
+      tr.addEventListener('mouseleave', () => {
+        document.querySelectorAll(`[data-ward-id="${w.id}"]`).forEach(node => {
+          node.classList.remove('node-focused');
+        });
       });
 
       tbody.appendChild(tr);
@@ -849,7 +866,22 @@
   }
 
   // =========================================================================
-  // 6. EVENT BINDINGS
+  // SATELLITE BASEMAP TOGGLE
+  // =========================================================================
+  function setBasemapLayer(side, layerType) {
+    const backdropId = side === 'left' ? 'satelliteLeft' : 'satelliteRight';
+    const backdrop = document.getElementById(backdropId);
+    if (!backdrop) return;
+
+    if (layerType === 'satellite') {
+      backdrop.classList.add('satellite-active');
+    } else {
+      backdrop.classList.remove('satellite-active');
+    }
+  }
+
+  // =========================================================================
+  // EVENT BINDINGS
   // =========================================================================
   function initEvents() {
     // 1. Bottom El Niño Trigger Button
@@ -857,15 +889,13 @@
     if (btnTrigger) {
       btnTrigger.addEventListener('click', () => {
         isElNinoActive = !isElNinoActive;
-        updateRightMapDisplay();
-        updateKpiRibbon();
-        renderActionTable();
+        updateElNinoState();
       });
     }
 
-    // 2. Basemap Layer Switches (Vector vs Satellite)
+    // 2. Basemap Layer Switches (Clean Vector vs Masked Satellite)
     document.querySelectorAll('.basemap-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', () => {
         const side = btn.getAttribute('data-map');
         const layer = btn.getAttribute('data-layer');
         document.querySelectorAll(`.basemap-btn[data-map="${side}"]`).forEach(b => b.classList.remove('active'));
@@ -880,14 +910,10 @@
     const qrClose = document.getElementById('btnQrModalClose');
 
     if (qrDock && qrModal) {
-      qrDock.addEventListener('click', () => {
-        qrModal.showModal();
-      });
+      qrDock.addEventListener('click', () => qrModal.showModal());
     }
     if (qrClose && qrModal) {
-      qrClose.addEventListener('click', () => {
-        qrModal.close();
-      });
+      qrClose.addEventListener('click', () => qrModal.close());
     }
     if (qrModal) {
       qrModal.addEventListener('click', (e) => {
@@ -916,11 +942,6 @@
       dossierView.style.display = 'none';
       btnPitch?.classList.add('active');
       btnDossier?.classList.remove('active');
-
-      setTimeout(() => {
-        mapLeft?.invalidateSize();
-        mapRight?.invalidateSize();
-      }, 150);
     } else {
       pitchView.style.display = 'none';
       dossierView.style.display = 'block';
@@ -936,7 +957,7 @@
   }
 
   // =========================================================================
-  // 7. PRESERVED TECHNICAL DOSSIER INITIALIZER
+  // PRESERVED TECHNICAL DOSSIER INITIALIZER
   // =========================================================================
   function initTechnicalDossier() {
     console.log("Initializing technical dossier scientific controller...");
@@ -1887,16 +1908,26 @@
   }
 
   // =========================================================================
-  // 8. BOOTSTRAP APP
+  // BOOTSTRAP APP
   // =========================================================================
   function init() {
-    initDualMaps();
+    // 1. Process & Render Dark Isolated Maps on HTML5 Canvases
+    const mapSrc = 'assets/tiruppur-taluk-map.png';
+
+    renderDarkIsolatedMap('canvasMapLeft', mapSrc, () => {
+      renderBorewellPins('borewellNodesLeft', false);
+    });
+
+    renderDarkIsolatedMap('canvasMapRight', mapSrc, () => {
+      updateElNinoState();
+    });
+
+    // 2. Initialize Charts & Tables
     initCharts();
-    updateKpiRibbon();
     renderActionTable();
     initEvents();
 
-    console.log("Where Tiruppur's Water Breaks First: Isolated Dual-Map Workspace Ready.");
+    console.log("Where Tiruppur's Water Breaks First: Canvas Map Shader & El Niño Workspace Ready.");
   }
 
   if (document.readyState === 'loading') {

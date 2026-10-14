@@ -287,7 +287,7 @@ html, body {
 }
 
 /* ==========================================================================
-   CRITICAL FIX 1 & 2: SIDE-BY-SIDE DUAL MAP WORKSPACE (ISOLATED SILHOUETTES)
+   CRITICAL FIX 1 & 2: SIDE-BY-SIDE DUAL MAP WORKSPACE (HTML5 CANVAS SHADER)
    ========================================================================== */
 .dual-map-workspace {
   display: grid;
@@ -304,10 +304,6 @@ html, body {
   display: flex;
   flex-direction: column;
   position: relative;
-}
-
-.dual-map-panel.right-panel {
-  border-color: #475569;
 }
 
 .dual-panel-header {
@@ -392,7 +388,7 @@ html, body {
   100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 
-/* Basemap Style Toggle (Vector vs Satellite) */
+/* Basemap Style Toggle (Clean Vector vs Masked Satellite) */
 .basemap-toggle-group {
   display: inline-flex;
   background: var(--bg-input);
@@ -422,137 +418,80 @@ html, body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
-/* Map Canvas Container */
+/* Map Canvas Container & Dynamic Shader */
 .dual-map-canvas-wrap {
   width: 100%;
-  height: 440px;
+  height: 480px;
   position: relative;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background: #090D16; /* CRITICAL FIX 1: Solid Dark Void Background */
+  background: #090D16; /* Solid dark background */
   border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.isolated-map-container {
+.satellite-terrain-backdrop {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  background: #090D16 !important; /* Forces Leaflet background to solid dark void */
+  background-image: url('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/10/476/754');
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  filter: contrast(120%) brightness(80%);
 }
 
-/* Hide default leaflet background elements and borders */
-.leaflet-container {
-  background: #090D16 !important;
+.satellite-terrain-backdrop.satellite-active {
+  opacity: 0.35;
 }
 
-.leaflet-control-zoom {
-  border: 1px solid var(--border-strong) !important;
-  background: var(--bg-panel) !important;
+.map-render-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.25));
+  transition: filter 0.4s ease;
 }
 
-.leaflet-control-zoom a {
-  background: var(--bg-panel) !important;
-  color: var(--text-main) !important;
-  border-bottom: 1px solid var(--border-strong) !important;
+.right-panel .map-render-canvas.shock-filter {
+  filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.35));
 }
 
-.leaflet-control-attribution {
-  background: rgba(9, 13, 22, 0.85) !important;
-  color: var(--text-dim) !important;
-  font-size: 9px !important;
-}
-
-/* Masked ESRI Satellite Imagery layer (35% opacity, strictly inside Tiruppur boundary) */
-.satellite-masked-layer {
-  opacity: 0.35 !important;
-  filter: contrast(115%) brightness(85%);
-}
-
-/* Outer District Silhouette Glowing Border */
-.district-glow-border {
-  stroke: #38bdf8;
-  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.5));
-}
-
-.district-glow-border-shock {
-  stroke: #ef4444;
-  filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.65));
-}
-
-/* Pulsing Corridor Taluks & Wards on El Niño Trigger */
-@keyframes pulse-corridor-crimson {
-  0% {
-    stroke: #ef4444;
-    stroke-width: 2.2px;
-    fill-opacity: 0.45;
-  }
-  50% {
-    stroke: #ff1a53;
-    stroke-width: 4.5px;
-    fill-opacity: 0.82;
-    filter: drop-shadow(0 0 14px rgba(239, 68, 68, 0.9));
-  }
-  100% {
-    stroke: #ef4444;
-    stroke-width: 2.2px;
-    fill-opacity: 0.45;
-  }
-}
-
-.pulse-shock-corridor {
-  animation: pulse-corridor-crimson 2s infinite ease-in-out;
-}
-
-/* CRITICAL FIX 2: BOTTOM "EL NIÑO" TRIGGER BUTTON */
-.el-nino-trigger-wrapper {
+.map-vector-overlay {
   position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Interactive Borewell Pins */
+.map-borewell-node {
   pointer-events: auto;
-}
-
-.el-nino-trigger-btn {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  border: 2px solid #ef4444;
-  color: #ffffff;
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 800;
-  padding: 0.55rem 1.35rem;
-  border-radius: 30px;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  box-shadow: 0 4px 18px rgba(239, 68, 68, 0.4);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.el-nino-trigger-btn:hover {
-  transform: scale(1.04);
-  border-color: #ff3366;
-  box-shadow: 0 6px 24px rgba(239, 68, 68, 0.65);
+.map-borewell-node:hover {
+  transform: scale(1.35);
+  filter: drop-shadow(0 0 8px #ffffff);
 }
 
-.el-nino-trigger-btn.active {
-  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-  border-color: #ffffff;
-  box-shadow: 0 0 25px rgba(239, 68, 68, 0.85);
-  animation: trigger-pulse-red 1.6s infinite ease-in-out;
+.pin-pulse-ring {
+  animation: pulse-pin-ring 2s infinite ease-out;
+  transform-origin: center;
 }
 
-@keyframes trigger-pulse-red {
-  0% { transform: scale(1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
-  50% { transform: scale(1.03); box-shadow: 0 0 30px rgba(239, 68, 68, 0.95); }
-  100% { transform: scale(1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
-}
-
-.trigger-bolt {
-  font-size: 1.1rem;
+@keyframes pulse-pin-ring {
+  0% { r: 6px; opacity: 0.9; }
+  70% { r: 16px; opacity: 0; }
+  100% { r: 6px; opacity: 0; }
 }
 
 /* Floating Delta Callouts on Right Map */
@@ -600,6 +539,57 @@ html, body {
   border-left: 3px solid #c084fc;
   color: #e9d5ff;
 }
+
+/* CRITICAL FIX 2: BOTTOM "EL NIÑO" TRIGGER BUTTON */
+.el-nino-trigger-wrapper {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  pointer-events: auto;
+}
+
+.el-nino-trigger-btn {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid #ef4444;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.55rem 1.35rem;
+  border-radius: 30px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  box-shadow: 0 4px 18px rgba(239, 68, 68, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.el-nino-trigger-btn:hover {
+  transform: scale(1.04);
+  border-color: #ff3366;
+  box-shadow: 0 6px 24px rgba(239, 68, 68, 0.65);
+}
+
+.el-nino-trigger-btn.active {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  border-color: #ffffff;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.85);
+  animation: trigger-pulse-red 1.6s infinite ease-in-out;
+}
+
+@keyframes trigger-pulse-red {
+  0% { transform: scale(1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
+  50% { transform: scale(1.03); box-shadow: 0 0 30px rgba(239, 68, 68, 0.95); }
+  100% { transform: scale(1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
+}
+
+.trigger-bolt { font-size: 1.1rem; }
 
 /* Floating Map Legend */
 .map-floating-legend {
@@ -660,9 +650,71 @@ html, body {
   pointer-events: none;
 }
 
-.badge-bottom-left {
+.badge-top-left {
   top: 12px;
   left: 12px;
+}
+
+/* Glassmorphic Map Hover Tooltip */
+.map-glass-tooltip {
+  position: fixed;
+  z-index: 10001;
+  background: rgba(13, 20, 36, 0.95);
+  backdrop-filter: blur(14px);
+  border: 1px solid #38bdf8;
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.9rem;
+  min-width: 210px;
+  pointer-events: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  transform: translate(-50%, -115%);
+}
+
+.tooltip-header {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.tooltip-sub {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  margin-bottom: 0.4rem;
+}
+
+.tooltip-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  padding: 0.35rem 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.tt-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.tt-stat .lbl {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.tt-stat .val {
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.tooltip-action {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #ef4444;
 }
 
 /* ==========================================================================
@@ -749,9 +801,7 @@ html, body {
   color: var(--text-muted);
 }
 
-.val-active {
-  font-weight: 800;
-}
+.val-active { font-weight: 800; }
 
 .kpi-unit {
   font-size: 0.88rem;
@@ -1191,6 +1241,9 @@ html, body {
 @media (max-width: 1200px) {
   .dual-map-workspace {
     grid-template-columns: 1fr;
+  }
+  .dual-map-canvas-wrap {
+    height: 440px;
   }
   .tier3-proof-grid {
     grid-template-columns: 1fr 1fr;

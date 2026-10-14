@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- Leaflet CSS for Geospatial Mapping -->
+  <!-- Leaflet CSS for Technical Dossier Map (Background View) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
   <!-- High-Density Industrial Dashboard Styles -->
@@ -21,7 +21,7 @@
   <!-- Chart.js 4.4.1 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-  <!-- Leaflet JS -->
+  <!-- Leaflet JS for Technical Dossier -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
@@ -60,7 +60,7 @@
           <span class="header-badge badge-sdg6">SDG 6: Clean Water &amp; Sanitation</span>
           <span class="header-badge badge-sdg3">SDG 3: Good Health &amp; Well-Being</span>
           <span class="header-badge badge-gap">Zero Liquid Discharge (ZLD) vs. Sewage Gap Analysis</span>
-          <span class="header-badge badge-area">Tiruppur District: 5,087.26 Sq.Km &bull; 9 Taluks</span>
+          <span class="header-badge badge-area">Tiruppur District: 5,087.26 Sq.Km &bull; 6 Taluks</span>
         </div>
       </div>
 
@@ -76,8 +76,8 @@
     </header>
 
     <!-- =======================================================================
-         CRITICAL FIX 2: SIDE-BY-SIDE DUAL MAP WORKSPACE
-         Isolated Tiruppur District Silhouettes floating in #090D16 void
+         CRITICAL FIX 1 & 2: SIDE-BY-SIDE DUAL MAP WORKSPACE
+         Isolated Tiruppur District Silhouettes floating on #090D16 void
          ======================================================================= -->
     <section class="dual-map-workspace" aria-label="Dual Comparative Map Workspace">
       
@@ -92,18 +92,41 @@
             <span class="panel-kpi-pill pill-cyan">Baseline: 18.4m bgl &bull; 1,420 mg/L TDS</span>
             <!-- Layer Style Switcher -->
             <div class="basemap-toggle-group">
-              <button class="basemap-btn active" data-map="left" data-layer="vector" title="Clean Vector Choropleth">&#128506;&#65039; Vector</button>
-              <button class="basemap-btn" data-map="left" data-layer="satellite" title="Masked ESRI Satellite terrain strictly inside Tiruppur border">&#128752; Satellite</button>
+              <button class="basemap-btn active" data-map="left" data-layer="vector" title="Clean Vector Color-Graded Silhouette">&#128506;&#65039; Clean Vector</button>
+              <button class="basemap-btn" data-map="left" data-layer="satellite" title="Masked Satellite Terrain strictly inside Tiruppur border">&#128752; Masked Satellite</button>
             </div>
           </div>
         </div>
 
-        <div class="dual-map-canvas-wrap">
-          <div id="mapLeft2025" class="isolated-map-container" aria-label="Summer 2025 Isolated Tiruppur District Map"></div>
-          
-          <!-- Static Baseline Info Pill -->
-          <div class="map-overlay-badge badge-bottom-left">
-            <span>&#9679; Historical Summer Baseline: Stable Cyan/Emerald Palette across 9 Taluks</span>
+        <div class="dual-map-canvas-wrap" id="wrapLeftMap">
+          <!-- Background Satellite Layer (Clipped strictly behind canvas) -->
+          <div class="satellite-terrain-backdrop" id="satelliteLeft"></div>
+
+          <!-- Cutout HTML5 Canvas (Shader converts bright pastel map to dark ambient silhouette) -->
+          <canvas id="canvasMapLeft" class="map-render-canvas"></canvas>
+
+          <!-- Ambient Interactive SVG Layer (Noyyal river curve & glowing borewells) -->
+          <svg id="svgOverlayLeft" class="map-vector-overlay" viewBox="0 0 748 1024" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <filter id="glowCyan" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3.5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <!-- Ambient Noyyal River Aura -->
+            <path id="noyyalAuraLeft" d="M 175, 305 Q 250, 315 320, 325 T 430, 335 Q 530, 345 660, 350" fill="none" stroke="#06b6d4" stroke-width="24" opacity="0.14" stroke-linecap="round" />
+            <!-- Ambient Noyyal River Main Channel -->
+            <path id="noyyalRiverLeft" d="M 175, 305 Q 250, 315 320, 325 T 430, 335 Q 530, 345 660, 350" fill="none" stroke="#38bdf8" stroke-width="3.2" stroke-linecap="round" filter="url(#glowCyan)" />
+            <!-- Borewell Pin Nodes dynamically populated -->
+            <g id="borewellNodesLeft"></g>
+          </svg>
+
+          <!-- Static Baseline Info Tag -->
+          <div class="map-overlay-badge badge-top-left">
+            <span>&#9679; Summer 2025 Baseline: Deep Emerald / Slate-Blue / Amber</span>
           </div>
 
           <div class="map-floating-legend">
@@ -126,16 +149,64 @@
             <span class="panel-kpi-pill" id="rightMapStatusBadge">Expected: 19.2m bgl &bull; 1,550 mg/L TDS</span>
             <!-- Layer Style Switcher -->
             <div class="basemap-toggle-group">
-              <button class="basemap-btn active" data-map="right" data-layer="vector" title="Clean Vector Choropleth">&#128506;&#65039; Vector</button>
-              <button class="basemap-btn" data-map="right" data-layer="satellite" title="Masked ESRI Satellite terrain strictly inside Tiruppur border">&#128752; Satellite</button>
+              <button class="basemap-btn active" data-map="right" data-layer="vector" title="Clean Vector Color-Graded Silhouette">&#128506;&#65039; Clean Vector</button>
+              <button class="basemap-btn" data-map="right" data-layer="satellite" title="Masked Satellite Terrain strictly inside Tiruppur border">&#128752; Masked Satellite</button>
             </div>
           </div>
         </div>
 
-        <div class="dual-map-canvas-wrap">
-          <div id="mapRight2026" class="isolated-map-container" aria-label="Summer 2026 Isolated Tiruppur District Map"></div>
+        <div class="dual-map-canvas-wrap" id="wrapRightMap">
+          <!-- Background Satellite Layer (Clipped strictly behind canvas) -->
+          <div class="satellite-terrain-backdrop" id="satelliteRight"></div>
 
-          <!-- FLOATING DELTA CALLOUT BADGES (Visible when El Niño is active) -->
+          <!-- Cutout HTML5 Canvas -->
+          <canvas id="canvasMapRight" class="map-render-canvas"></canvas>
+
+          <!-- Ambient Interactive SVG Layer (Heat haze aura & pulsing crimson borewells) -->
+          <svg id="svgOverlayRight" class="map-vector-overlay" viewBox="0 0 748 1024" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <!-- Ambient El Niño Radial Heat Hazes (Centered over Tirupur Taluk and Kangayam belt) -->
+              <radialGradient id="heatHazeTirupur" cx="44%" cy="33%" r="22%">
+                <stop offset="0%" stop-color="#ef4444" stop-opacity="0.55" />
+                <stop offset="60%" stop-color="#ec4899" stop-opacity="0.32" />
+                <stop offset="100%" stop-color="#ef4444" stop-opacity="0" />
+              </radialGradient>
+              <radialGradient id="heatHazeKangayam" cx="64%" cy="35%" r="19%">
+                <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.5" />
+                <stop offset="70%" stop-color="#ef4444" stop-opacity="0.25" />
+                <stop offset="100%" stop-color="#ef4444" stop-opacity="0" />
+              </radialGradient>
+              <radialGradient id="heatHazeExpected" cx="48%" cy="34%" r="26%">
+                <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35" />
+                <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+              </radialGradient>
+
+              <filter id="glowRed" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Ambient El Niño Heat Aura (Smoothly morphs via CSS opacity) -->
+            <g id="heatAuraGroup">
+              <ellipse id="auraExpected" cx="350" cy="335" rx="180" ry="85" fill="url(#heatHazeExpected)" style="opacity: 0.18; transition: opacity 0.5s ease;" />
+              <ellipse id="auraShock1" cx="330" cy="330" rx="150" ry="80" fill="url(#heatHazeTirupur)" style="opacity: 0.45; transition: opacity 0.5s ease; mix-blend-mode: screen;" />
+              <ellipse id="auraShock2" cx="480" cy="340" rx="140" ry="75" fill="url(#heatHazeKangayam)" style="opacity: 0.40; transition: opacity 0.5s ease; mix-blend-mode: screen;" />
+            </g>
+
+            <!-- Ambient Leachate Buffer Band along Noyyal -->
+            <path id="noyyalBufferRight" d="M 175, 305 Q 250, 315 320, 325 T 430, 335 Q 530, 345 660, 350" fill="none" stroke="#ef4444" stroke-width="26" opacity="0.22" stroke-linecap="round" />
+            <!-- Ambient Noyyal River Channel -->
+            <path id="noyyalRiverRight" d="M 175, 305 Q 250, 315 320, 325 T 430, 335 Q 530, 345 660, 350" fill="none" stroke="#06b6d4" stroke-width="3.2" stroke-linecap="round" />
+
+            <!-- Right Map Borewell Pin Nodes dynamically populated -->
+            <g id="borewellNodesRight"></g>
+          </svg>
+
+          <!-- FLOATING DELTA CALLOUT BADGES (Smooth animation on El Niño Trigger) -->
           <div class="map-delta-callouts" id="rightMapDeltaCallouts" style="display: none;">
             <div class="delta-callout-pill callout-drop">
               <span class="delta-icon">&#9660;</span>
@@ -162,6 +233,7 @@
             </button>
           </div>
 
+          <!-- Dynamic Legend -->
           <div class="map-floating-legend" id="rightMapLegend">
             <div class="f-legend-item"><span class="f-box" style="background: #f59e0b;" id="legBox1"></span> 18–20m Expected</div>
             <div class="f-legend-item"><span class="f-box" style="background: #ef4444;" id="legBox2"></span> 26–30m El Niño Shock</div>
@@ -172,6 +244,31 @@
       </div>
 
     </section>
+
+    <!-- Glassmorphic Map Hover Tooltip (Shared across maps) -->
+    <div class="map-glass-tooltip" id="mapGlassTooltip" style="display: none;">
+      <div class="tooltip-header" id="ttHeader">Ward 15 (Agraharam)</div>
+      <div class="tooltip-sub" id="ttSub">Tirupur Taluk &bull; 0.35 km to Noyyal</div>
+      <div class="tooltip-stat-grid">
+        <div class="tt-stat">
+          <span class="lbl">2025 Level</span>
+          <span class="val" id="ttBaseDepth">11.1 m bgl</span>
+        </div>
+        <div class="tt-stat">
+          <span class="lbl">2026 Shock</span>
+          <span class="val text-danger" id="ttShockDepth">28.4 m bgl</span>
+        </div>
+        <div class="tt-stat">
+          <span class="lbl">TDS Salinity</span>
+          <span class="val text-warning" id="ttTds">2,840 mg/L</span>
+        </div>
+        <div class="tt-stat">
+          <span class="lbl">Spike Delta</span>
+          <span class="val text-danger" id="ttSpike">+77.5%</span>
+        </div>
+      </div>
+      <div class="tooltip-action" id="ttAction">🔴 RED ALERT: Test &amp; Cap First</div>
+    </div>
 
     <!-- =======================================================================
          TIER 2 (BELOW MAPS): SALINITY & DEPLETION % INCREASE KPI RIBBON
@@ -318,7 +415,7 @@
         </div>
         
         <div class="table-click-hint">
-          <span>&#9757; Click any row to focus and highlight borewell on both maps</span>
+          <span>&#9757; Click any row to focus and highlight borewell pin on both maps</span>
         </div>
       </div>
 
@@ -1026,13 +1123,10 @@
   <!-- =========================================================================
        DATA BUNDLES & APPLICATION SCRIPTS
        ========================================================================= -->
-  <!-- Tiruppur 9 Taluks GeoJSON & Inverted Void Mask -->
-  <script src="data/tiruppur_taluks_geojson.js"></script>
-
   <!-- Master Groundwater Data Bundle -->
   <script src="data/app_data.js"></script>
 
-  <!-- Application Controller -->
+  <!-- Application Controller with Dynamic Canvas Map Shader -->
   <script src="app.js"></script>
 
 </body>
