@@ -12020,7 +12020,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 12.0
+      "scenario_depth_mbgl": 12.0,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Periyapatti",
@@ -12040,7 +12041,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 14.9
+      "scenario_depth_mbgl": 14.9,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Ganapathipalayam",
@@ -12060,7 +12062,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 26.4
+      "scenario_depth_mbgl": 26.4,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Govindhapuram Pz",
@@ -12080,7 +12083,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 58.2
+      "scenario_depth_mbgl": 58.2,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Ponnapuram Pz",
@@ -12100,7 +12104,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 58.2
+      "scenario_depth_mbgl": 58.2,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Oothukadu",
@@ -12120,7 +12125,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 23.6
+      "scenario_depth_mbgl": 23.6,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Tiruppur Agraharam",
@@ -12140,7 +12146,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2024-2025 (4 seasons)",
       "source": "CGWB TN GWYB 2024-25 & Quality 2024",
       "measured_2025_mbgl": 7.0,
-      "scenario_depth_mbgl": 14.34
+      "scenario_depth_mbgl": 14.34,
+      "observed_may24_mbgl": 11.14
     },
     {
       "station_name": "Nachipalayam",
@@ -12160,7 +12167,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2024-2025 (4 seasons)",
       "source": "CGWB TN GWYB 2024-25 & Quality 2024",
       "measured_2025_mbgl": 5.8,
-      "scenario_depth_mbgl": 10.13
+      "scenario_depth_mbgl": 10.13,
+      "observed_may24_mbgl": 6.93
     },
     {
       "station_name": "Sangarandampalayam Pz",
@@ -12180,7 +12188,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 24.05
+      "scenario_depth_mbgl": 24.05,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Pallapalayam Pz",
@@ -12200,7 +12209,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 87.9
+      "scenario_depth_mbgl": 87.9,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Kaltanpet (Karanampettai)",
@@ -12220,7 +12230,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 19.6
+      "scenario_depth_mbgl": 19.6,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Palladam",
@@ -12240,7 +12251,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 16.65
+      "scenario_depth_mbgl": 16.65,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Peruntholavu Pz",
@@ -12260,7 +12272,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 20.0
+      "scenario_depth_mbgl": 20.0,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Karumancheri Pz",
@@ -12280,7 +12293,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 16.85
+      "scenario_depth_mbgl": 16.85,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Thathanur Aanaikalpalayam Pz",
@@ -12300,7 +12314,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 15.3
+      "scenario_depth_mbgl": 15.3,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Varadharajapuram Murungapatti Pz",
@@ -12320,7 +12335,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 15.7
+      "scenario_depth_mbgl": 15.7,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Padiyur",
@@ -12340,7 +12356,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 15.3
+      "scenario_depth_mbgl": 15.3,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Ganganaickenpalayam Pz",
@@ -12360,7 +12377,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 123)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 18.75
+      "scenario_depth_mbgl": 18.75,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Velampalayam",
@@ -12380,7 +12398,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 15.07
+      "scenario_depth_mbgl": 15.07,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Uthukuli Pz",
@@ -12400,7 +12419,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 19.6
+      "scenario_depth_mbgl": 19.6,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Kovilvazhi I",
@@ -12420,7 +12440,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2024-2025 (4 seasons)",
       "source": "CGWB TN GWYB 2024-25 & Quality 2024",
       "measured_2025_mbgl": 2.6,
-      "scenario_depth_mbgl": 10.2
+      "scenario_depth_mbgl": 10.2,
+      "observed_may24_mbgl": 5.9
     },
     {
       "station_name": "Karavallurpz",
@@ -12440,7 +12461,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 20.0
+      "scenario_depth_mbgl": 20.0,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Karuvalur",
@@ -12460,7 +12482,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 19.42
+      "scenario_depth_mbgl": 19.42,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Erakalpudur(Sivanmalai)",
@@ -12480,7 +12503,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 17.5
+      "scenario_depth_mbgl": 17.5,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Kunnathur",
@@ -12500,7 +12524,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 124)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 14.1
+      "scenario_depth_mbgl": 14.1,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Kovilvazhi IV",
@@ -12520,7 +12545,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2024-2025 (4 seasons)",
       "source": "CGWB TN GWYB 2024-25 & Quality 2024",
       "measured_2025_mbgl": 1.65,
-      "scenario_depth_mbgl": 8.75
+      "scenario_depth_mbgl": 8.75,
+      "observed_may24_mbgl": 4.15
     },
     {
       "station_name": "Odakadu",
@@ -12540,7 +12566,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2024-2025 (4 seasons)",
       "source": "CGWB TN GWYB 2024-25 & Quality 2024",
       "measured_2025_mbgl": 4.4,
-      "scenario_depth_mbgl": 9.4
+      "scenario_depth_mbgl": 9.4,
+      "observed_may24_mbgl": 6.2
     },
     {
       "station_name": "Kasipalayam (T)",
@@ -12560,7 +12587,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2024-2025 (4 seasons)",
       "source": "CGWB TN GWYB 2024-25 & Quality 2024",
       "measured_2025_mbgl": 6.3,
-      "scenario_depth_mbgl": 9.6
+      "scenario_depth_mbgl": 9.6,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Tiruppur1",
@@ -12580,7 +12608,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2024-2025 (4 seasons)",
       "source": "CGWB TN GWYB 2024-25 & Quality 2024",
       "measured_2025_mbgl": 5.7,
-      "scenario_depth_mbgl": 9.15
+      "scenario_depth_mbgl": 9.15,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "Karamadai",
@@ -12600,7 +12629,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2023-2024 (4 seasons)",
       "source": "CGWB_TN_GWYB_2023-24.pdf (p. 122)",
       "measured_2025_mbgl": null,
-      "scenario_depth_mbgl": 5.6
+      "scenario_depth_mbgl": 5.6,
+      "observed_may24_mbgl": null
     },
     {
       "station_name": "P.N.Road",
@@ -12620,7 +12650,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2024-2025 (4 seasons)",
       "source": "CGWB TN GWYB 2024-25 & Quality 2024",
       "measured_2025_mbgl": 3.77,
-      "scenario_depth_mbgl": 6.97
+      "scenario_depth_mbgl": 6.97,
+      "observed_may24_mbgl": 3.31
     },
     {
       "station_name": "Weekly Market",
@@ -12640,7 +12671,8 @@ window.DASHBOARD_DATA = {
       "monitoring_period": "2024-2025 (4 seasons)",
       "source": "CGWB TN GWYB 2024-25 & Quality 2024",
       "measured_2025_mbgl": 2.47,
-      "scenario_depth_mbgl": 6.0
+      "scenario_depth_mbgl": 6.0,
+      "observed_may24_mbgl": 2.8
     }
   ],
   "provenance": {
@@ -12717,14 +12749,14 @@ window.DASHBOARD_DATA = {
         "filename": "Tiruppur_Corporation_Ward_Map_Source.pdf",
         "agency": "Tiruppur City Municipal Corporation",
         "title": "Budget 2022-23 (containing static ward/zone illustration)",
-        "provenance_note": "Static cartographic visual only. Lacks vector boundaries / GeoJSON polygon geometries. As required by evidence rules, well points are not artificially attributed to municipal wards without authoritative spatial boundaries."
+        "provenance_note": "Static map visual only. Lacks vector boundaries / GeoJSON polygon geometries. As required by evidence rules, well points are not artificially attributed to municipal wards without authoritative spatial boundaries."
       }
     ],
     "key_findings": {
       "deepest_well_recorded": "Pallapalayam Pz (Udumalaipettai) at 84.7 m bgl, followed by Dharapuram Ponnapuram Pz (>50 m bgl) and Sangarandampalayam Pz (20.85 m bgl)",
       "highest_salinity_recorded": "Arugampalayam (Uthukuli) with EC 4,290 µS/cm and TDS 2,789 mg/L (well above BIS permissible limit of 2,000 mg/L)",
       "seasonal_quality_dynamics": "Nachipalayam TDS increased from 1,398 mg/L (Pre-monsoon) to 1,709 mg/L (Post-monsoon) and EC from 2,150 to 2,860 µS/cm, showing post-monsoon ionic concentration/leaching",
-      "climate_context": "2023 rainfall totalled 582.4 mm (subdued SWM and NEM during strong El Niño onset) while 2024 totalled 812.6 mm as ENSO decayed toward neutral/La Niña conditions"
+      "climate_context": "NASA POWER point precipitation estimates at 11.1085 N, 77.3411 E (computed by summing daily records from data file)."
     }
   }
 };
