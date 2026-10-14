@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Where Tiruppur's Water Breaks First — Hydro-Simulation Command Center</title>
-  <meta name="description" content="Kinetic hydro-simulation command center predicting El Niño stress on borewells and the Noyyal sewage corridor across Tiruppur district.">
+  <title>Where Tiruppur's Water Breaks First — Oceanic Hydro-Thermal Telemetry</title>
+  <meta name="description" content="Predicting El Niño stress on borewells and the Noyyal sewage corridor across 5,087.26 Sq.Km of Tiruppur District.">
 
-  <!-- Typography: Inter (UI) & JetBrains Mono (Numbers) -->
+  <!-- Typography: Inter (UI Hierarchy) & JetBrains Mono (Telemetry Numbers) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,36 +14,37 @@
   <!-- Chart.js 4.4.1 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-  <!-- Clean Matte-Dark Stylesheet -->
+  <!-- Bklit UI + Oceanic Hydro-Thermal Design System -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Atmospheric subtle lighting -->
+  <!-- Subtle Oceanic atmospheric illumination -->
   <div class="ambient-glow" aria-hidden="true"></div>
 
   <div class="dashboard-container">
 
     <!-- ==========================================================================
-         1. TOP EXECUTIVE BAR
+         1. TOP NAVIGATION BAR (WITH LIVE PITCH QR DOCK)
          ========================================================================== -->
-    <header class="executive-bar" role="banner">
-      <div class="executive-left">
-        <div class="pulse-dot" title="Live Geospatial Stream Active"></div>
-        <div class="exec-headings">
-          <h1 class="main-title">Where Tiruppur's Water Breaks First</h1>
-          <p class="main-subtitle">Predicting El Niño Stress on Borewells &amp; the Noyyal Sewage Corridor (5,087.26 Sq.Km)</p>
+    <header class="top-nav-bar" role="banner">
+      <div class="nav-left">
+        <div class="status-orb" id="statusOrb" title="Live Geospatial Stream Active"></div>
+        <div class="nav-headings">
+          <h1 class="brand-title">Where Tiruppur's Water Breaks First</h1>
+          <div class="brand-subtitle">Predicting El Niño Stress on Borewells &amp; the Noyyal Sewage Corridor (5,087.26 Sq.Km)</div>
         </div>
       </div>
 
-      <div class="pill-badges-row">
-        <span class="pill-badge highlight-cyan">SDG 6: Clean Water</span>
-        <span class="pill-badge highlight-cyan">SDG 3: Good Health</span>
-        <span class="pill-badge highlight-amber">ZLD vs. Sewage Gap</span>
+      <div class="nav-center-pills">
+        <span class="bklit-pill glacier">SDG 6 &bull; Clean Water</span>
+        <span class="bklit-pill glacier">SDG 3 &bull; Public Health</span>
+        <span class="bklit-pill solar">ZLD vs. Domestic Sewage Gap</span>
+        <span class="bklit-pill">Sources: CGWB &bull; TNWRD &bull; IMD &bull; TNPCB</span>
       </div>
 
-      <div class="executive-right">
-        <button type="button" class="btn-qr-pitch" id="btnOpenQr" title="Display live mobile testing QR code for judges">
+      <div class="nav-right">
+        <button type="button" class="btn-bklit-qr" id="btnOpenQr" title="Display live mobile testing QR code for judges">
           <svg viewBox="0 0 24 24"><path d="M4 4h4v4H4V4zm2 2h0v0zm10-2h4v4h-4V4zm2 2h0v0zM4 16h4v4H4v-4zm2 2h0v0zm13-5h-3v3h3v-3zm0 5h-3v3h3v-3zm-5-5h-3v3h3v-3zm0 5h-3v3h3v-3zm-5-5h-3v3h3v-3zm0 5h-3v3h3v-3z"/></svg>
           Scan for Live Judge View
         </button>
@@ -51,95 +52,104 @@
     </header>
 
     <!-- ==========================================================================
-         2. STAGE 1 (THE HOOK): DUAL SIDE-BY-SIDE ISOLATED MAPS
+         2. STAGE 1 (THE HOOK): 3-PANEL TOP WORKSPACE (MAP 1 | MAP 2 | AQUIFER X-RAY)
          ========================================================================== -->
-    <section class="stage-maps-grid" aria-label="Dual Tiruppur Taluk Comparison Maps">
+    <section class="stage-top-workspace" aria-label="Dual Tiruppur Taluk Comparison Maps and Aquifer X-Ray">
 
-      <!-- LEFT MAP: Summer 2025 Historical Baseline -->
-      <div class="map-card" id="cardLeftMap">
-        <div class="map-card-header">
-          <div class="map-title-group">
-            <h2 class="map-card-title">Summer 2025 &bull; Historical Baseline</h2>
-            <span class="map-card-tag tag-baseline">Baseline</span>
+      <!-- PANEL 1: Summer 2025 Actuals (Historical Baseline) -->
+      <div class="panel-card" id="panelLeftMap">
+        <div class="panel-card-header">
+          <div class="panel-title-wrap">
+            <h2 class="panel-heading">Tab 01 &bull; Summer 2025 Actuals</h2>
+            <span class="bklit-badge badge-baseline">Baseline</span>
           </div>
-          <div class="map-metric-pill-header">
-            Mean Depth: <strong>18.4m bgl</strong> &bull; Baseline TDS: <strong>1,420 mg/L</strong>
+          <div class="header-metric-chip">
+            18.4m bgl &bull; 1,420 mg/L TDS
           </div>
         </div>
 
-        <div class="map-canvas-viewport">
-          <!-- Cleaned Tiruppur Taluk Map (6 Taluks) -->
-          <img src="assets/tiruppur-taluk-map.png" alt="Cleaned Tiruppur District Taluk Map" class="tiruppur-map-layer">
+        <div class="map-viewport">
+          <!-- Canvas Shader Layer for Image 8454d9.jpg -->
+          <canvas id="canvasLeftMap" class="map-canvas-layer"></canvas>
+          <!-- CSS Filter Fallback Layer -->
+          <img src="image_8454d9.jpg" alt="Tiruppur Taluk Map Summer 2025 Baseline" class="tiruppur-map-img">
 
-          <!-- Transparent SVG Layer: Glowing Noyyal River with animated flow particles -->
-          <svg class="map-vector-overlay" viewBox="0 0 748 1024" aria-hidden="true">
-            <!-- Noyyal River Base Stream -->
-            <path class="river-path" d="M 170 340 C 230 345, 270 355, 330 360 C 370 365, 410 375, 460 380 C 510 385, 560 395, 610 405 C 650 412, 675 418, 710 422" />
-            <!-- Animated Flow Particles -->
-            <path class="river-flow-particles" d="M 170 340 C 230 345, 270 355, 330 360 C 370 365, 410 375, 460 380 C 510 385, 560 395, 610 405 C 650 412, 675 418, 710 422" />
-            <text x="480" y="370" fill="#06b6d4" font-size="12" font-family="'JetBrains Mono', monospace" font-weight="600" opacity="0.85">Noyyal River Corridor</text>
+          <!-- Transparent SVG Overlay: Noyyal River & Borewell Pins -->
+          <svg class="map-svg-overlay" viewBox="0 0 748 1024" aria-hidden="true">
+            <!-- Noyyal River Base Stream (Glacier Cyan Flow) -->
+            <path class="river-stream-base" d="M 170 340 C 230 345, 270 355, 330 360 C 370 365, 410 375, 460 380 C 510 385, 560 395, 610 405 C 650 412, 675 418, 710 422" />
+            <path class="river-particle-track" d="M 170 340 C 230 345, 270 355, 330 360 C 370 365, 410 375, 460 380 C 510 385, 560 395, 610 405 C 650 412, 675 418, 710 422" />
+            <text x="480" y="372" fill="#38bdf8" font-size="12" font-family="'JetBrains Mono', monospace" font-weight="600" opacity="0.9">Noyyal River Corridor</text>
 
-            <!-- Interactive Borewell Pins -->
+            <!-- Borewell Pins Container -->
             <g id="leftPinsGroup"></g>
           </svg>
         </div>
       </div>
 
-      <!-- RIGHT MAP: Summer 2026 Expected Trend vs. El Niño Reality -->
-      <div class="map-card" id="cardRightMap">
-        <div class="map-card-header">
-          <div class="map-title-group">
-            <h2 class="map-card-title">Summer 2026 &bull; Expected vs. El Niño Reality</h2>
-            <span class="map-card-tag tag-shock" id="rightMapTag">Severe El Niño Shock</span>
+      <!-- PANEL 2: Summer 2026 (Expected Trend vs. El Niño Reality) -->
+      <div class="panel-card" id="panelRightMap">
+        <div class="panel-card-header">
+          <div class="panel-title-wrap">
+            <h2 class="panel-heading">Tab 02 &bull; Summer 2026 Trend vs. El Niño</h2>
+            <span class="bklit-badge badge-shock" id="rightMapTag">Severe El Niño Shock</span>
           </div>
-          <div class="map-metric-pill-header" id="rightMapMetricPill">
-            Mean Depth: <strong>28.6m bgl</strong> &bull; TDS: <strong>2,940 mg/L</strong>
+          <div class="header-metric-chip" id="rightMapMetricPill">
+            Depth: <strong>28.6m bgl</strong> &bull; TDS: <strong>2,940 mg/L</strong>
           </div>
         </div>
 
-        <div class="map-canvas-viewport">
-          <!-- Cleaned Tiruppur Taluk Map -->
-          <img src="assets/tiruppur-taluk-map.png" alt="Cleaned Tiruppur District Taluk Map" class="tiruppur-map-layer">
+        <div class="map-viewport">
+          <!-- Canvas Shader Layer for Image 8454d9.jpg -->
+          <canvas id="canvasRightMap" class="map-canvas-layer"></canvas>
+          <!-- CSS Filter Fallback Layer -->
+          <img src="image_8454d9.jpg" alt="Tiruppur Taluk Map Summer 2026 Reality" class="tiruppur-map-img">
 
-          <!-- Ambient Radial Heat Aura (Pulsing over Noyyal corridor) -->
-          <div class="heat-aura active" id="rightMapHeatAura"></div>
-
-          <!-- Floating Expected vs Current El Niño Anomaly Card -->
-          <div class="map-anomaly-card" id="rightMapAnomalyCard">
-            <div class="anomaly-row"><span class="anomaly-label">Expected '26</span><span class="anomaly-val">19.2m | 1,550 mg/L</span></div>
-            <div class="anomaly-row"><span class="anomaly-label">El Niño '26</span><span class="anomaly-val" style="color: var(--accent-crimson);">28.6m | 2,940 mg/L</span></div>
-            <div class="anomaly-penalty-pill">
-              <span>▼ -9.4m Extra Drop (+48.9%)</span>
-              <span>▲ +89.6% Salinity Surge</span>
+          <!-- Floating Glass HUD Comparison Chips -->
+          <div class="floating-hud-chips">
+            <div class="hud-line">
+              <span class="hud-label">Expected '26:</span>
+              <span class="hud-val" id="hudExpectedVal">19.2m &bull; 1,550 mg/L</span>
+            </div>
+            <div class="hud-line">
+              <span class="hud-label">El Niño '26:</span>
+              <span class="hud-val" id="hudRealityVal" style="color: var(--accent-coral);">28.6m &bull; 2,940 mg/L</span>
+            </div>
+            <div class="hud-anomaly-tag">
+              <span id="hudDropAnomaly">▼ -9.4m Drop</span>
+              <span id="hudSalinityAnomaly">▲ +89.6% Salinity Surge</span>
             </div>
           </div>
 
-          <!-- Transparent SVG Layer: River Corridor with Toxic Particles & Sonar Shockwave Pins -->
-          <svg class="map-vector-overlay" viewBox="0 0 748 1024" aria-hidden="true">
-            <path id="rightMapRiver" class="river-path river-path-shock" d="M 170 340 C 230 345, 270 355, 330 360 C 370 365, 410 375, 460 380 C 510 385, 560 395, 610 405 C 650 412, 675 418, 710 422" />
-            <path id="rightRiverParticles" class="river-flow-particles river-flow-particles-shock" d="M 170 340 C 230 345, 270 355, 330 360 C 370 365, 410 375, 460 380 C 510 385, 560 395, 610 405 C 650 412, 675 418, 710 422" />
-            <text x="480" y="370" fill="#f59e0b" font-size="12" font-family="'JetBrains Mono', monospace" font-weight="600" opacity="0.95">Noyyal Sewage Corridor (Zero Dilution)</text>
+          <!-- Ambient Radial Heat Aura (Solar-Amber / Tangerine) -->
+          <div class="heat-plume-glow active" id="rightMapHeatAura"></div>
+
+          <!-- Transparent SVG Overlay: Noyyal Sewage Flow & Sonar Shockwaves -->
+          <svg class="map-svg-overlay" viewBox="0 0 748 1024" aria-hidden="true">
+            <path id="rightMapRiver" class="river-stream-base river-stream-shock" d="M 170 340 C 230 345, 270 355, 330 360 C 370 365, 410 375, 460 380 C 510 385, 560 395, 610 405 C 650 412, 675 418, 710 422" />
+            <path id="rightRiverParticles" class="river-particle-track river-particle-track-shock" d="M 170 340 C 230 345, 270 355, 330 360 C 370 365, 410 375, 460 380 C 510 385, 560 395, 610 405 C 650 412, 675 418, 710 422" />
+            <text x="480" y="372" fill="#f59e0b" font-size="12" font-family="'JetBrains Mono', monospace" font-weight="600" opacity="0.95">Noyyal Sewage Corridor (Zero Dilution)</text>
 
             <!-- Sonar Pins Container -->
             <g id="rightPinsGroup"></g>
           </svg>
         </div>
 
-        <!-- BOTTOM INTERACTIVE EL NIÑO SIMULATION DOCK -->
-        <div class="sim-dock">
-          <div class="sim-dock-row">
-            <button type="button" id="btnToggleShock" class="btn-shock-trigger active">
-              <span class="btn-bolt">⚡</span> EL NIÑO SHOCK ACTIVE (+2.4°C)
+        <!-- BOTTOM BKLIT FLOATING CONTROL DOCK (Anchored at Bottom-Center) -->
+        <div class="bklit-dock">
+          <div class="dock-controls-row">
+            <button type="button" id="btnElNinoToggle" class="btn-el-nino-toggle">
+              <span style="font-size:14px">⚡</span> APPLY EL NIÑO EFFECT
             </button>
 
-            <!-- Interactive ENSO Anomaly Slider (0.0°C to +2.4°C) -->
-            <div class="enso-slider-wrap">
-              <div class="enso-slider-label-row">
+            <!-- Interactive Pacific ENSO Anomaly Slider (0.0°C to +2.4°C) -->
+            <div class="enso-slider-group">
+              <div class="enso-header-line">
                 <span style="color: var(--text-slate);">Pacific ENSO Anomaly:</span>
-                <span class="enso-val-tag" id="ensoValTag">+2.4°C (Severe El Niño)</span>
+                <span class="enso-tag-amber" id="ensoValTag">+2.4°C (Severe El Niño)</span>
               </div>
-              <input type="range" id="ensoSlider" min="0" max="2.4" step="0.1" value="2.4" class="enso-range-input" aria-label="ENSO Teleconnection Intensity Slider">
-              <div class="enso-ticks-row">
+              <input type="range" id="ensoSlider" min="0" max="2.4" step="0.1" value="2.4" class="bklit-range-slider" aria-label="Pacific ENSO Anomaly Slider">
+              <div class="enso-tick-labels">
                 <span>0.0°C Normal</span>
                 <span>+1.2°C Moderate</span>
                 <span>+2.4°C Severe</span>
@@ -149,310 +159,309 @@
         </div>
       </div>
 
-    </section>
-
-    <!-- ==========================================================================
-         LIVE UNDERGROUND BOREWELL X-RAY CUTAWAY (AQUIFER DEPTH & SEWAGE SEEPAGE)
-         ========================================================================== -->
-    <section class="stage-xray-card" aria-label="Underground Aquifer Cross-Section Simulation">
-      <div class="xray-header">
-        <h2 class="xray-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20M7 7l10 10M17 7L7 17"/></svg>
-          Live Underground Aquifer X-Ray (0m to 35m Depth Profile)
-        </h2>
-        <span class="xray-badge-status" id="xrayBadgeStatus">EL NIÑO SHOCK: SEWAGE PLUME PENETRATING INTAKE</span>
-      </div>
-
-      <div class="xray-svg-container">
-        <svg class="xray-svg-viewport" viewBox="0 0 920 250" preserveAspectRatio="none">
-          <defs>
-            <!-- Cyan Water Gradient (Baseline) -->
-            <linearGradient id="waterGradCyan" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.6"/>
-              <stop offset="100%" stop-color="#083344" stop-opacity="0.9"/>
-            </linearGradient>
-            <!-- Toxic Saline Gradient (Shock) -->
-            <linearGradient id="waterGradSaline" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.75"/>
-              <stop offset="100%" stop-color="#4c0519" stop-opacity="0.95"/>
-            </linearGradient>
-            <!-- Sewage Leachate Plume Stream Gradient -->
-            <linearGradient id="sewageStreamGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#701a75" stop-opacity="0.9"/>
-              <stop offset="60%" stop-color="#f59e0b" stop-opacity="0.8"/>
-              <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.95"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Geological Strata Backgrounds -->
-          <!-- Surface / Air (Y: 0 - 38) -->
-          <rect x="0" y="0" width="920" height="38" fill="#090a0f"/>
-
-          <!-- Strata 1: Weathered Rock Zone (Y: 38 - 90) -->
-          <rect x="0" y="38" width="920" height="52" fill="#151922"/>
-          <text x="350" y="58" fill="#475569" font-size="11" font-family="'JetBrains Mono', monospace">Weathered Zone (Low Primary Porosity &bull; 0m–8m)</text>
-
-          <!-- Strata 2: Fractured Crystalline Charnockite / Gneiss (Y: 90 - 250) -->
-          <rect x="0" y="90" width="920" height="160" fill="#0d1017"/>
-          <!-- Rock Fissure Lines -->
-          <path d="M 220 120 L 320 140 L 410 125 L 520 160 M 600 130 L 680 150 M 740 130 L 840 145" stroke="#1e293b" stroke-width="1.2" fill="none" opacity="0.6"/>
-          <path d="M 280 180 L 380 200 L 510 185 L 620 220 M 720 190 L 820 210" stroke="#1e293b" stroke-width="1.2" fill="none" opacity="0.5"/>
-          <text x="350" y="112" fill="#334155" font-size="11" font-family="'JetBrains Mono', monospace">Fissured Crystalline Bedrock (Jointed Aquifer &bull; 8m–35m)</text>
-
-          <!-- NOYYAL RIVER CHANNEL (Left: X 50 to 220) -->
-          <path d="M 50 38 Q 135 75 220 38 Z" fill="#1e293b"/>
-          <path id="xrayRiverBedWater" d="M 60 38 Q 135 68 210 38 Z" fill="#701a75" transition="fill 0.5s ease"/>
-          <text x="95" y="30" fill="#f59e0b" font-size="11" font-weight="700" font-family="'Inter', sans-serif">Noyyal River Bed</text>
-          <text x="80" y="50" fill="#f8fafc" font-size="9" font-family="'JetBrains Mono', monospace">120 MLD Raw Sewage</text>
-
-          <!-- DILUTION RAIN ARROWS (Active during Normal Monsoon) -->
-          <g id="xrayDilutionArrows" opacity="0" transition="opacity 0.4s ease">
-            <line x1="260" y1="10" x2="260" y2="35" stroke="#06b6d4" stroke-width="2" stroke-dasharray="3 3"/>
-            <polygon points="257,35 263,35 260,40" fill="#06b6d4"/>
-            <line x1="420" y1="10" x2="420" y2="35" stroke="#06b6d4" stroke-width="2" stroke-dasharray="3 3"/>
-            <polygon points="417,35 423,35 420,40" fill="#06b6d4"/>
-            <line x1="560" y1="10" x2="560" y2="35" stroke="#06b6d4" stroke-width="2" stroke-dasharray="3 3"/>
-            <polygon points="557,35 563,35 560,40" fill="#06b6d4"/>
-            <text x="360" y="24" fill="#06b6d4" font-size="10.5" font-family="'JetBrains Mono', monospace">+540mm Monsoon Dilution</text>
-          </g>
-
-          <!-- TOXIC SEWAGE LEACHATE PLUME (Active during El Niño) -->
-          <path id="xraySewagePlume" d="M 135 55 C 240 110, 440 170, 716 200" fill="none" stroke="url(#sewageStreamGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="8 12" opacity="0.9" filter="drop-shadow(0 0 6px #f43f5e)"/>
-          <text x="240" y="145" fill="#f43f5e" font-size="11" font-family="'JetBrains Mono', monospace" font-weight="700">Sewage Leachate Migration (Zero Monsoon Dilution)</text>
-
-          <!-- AQUIFER WATER TABLE (Dynamically positioned Y) -->
-          <rect id="xrayWaterFill" x="0" y="203" width="920" height="47" fill="url(#waterGradSaline)" transition="all 0.4s ease"/>
-          <line id="xrayWaterLine" x1="0" y1="203" x2="920" y2="203" stroke="#f43f5e" stroke-width="2" stroke-dasharray="6 4" transition="all 0.4s ease"/>
-          <text id="xrayWaterLabel" x="350" y="196" fill="#f43f5e" font-size="12" font-weight="700" font-family="'JetBrains Mono', monospace" transition="all 0.4s ease">Water Table: 28.6m bgl ▼ CRITICAL DROP</text>
-
-          <!-- DEEP BOREWELL SHAFT (Right: X 716) -->
-          <!-- Pump House / Wellhead -->
-          <rect x="702" y="22" width="28" height="16" fill="#334155" stroke="#94a3b8" stroke-width="1.5" rx="2"/>
-          <text x="736" y="32" fill="#f8fafc" font-size="11" font-weight="700" font-family="'Inter', sans-serif">Borewell Shaft</text>
-          <text x="736" y="44" fill="#94a3b8" font-size="9" font-family="'JetBrains Mono', monospace">Depth: 35m bgl</text>
-
-          <!-- Solid Steel Casing (0m to 20m) -->
-          <rect x="712" y="38" width="8" height="116" fill="#64748b" stroke="#334155" stroke-width="1"/>
-          <!-- Slotted Perforated Screen (20m to 35m) -->
-          <rect x="712" y="154" width="8" height="86" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3 3"/>
-          <text x="726" y="172" fill="#f59e0b" font-size="9.5" font-family="'JetBrains Mono', monospace">Slotted Intake Screen</text>
-
-          <!-- Submersible Pump at Y=205 -->
-          <rect x="709" y="198" width="14" height="22" fill="#06b6d4" stroke="#ffffff" stroke-width="1" rx="2"/>
-          <text x="726" y="212" fill="#f8fafc" font-size="9.5" font-family="'JetBrains Mono', monospace">Submersible Pump</text>
-
-          <!-- DEPTH TICKS (Left Margin) -->
-          <line x1="20" y1="38" x2="30" y2="38" stroke="#64748b" stroke-width="1.5"/>
-          <text x="2" y="42" fill="#94a3b8" font-size="10" font-family="'JetBrains Mono', monospace">0m</text>
-
-          <line x1="20" y1="95" x2="28" y2="95" stroke="#475569" stroke-width="1"/>
-          <text x="0" y="99" fill="#64748b" font-size="9.5" font-family="'JetBrains Mono', monospace">10m</text>
-
-          <line x1="20" y1="149" x2="32" y2="149" stroke="#06b6d4" stroke-width="1.5"/>
-          <text x="0" y="153" fill="#06b6d4" font-size="10" font-weight="700" font-family="'JetBrains Mono', monospace">19.2m</text>
-
-          <line x1="20" y1="203" x2="32" y2="203" stroke="#f43f5e" stroke-width="1.5"/>
-          <text x="0" y="207" fill="#f43f5e" font-size="10" font-weight="700" font-family="'JetBrains Mono', monospace">28.6m</text>
-        </svg>
-      </div>
-
-      <div class="xray-footer-badges">
-        <div><strong>The ZLD Gap:</strong> Textile dye is 100% captured under Zero Liquid Discharge, but 120 MLD raw municipal sewage continuously infiltrates through the unlined Noyyal riverbed.</div>
-        <div><strong>The Dilution Failure:</strong> El Niño cuts monsoon recharge by 38%, allowing toxic sewage leachate to dominate borewell abstraction.</div>
-      </div>
-    </section>
-
-    <!-- ==========================================================================
-         3. STAGE 2 (THE MAINTAINER): 4 KINETIC ODOMETER KPI CARDS + VIAL + GAUGE
-         ========================================================================== -->
-    <section class="stage-kpi-ribbon" aria-label="Key Performance Indicators">
-
-      <!-- KPI 1: Noyyal Corridor Salinity (TDS) + Water Vial -->
-      <div class="kpi-stat-card">
-        <div class="kpi-header-row">
-          <span class="kpi-title">Noyyal Corridor Salinity</span>
-          <svg class="kpi-badge-icon" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-        </div>
-        <div class="kpi-body-row">
-          <div class="kpi-num-group">
-            <span class="kpi-current-val" id="kpiSalinityVal">2,940 mg/L</span>
-            <span class="kpi-baseline-val">from 1,550 mg/L</span>
+      <!-- PANEL 3: Live Underground Aquifer X-Ray (ZLD vs. Sewage Gap Visualizer) -->
+      <div class="panel-card panel-card-xray" id="panelXray">
+        <div class="panel-card-header">
+          <div class="panel-title-wrap">
+            <h2 class="panel-heading">Aquifer X-Ray &bull; ZLD vs. Sewage Gap</h2>
+            <span class="bklit-badge badge-shock" id="xrayBadgeStatus">SEWAGE PLUME DOMINATES INTAKE</span>
           </div>
-          <!-- Live Water Sample Vial -->
-          <div class="vial-container" title="Water Sample Toxicity: Above 2,000 mg/L BIS IS 10500 drinking limit">
-            <div class="vial-bis-line" title="BIS Limit (2,000 mg/L)"></div>
-            <div class="vial-liquid toxic" id="vialLiquid">
-              <div class="vial-salt-p1"></div>
-              <div class="vial-salt-p2"></div>
-              <div class="vial-salt-p3"></div>
+        </div>
+
+        <div class="xray-panel-body">
+          <div class="xray-canvas-box">
+            <svg class="xray-svg-element" viewBox="0 0 340 380" preserveAspectRatio="none">
+              <defs>
+                <!-- Glacier Sky Baseline Water Gradient -->
+                <linearGradient id="xrayWaterGradGlacier" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.55"/>
+                  <stop offset="100%" stop-color="#0f2b48" stop-opacity="0.9"/>
+                </linearGradient>
+
+                <!-- Solar Amber / Coral Toxic Saline Gradient -->
+                <linearGradient id="xrayWaterGradSaline" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f97316" stop-opacity="0.75"/>
+                  <stop offset="100%" stop-color="#4a1805" stop-opacity="0.95"/>
+                </linearGradient>
+
+                <!-- Sewage Leachate Migration Plume Gradient -->
+                <linearGradient id="sewagePlumeGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.95"/>
+                  <stop offset="60%" stop-color="#f97316" stop-opacity="0.85"/>
+                  <stop offset="100%" stop-color="#fb7185" stop-opacity="0.9"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Geological Strata Backgrounds -->
+              <!-- Surface Atmosphere (0m Ground level at Y=45) -->
+              <rect x="0" y="0" width="340" height="45" fill="#090e18"/>
+
+              <!-- Strata 1: Weathered Regolith Zone (0m–8m bgl, Y: 45 to 106) -->
+              <rect x="0" y="45" width="340" height="61" fill="#141d2e"/>
+              <text x="120" y="62" fill="#475569" font-size="9" font-family="'JetBrains Mono', monospace">Weathered Zone (0m–8m)</text>
+
+              <!-- Strata 2: Fissured Crystalline Bedrock (8m–35m bgl, Y: 106 to 380) -->
+              <rect x="0" y="106" width="340" height="274" fill="#0c1322"/>
+              <!-- Granite Fissures / Joint Fractures -->
+              <path d="M 80 130 L 140 150 L 190 140 L 250 170 M 90 220 L 160 240 L 230 225" stroke="#1e293b" stroke-width="1.2" fill="none" opacity="0.6"/>
+              <path d="M 120 280 L 180 300 L 250 285" stroke="#1e293b" stroke-width="1.2" fill="none" opacity="0.5"/>
+              <text x="120" y="122" fill="#334155" font-size="9" font-family="'JetBrains Mono', monospace">Fissured Bedrock (8m–35m)</text>
+
+              <!-- NOYYAL RIVER CHANNEL (Unlined Bed at Left: X 18 to 110) -->
+              <path d="M 18 45 Q 64 78 110 45 Z" fill="#1a2740"/>
+              <path id="xrayRiverBedWater" d="M 22 45 Q 64 72 106 45 Z" fill="#f59e0b" transition="fill 0.4s ease"/>
+              <text x="35" y="38" fill="#f59e0b" font-size="9.5" font-weight="700" font-family="'Inter', sans-serif">Noyyal River Bed</text>
+              <text x="32" y="58" fill="#ffffff" font-size="8" font-family="'JetBrains Mono', monospace">120 MLD Sewage</text>
+
+              <!-- DILUTION RAINWATER ARROWS (Active in Baseline) -->
+              <g id="xrayDilutionArrows" opacity="0" transition="opacity 0.4s ease">
+                <line x1="135" y1="12" x2="135" y2="42" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="3 3"/>
+                <polygon points="132,42 138,42 135,46" fill="#38bdf8"/>
+                <line x1="185" y1="12" x2="185" y2="42" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="3 3"/>
+                <polygon points="182,42 188,42 185,46" fill="#38bdf8"/>
+                <line x1="225" y1="12" x2="225" y2="42" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="3 3"/>
+                <polygon points="222,42 228,42 225,46" fill="#38bdf8"/>
+                <text x="145" y="26" fill="#38bdf8" font-size="9" font-family="'JetBrains Mono', monospace">+540mm Rain</text>
+              </g>
+
+              <!-- SEWAGE LEACHATE MIGRATION PLUME (Active during El Niño) -->
+              <path id="xraySewagePlume" d="M 64 68 C 110 120, 180 180, 261 240" fill="none" stroke="url(#sewagePlumeGrad)" stroke-width="11" stroke-linecap="round" stroke-dasharray="7 10" opacity="0.95" filter="drop-shadow(0 0 5px #f97316)"/>
+              <text x="90" y="165" fill="#f59e0b" font-size="9" font-family="'JetBrains Mono', monospace" font-weight="700">Sewage Leachate Plume</text>
+
+              <!-- AQUIFER WATER TABLE (Dynamically positioned Y) -->
+              <rect id="xrayWaterFill" x="0" y="265" width="340" height="115" fill="url(#xrayWaterGradSaline)" transition="all 0.4s ease"/>
+              <line id="xrayWaterLine" x1="0" y1="265" x2="340" y2="265" stroke="#f97316" stroke-width="2" stroke-dasharray="5 3" transition="all 0.4s ease"/>
+              <text id="xrayWaterLabel" x="90" y="259" fill="#f59e0b" font-size="10" font-weight="700" font-family="'JetBrains Mono', monospace" transition="all 0.4s ease">Water Table: 28.6m bgl ▼ CRITICAL DROP</text>
+
+              <!-- DEEP BOREWELL SHAFT (Right Side: X 261) -->
+              <!-- Wellhead Pump House -->
+              <rect x="250" y="27" width="22" height="18" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5" rx="2"/>
+              <text x="278" y="37" fill="#f8fafc" font-size="9.5" font-weight="700" font-family="'Inter', sans-serif">Borewell</text>
+              <text x="278" y="47" fill="#94a3b8" font-size="8" font-family="'JetBrains Mono', monospace">35m Depth</text>
+
+              <!-- Solid Casing (0m to 20m, Y: 45 to 199) -->
+              <rect x="258" y="45" width="6" height="154" fill="#64748b" stroke="#334155" stroke-width="1"/>
+              <!-- Slotted Perforated Screen (20m to 35m, Y: 199 to 315) -->
+              <rect x="258" y="199" width="6" height="116" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <text x="272" y="215" fill="#f59e0b" font-size="8.5" font-family="'JetBrains Mono', monospace">Slotted Intake</text>
+
+              <!-- Submersible Pump at Y=255 -->
+              <rect x="255" y="248" width="12" height="20" fill="#38bdf8" stroke="#ffffff" stroke-width="1" rx="2"/>
+
+              <!-- DEPTH TICKS (Left Margin) -->
+              <line x1="16" y1="45" x2="24" y2="45" stroke="#64748b" stroke-width="1.5"/>
+              <text x="2" y="49" fill="#94a3b8" font-size="9" font-family="'JetBrains Mono', monospace">0m</text>
+
+              <line x1="16" y1="122" x2="22" y2="122" stroke="#475569" stroke-width="1"/>
+              <text x="0" y="126" fill="#64748b" font-size="8.5" font-family="'JetBrains Mono', monospace">10m</text>
+
+              <line x1="16" y1="193" x2="25" y2="193" stroke="#38bdf8" stroke-width="1.5"/>
+              <text x="0" y="197" fill="#38bdf8" font-size="9" font-weight="700" font-family="'JetBrains Mono', monospace">19.2m</text>
+
+              <line x1="16" y1="265" x2="25" y2="265" stroke="#f97316" stroke-width="1.5"/>
+              <text x="0" y="269" fill="#f97316" font-size="9" font-weight="700" font-family="'JetBrains Mono', monospace">28.6m</text>
+
+              <line x1="16" y1="315" x2="22" y2="315" stroke="#64748b" stroke-width="1"/>
+              <text x="0" y="319" fill="#64748b" font-size="8.5" font-family="'JetBrains Mono', monospace">35m</text>
+            </svg>
+          </div>
+
+          <div class="xray-callout-strip">
+            <strong>The ZLD Paradox:</strong> Textile dye is 100% captured under Zero Liquid Discharge, but 120 MLD raw municipal sewage continuously infiltrates through the unlined Noyyal riverbed. El Niño cuts monsoon dilution by 38%, forcing sewage leachate directly into the deep intake.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==========================================================================
+         3. STAGE 2 (THE MAINTAINER): 4 BKLIT UI SPARKLINE & RADIAL RING KPI CARDS
+         ========================================================================== -->
+    <section class="stage-kpi-grid" aria-label="Key Performance Indicators">
+
+      <!-- KPI 1: Noyyal Corridor Salinity (TDS) + Water Vial + Mini Sparkline -->
+      <div class="bklit-kpi-card">
+        <div class="kpi-title-row">
+          <span class="kpi-card-label">Noyyal Corridor Salinity</span>
+          <span class="bklit-pill solar" style="font-size:9.5px;">TDS</span>
+        </div>
+        <div class="kpi-middle-row">
+          <div class="kpi-metric-stack">
+            <span class="kpi-metric-main" id="kpiSalinityVal">2,940 mg/L</span>
+            <span class="kpi-metric-sub">Expected: 1,550 mg/L</span>
+          </div>
+
+          <div class="kpi-visual-wrap">
+            <!-- Embedded Bklit Gradient Mini-Sparkline -->
+            <svg class="bklit-mini-sparkline" viewBox="0 0 64 32" aria-hidden="true">
+              <defs>
+                <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.0"/>
+                </linearGradient>
+              </defs>
+              <path id="sparklineArea" d="M 0 28 L 18 25 L 36 21 L 54 16 L 64 4 L 64 32 L 0 32 Z" fill="url(#sparkGrad)"/>
+              <path id="sparklineLine" d="M 0 28 L 18 25 L 36 21 L 54 16 L 64 4" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round"/>
+              <circle id="sparklineDot" cx="64" cy="4" r="3" fill="#f97316" stroke="#0b111e" stroke-width="1.5"/>
+            </svg>
+
+            <!-- Visual Water Clarity Vial -->
+            <div class="clarity-vial" title="Water Sample Clarity (Exceeds BIS 2,000 mg/L limit)">
+              <div class="vial-bis-mark" title="BIS Limit (2,000 mg/L)"></div>
+              <div class="vial-fill concentrated" id="vialFill">
+                <div class="vial-salt-dot" style="left: 4px; bottom: 8px;"></div>
+                <div class="vial-salt-dot" style="left: 14px; bottom: 14px; animation-delay: 0.6s;"></div>
+                <div class="vial-salt-dot" style="left: 8px; bottom: 20px; animation-delay: 1.1s;"></div>
+              </div>
             </div>
           </div>
         </div>
-        <span class="kpi-impact-pill pill-crimson" id="kpiSalinityPill">▲ +89.6% Spike (Exceeds BIS 2,000 mg/L)</span>
+        <span class="kpi-bottom-pill pill-coral" id="kpiSalinityPill">▲ +89.6% vs. Expected</span>
       </div>
 
-      <!-- KPI 2: Borewell Water Table Depletion + Depth Gauge -->
-      <div class="kpi-stat-card">
-        <div class="kpi-header-row">
-          <span class="kpi-title">Borewell Water Table Depletion</span>
-          <svg class="kpi-badge-icon" viewBox="0 0 24 24"><path d="M12 2v20m7-7l-7 7-7-7"/></svg>
+      <!-- KPI 2: Borewell Water Table Depletion + Radial Donut Ring -->
+      <div class="bklit-kpi-card">
+        <div class="kpi-title-row">
+          <span class="kpi-card-label">Water Table Depletion</span>
+          <span class="bklit-pill glacier" style="font-size:9.5px;">DEPTH</span>
         </div>
-        <div class="kpi-body-row">
-          <div class="kpi-num-group">
-            <span class="kpi-current-val" id="kpiDepletionVal">28.6m bgl</span>
-            <span class="kpi-baseline-val">from 19.2m bgl</span>
+        <div class="kpi-middle-row">
+          <div class="kpi-metric-stack">
+            <span class="kpi-metric-main" id="kpiDepletionVal">28.6m bgl</span>
+            <span class="kpi-metric-sub">Expected: 19.2m bgl</span>
           </div>
-          <!-- Vertical Mini Depth Gauge -->
-          <div class="depth-gauge-container" title="Borewell Drawdown Gauge">
-            <div class="depth-gauge-bar shock" id="depthGaugeBar"></div>
-          </div>
+
+          <!-- Bklit Radial Donut Ring (48.9% faster drop) -->
+          <svg class="bklit-radial-ring" viewBox="0 0 36 36" aria-hidden="true">
+            <circle class="ring-bg-track" cx="18" cy="18" r="15.9155" />
+            <circle class="ring-progress-bar" id="ringDepletion" cx="18" cy="18" r="15.9155" stroke="var(--accent-coral)" stroke-dashoffset="51.1" />
+          </svg>
         </div>
-        <span class="kpi-impact-pill pill-crimson" id="kpiDepletionPill">▼ -9.4m Deeper (+48.9% Faster Drop)</span>
+        <span class="kpi-bottom-pill pill-coral" id="kpiDepletionPill">▼ -9.4m Deeper (+48.9% Faster Drop)</span>
       </div>
 
-      <!-- KPI 3: Untreated Sewage Intrusion (The ZLD Gap) -->
-      <div class="kpi-stat-card">
-        <div class="kpi-header-row">
-          <span class="kpi-title">Untreated Sewage Intrusion (ZLD Gap)</span>
-          <svg class="kpi-badge-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+      <!-- KPI 3: Untreated Sewage Seepage Share (ZLD Gap) + Radial Ring -->
+      <div class="bklit-kpi-card">
+        <div class="kpi-title-row">
+          <span class="kpi-card-label">Untreated Sewage Seepage</span>
+          <span class="bklit-pill solar" style="font-size:9.5px;">ZLD GAP</span>
         </div>
-        <div class="kpi-body-row">
-          <div class="kpi-num-group">
-            <span class="kpi-current-val" id="kpiSewageVal">78.4%</span>
-            <span class="kpi-baseline-val">from 42.0% baseline</span>
+        <div class="kpi-middle-row">
+          <div class="kpi-metric-stack">
+            <span class="kpi-metric-main" id="kpiSewageVal">78.4%</span>
+            <span class="kpi-metric-sub">Expected: 42.0%</span>
           </div>
+
+          <!-- Bklit Radial Donut Ring (78.4% share) -->
+          <svg class="bklit-radial-ring" viewBox="0 0 36 36" aria-hidden="true">
+            <circle class="ring-bg-track" cx="18" cy="18" r="15.9155" />
+            <circle class="ring-progress-bar" id="ringSewage" cx="18" cy="18" r="15.9155" stroke="var(--accent-coral)" stroke-dashoffset="21.6" />
+          </svg>
         </div>
-        <span class="kpi-impact-pill pill-crimson" id="kpiSewagePill">▲ +86.6% (Zero Monsoon Dilution)</span>
+        <span class="kpi-bottom-pill pill-coral" id="kpiSewagePill">▲ +86.6% Seepage Surge</span>
       </div>
 
-      <!-- KPI 4: Critical Breakdown Wards -->
-      <div class="kpi-stat-card">
-        <div class="kpi-header-row">
-          <span class="kpi-title">Critical Breakdown Wards</span>
-          <svg class="kpi-badge-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg>
+      <!-- KPI 4: Critical Breakdown Wards + Radial Donut Ring -->
+      <div class="bklit-kpi-card">
+        <div class="kpi-title-row">
+          <span class="kpi-card-label">Critical Breakdown Wards</span>
+          <span class="bklit-pill solar" style="font-size:9.5px;">SDG 6 &bull; 3</span>
         </div>
-        <div class="kpi-body-row">
-          <div class="kpi-num-group">
-            <span class="kpi-current-val" id="kpiWardsVal">14 / 60 Wards</span>
-            <span class="kpi-baseline-val">from 5 wards</span>
+        <div class="kpi-middle-row">
+          <div class="kpi-metric-stack">
+            <span class="kpi-metric-main" id="kpiWardsVal">14 / 60 Wards</span>
+            <span class="kpi-metric-sub">Expected: 5 Wards</span>
           </div>
+
+          <!-- Bklit Radial Donut Ring (14 / 60 Wards) -->
+          <svg class="bklit-radial-ring" viewBox="0 0 36 36" aria-hidden="true">
+            <circle class="ring-bg-track" cx="18" cy="18" r="15.9155" />
+            <circle class="ring-progress-bar" id="ringWards" cx="18" cy="18" r="15.9155" stroke="var(--accent-amber)" stroke-dashoffset="76.7" />
+          </svg>
         </div>
-        <span class="kpi-impact-pill pill-crimson" id="kpiWardsPill">▲ +180% Immediate Testing Priority</span>
+        <span class="kpi-bottom-pill pill-coral" id="kpiWardsPill">▲ +180% Immediate Testing Priority</span>
       </div>
 
     </section>
 
     <!-- ==========================================================================
-         4. STAGE 3 (THE PROOF): EMPIRICAL CHARTS & CORPORATION ACTION TABLE
+         4. STAGE 3 (THE PROOF): BKLIT SPLINE CHARTS & HORIZONTAL PROGRESS LEADERBOARD
          ========================================================================== -->
-    <section class="stage-proof-grid" aria-label="Analytical Proof Section">
+    <section class="stage-proof-row" aria-label="Analytical Proof Section">
 
-      <!-- Column 1: Trajectory Divergence Line Chart -->
-      <div class="proof-panel">
-        <div class="proof-header">
-          <h3 class="proof-title">Trajectory Divergence Chart</h3>
-          <span class="proof-subtag">Summer 2023–2026</span>
+      <!-- Column 1: Bklit Dual-Gradient Spline Area Chart -->
+      <div class="proof-card">
+        <div class="proof-card-header">
+          <h3 class="proof-heading">01 &bull; Expected Trend vs. El Niño TDS Trajectory</h3>
+          <span class="proof-sub-pill">Summer 2023–2026</span>
         </div>
-        <div class="chart-viewport">
-          <canvas id="chartDivergence" aria-label="Trajectory Divergence Chart"></canvas>
+        <div class="chart-box-container">
+          <canvas id="chartDivergence" aria-label="Expected vs El Niño TDS Spline Chart"></canvas>
         </div>
-        <p class="proof-footnote">Proves the multi-year split: past trend drifts gradually, while severe El Niño drives a sharp non-linear salinity surge.</p>
+        <div class="proof-micro-note">
+          Spline trajectory plots multi-year gradual drift vs. sharp non-linear El Niño salinity surge (+89.6%).
+        </div>
       </div>
 
-      <!-- Column 2: Noyyal Proximity vs Salinity Surge Grouped Bar Chart -->
-      <div class="proof-panel">
-        <div class="proof-header">
-          <h3 class="proof-title">Noyyal Proximity vs. Salinity Surge</h3>
-          <span class="proof-subtag">% TDS Surge</span>
+      <!-- Column 2: Bklit Grouped Pill-Bar Chart -->
+      <div class="proof-card">
+        <div class="proof-card-header">
+          <h3 class="proof-heading">02 &bull; Salinity Spike by Noyyal River Proximity</h3>
+          <span class="proof-sub-pill">% TDS Surge</span>
         </div>
-        <div class="chart-viewport">
-          <canvas id="chartProximity" aria-label="Proximity vs Salinity Bar Chart"></canvas>
+        <div class="chart-box-container">
+          <canvas id="chartProximity" aria-label="Proximity vs Salinity Pill-Bar Chart"></canvas>
         </div>
-        <p class="proof-footnote">Because textile dye is contained by ZLD, salinity spikes >90% within 1.5 km of untreated municipal sewage when monsoon dilution fails.</p>
+        <div class="proof-micro-note">
+          Salinity explodes by &gt;90% within 1.5 km of the unlined sewage corridor when monsoon dilution fails.
+        </div>
       </div>
 
-      <!-- Column 3: Ranked Pre-Monsoon Corporation Action Table -->
-      <div class="proof-panel">
-        <div class="proof-header">
-          <h3 class="proof-title">Pre-Monsoon Corporation Action Table</h3>
-          <span class="proof-subtag">Click Row to Locate</span>
+      <!-- Column 3: Bklit Horizontal Progress Leaderboard -->
+      <div class="proof-card">
+        <div class="proof-card-header">
+          <h3 class="proof-heading">03 &bull; Where Water Breaks First — Priority Wards</h3>
+          <span class="proof-sub-pill">Click Ward to Locate</span>
         </div>
-        <div class="action-table-wrap">
-          <table class="action-table">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Zone / Ward</th>
-                <th>Noyyal Dist</th>
-                <th>2026 TDS Surge</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="actionTableBody">
-              <!-- Dynamically populated via app.js -->
-            </tbody>
-          </table>
+        <div class="leaderboard-list" id="leaderboardList">
+          <!-- Dynamically injected via app.js -->
         </div>
-        <p class="proof-footnote">Click any row to pinpoint and illuminate its aquifer monitoring station on both dual comparison maps.</p>
+        <div class="proof-micro-note">
+          Ranked pre-monsoon intervention priority. Click any ward to illuminate its monitoring node on Center Map.
+        </div>
       </div>
 
     </section>
 
     <!-- ==========================================================================
-         5. BOTTOM PITCH SUMMARY BAR
+         5. COMPACT PITCH FOOTER STRIP
          ========================================================================== -->
-    <footer class="bottom-summary-bar" role="contentinfo">
-      <!-- Data Sources -->
-      <div class="summary-sources-row">
-        <div class="sources-left">
-          <strong>Verified Data Sources:</strong> CGWB &amp; TNWRD (Borewell Depth &amp; TDS) &bull; IMD &amp; NOAA ONI (Monsoon &amp; El Niño Telemetry) &bull; TNPCB &amp; Tiruppur Corp (ZLD vs. Sewage Gap)
-        </div>
-        <div class="sources-right">
-          <span>Tiruppur District Geospatial Model &bull; Data Canvas '26</span>
-        </div>
+    <footer class="compact-footer-bar" role="contentinfo">
+      <div class="footer-quote">
+        <div class="footer-quote-bar"></div>
+        <span>&ldquo;ZLD solved Tiruppur's textile dye effluent—but El Niño turns untreated Noyyal municipal sewage into a +89.6% borewell salinity surge. Our model pinpoints the 14 wards that break first.&rdquo;</span>
       </div>
-
-      <!-- 3 Core Inferences -->
-      <div class="inferences-grid">
-        <div class="inference-card">
-          <span class="inf-title"><span style="color: var(--accent-cyan);">&bull;</span> The ZLD Blindspot</span>
-          <p class="inf-desc">Dye effluent is strictly contained under industrial Zero Liquid Discharge; untreated municipal sewage in the Noyyal riverbed is now the primary aquifer contamination threat.</p>
-        </div>
-        <div class="inference-card">
-          <span class="inf-title"><span style="color: var(--accent-amber);">&bull;</span> Dilution Collapse</span>
-          <p class="inf-desc">Weak El Niño monsoon rainfall reduces aquifer recharge by 38%, more than doubling borewell salinity within a 1.5 km radius of the river corridor.</p>
-        </div>
-        <div class="inference-card">
-          <span class="inf-title"><span style="color: var(--accent-crimson);">&bull;</span> Targeted Prevention</span>
-          <p class="inf-desc">70% of acute community drinking-water failures concentrate in 14 river-corridor corporation wards first—allowing targeted pre-monsoon intervention.</p>
-        </div>
-      </div>
-
-      <!-- The Pitch Mic-Drop Quote -->
-      <div class="mic-drop-quote">
-        &ldquo;Tiruppur solved industrial dye pollution with Zero Liquid Discharge&mdash;but El Niño turns untreated Noyyal sewage into a +90% borewell salinity spike. Our model tells the Corporation which 14 wards break first.&rdquo;
+      <div class="footer-stamp">
+        Tiruppur District &bull; 5,087.26 Sq.Km &bull; 6-Taluk Hydro-Thermal Model
       </div>
     </footer>
 
   </div>
 
   <!-- ==========================================================================
-       FULL-SCREEN QR SCAN MODAL FOR JUDGES
+       6. FULL-SCREEN QR SCAN MODAL
        ========================================================================== -->
-  <div class="modal-overlay" id="qrModal">
-    <div class="modal-dialog">
-      <button type="button" class="modal-close-btn" id="btnCloseQr">&times;</button>
-      <h3 style="font-size: 17px; font-weight: 700; color: #ffffff; margin-bottom: 6px;">Live Judge Mobile View</h3>
-      <p style="font-size: 12.5px; color: var(--text-slate);">Scan this QR code with your mobile camera to interact with the live telemetry controls during the pitch.</p>
-
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&amp;data=https://arunp061106.github.io/data-canvas-26-DF-dashboard/" alt="Live Dashboard QR Code" class="modal-qr-img">
-
-      <code class="modal-url-code">https://arunp061106.github.io/data-canvas-26-DF-dashboard/</code>
+  <div class="qr-modal-overlay" id="qrModal" role="dialog" aria-modal="true" aria-label="Mobile Pitch View">
+    <div class="qr-modal-card">
+      <button type="button" class="qr-close-button" id="btnCloseQr" aria-label="Close modal">&times;</button>
+      <div class="brand-title" style="justify-content: center; margin-bottom: 4px;">Scan for Live Judge View</div>
+      <div style="font-size: 11.5px; color: var(--text-slate); margin-bottom: 8px;">Test the interactive El Niño trigger on mobile</div>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;data=https%3A%2F%2Farunp061106.github.io%2Fdata-canvas-26-DF-dashboard%2F&amp;color=0B111E&amp;bgcolor=FFFFFF" alt="QR Code for Dashboard" class="qr-modal-image">
+      <a href="https://arunp061106.github.io/data-canvas-26-DF-dashboard/" target="_blank" class="qr-code-link">https://arunp061106.github.io/data-canvas-26-DF-dashboard/</a>
     </div>
   </div>
 
-  <!-- Telemetry Controller Logic -->
+  <!-- Controller Script -->
   <script src="app.js"></script>
-
 </body>
 </html>

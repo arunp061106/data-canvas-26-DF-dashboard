@@ -1,17 +1,18 @@
 /**
  * WHERE TIRUPPUR'S WATER BREAKS FIRST
- * Kinetic Hydro-Simulation Telemetry Controller
- * Implements 60fps Odometer animations, X-Ray Aquifer Cutaway transitions,
- * River particle flows, Sonar shockwaves, and ENSO continuous scrub simulation.
+ * Bklit UI + Oceanic Hydro-Thermal Telemetry Dashboard Engine
+ * Zero-paragraph, high-impact geospatial analytics controller
  */
 
 (function () {
   'use strict';
 
-  // --- 1. STATE & TELEMETRY REGISTRY ---
+  // ==========================================================================
+  // 1. TELEMETRY REGISTRY & INITIAL STATE
+  // ==========================================================================
   const state = {
     elNinoActive: true,
-    ensoValue: 2.4, // 0.0 to 2.4
+    ensoValue: 2.4, // 0.0 (Normal) -> 1.2 (Moderate) -> 2.4 (Severe)
     severity: 'severe', // 'normal' | 'moderate' | 'severe'
     activeWardId: null,
     currentValues: {
@@ -26,208 +27,324 @@
     }
   };
 
-  // Telemetry Ward Locations (748x1024 Tiruppur Taluk Map coordinates)
+  // Top Vulnerable Zones / Monitoring Wards (748x1024 Taluk coordinate space)
   const WARDS_DATA = [
     {
       id: "w-01",
-      rank: 1,
-      name: "Tiruppur South (Nallur Zone)",
+      rank: "01",
+      name: "Tiruppur South (Nallur)",
       taluk: "Tirupur Taluk",
-      x: 345,
-      y: 375,
       distNoyyalKm: 0.4,
       baseTds: 1580,
       shockTds: 3120,
       surgePct: "+97.4%",
       depth: 28.8,
-      status: "CAP & TEST FIRST",
-      badgeClass: "badge-cap-first"
+      action: "CAP & TEST",
+      actionClass: "tag-cap",
+      x: 345,
+      y: 375,
+      barPct: 98
     },
     {
       id: "w-02",
-      rank: 2,
+      rank: "02",
       name: "Tiruppur North (Kasipalayam)",
       taluk: "Tirupur Taluk",
-      x: 310,
-      y: 340,
       distNoyyalKm: 0.6,
       baseTds: 1510,
       shockTds: 2940,
       surgePct: "+94.7%",
       depth: 27.4,
-      status: "CAP & TEST FIRST",
-      badgeClass: "badge-cap-first"
+      action: "CAP & TEST",
+      actionClass: "tag-cap",
+      x: 310,
+      y: 340,
+      barPct: 94
     },
     {
       id: "w-03",
-      rank: 3,
+      rank: "03",
       name: "Veerapandi Corridor",
       taluk: "Tirupur Taluk",
-      x: 380,
-      y: 390,
       distNoyyalKm: 0.8,
       baseTds: 1490,
       shockTds: 2840,
       surgePct: "+90.6%",
       depth: 26.5,
-      status: "CAP & TEST FIRST",
-      badgeClass: "badge-cap-first"
+      action: "CAP & TEST",
+      actionClass: "tag-cap",
+      x: 380,
+      y: 390,
+      barPct: 91
     },
     {
       id: "w-04",
-      rank: 4,
+      rank: "04",
       name: "Kangayam (Orathupalayam Belt)",
       taluk: "Kangayam Taluk",
-      x: 530,
-      y: 410,
       distNoyyalKm: 1.1,
       baseTds: 1610,
       shockTds: 2980,
       surgePct: "+85.1%",
       depth: 29.2,
-      status: "CAP & TEST FIRST",
-      badgeClass: "badge-cap-first"
+      action: "CAP & TEST",
+      actionClass: "tag-cap",
+      x: 530,
+      y: 410,
+      barPct: 85
     },
     {
       id: "w-05",
-      rank: 5,
+      rank: "05",
       name: "Avinashi East Buffer",
       taluk: "Avinashi Taluk",
-      x: 260,
-      y: 245,
       distNoyyalKm: 1.6,
       baseTds: 1390,
       shockTds: 2310,
       surgePct: "+66.2%",
       depth: 22.8,
-      status: "MONITOR WEEKLY",
-      badgeClass: "badge-monitor"
+      action: "WEEKLY LOG",
+      actionClass: "tag-log",
+      x: 260,
+      y: 245,
+      barPct: 66
     },
     {
       id: "w-06",
-      rank: 6,
+      rank: "06",
       name: "Palladam Border Zone",
       taluk: "Palladam Taluk",
-      x: 230,
-      y: 420,
       distNoyyalKm: 2.4,
       baseTds: 1470,
       shockTds: 1890,
       surgePct: "+28.4%",
       depth: 20.4,
-      status: "SAFE / WATCH",
-      badgeClass: "badge-safe"
+      action: "WEEKLY LOG",
+      actionClass: "tag-log",
+      x: 230,
+      y: 420,
+      barPct: 28
     },
     {
       id: "w-07",
-      rank: 7,
+      rank: "07",
       name: "Dharapuram Central Aquifer",
       taluk: "Dharapuram Taluk",
-      x: 390,
-      y: 580,
       distNoyyalKm: 5.2,
       baseTds: 1120,
       shockTds: 1210,
       surgePct: "+8.0%",
       depth: 18.2,
-      status: "SAFE / WATCH",
-      badgeClass: "badge-safe"
+      action: "MONITOR",
+      actionClass: "tag-log",
+      x: 390,
+      y: 580,
+      barPct: 15
     },
     {
       id: "w-08",
-      rank: 8,
+      rank: "08",
       name: "Udumalpet Foothills Basin",
       taluk: "Udumalpet Taluk",
-      x: 170,
-      y: 780,
       distNoyyalKm: 8.4,
       baseTds: 860,
       shockTds: 910,
       surgePct: "+5.8%",
       depth: 16.5,
-      status: "SAFE / WATCH",
-      badgeClass: "badge-safe"
+      action: "MONITOR",
+      actionClass: "tag-log",
+      x: 170,
+      y: 780,
+      barPct: 10
     }
   ];
 
-  // DOM Elements
-  const DOM = {
-    btnToggleShock: document.getElementById('btnToggleShock'),
-    ensoSlider: document.getElementById('ensoSlider'),
-    ensoValTag: document.getElementById('ensoValTag'),
-    rightMapTag: document.getElementById('rightMapTag'),
-    rightMapMetricPill: document.getElementById('rightMapMetricPill'),
-    rightMapHeatAura: document.getElementById('rightMapHeatAura'),
-    rightMapAnomalyCard: document.getElementById('rightMapAnomalyCard'),
-    rightMapRiver: document.getElementById('rightMapRiver'),
-    rightRiverParticles: document.getElementById('rightRiverParticles'),
-    leftPinsGroup: document.getElementById('leftPinsGroup'),
-    rightPinsGroup: document.getElementById('rightPinsGroup'),
+  // DOM Elements Cache
+  const DOM = {};
 
-    // X-Ray Elements
-    xrayBadgeStatus: document.getElementById('xrayBadgeStatus'),
-    xrayWaterFill: document.getElementById('xrayWaterFill'),
-    xrayWaterLine: document.getElementById('xrayWaterLine'),
-    xrayWaterLabel: document.getElementById('xrayWaterLabel'),
-    xraySewagePlume: document.getElementById('xraySewagePlume'),
-    xrayDilutionArrows: document.getElementById('xrayDilutionArrows'),
-    xrayRiverBedWater: document.getElementById('xrayRiverBedWater'),
+  function initDOM() {
+    DOM.statusOrb = document.getElementById('statusOrb');
+    DOM.btnElNinoToggle = document.getElementById('btnElNinoToggle');
+    DOM.ensoSlider = document.getElementById('ensoSlider');
+    DOM.ensoValTag = document.getElementById('ensoValTag');
 
-    // KPIs & Visual Vial/Gauge
-    kpiSalinityVal: document.getElementById('kpiSalinityVal'),
-    kpiSalinityPill: document.getElementById('kpiSalinityPill'),
-    vialLiquid: document.getElementById('vialLiquid'),
-    kpiDepletionVal: document.getElementById('kpiDepletionVal'),
-    kpiDepletionPill: document.getElementById('kpiDepletionPill'),
-    depthGaugeBar: document.getElementById('depthGaugeBar'),
-    kpiSewageVal: document.getElementById('kpiSewageVal'),
-    kpiSewagePill: document.getElementById('kpiSewagePill'),
-    kpiWardsVal: document.getElementById('kpiWardsVal'),
-    kpiWardsPill: document.getElementById('kpiWardsPill'),
+    // Right Map Elements
+    DOM.rightMapTag = document.getElementById('rightMapTag');
+    DOM.rightMapMetricPill = document.getElementById('rightMapMetricPill');
+    DOM.rightMapHeatAura = document.getElementById('rightMapHeatAura');
+    DOM.rightMapRiver = document.getElementById('rightMapRiver');
+    DOM.rightRiverParticles = document.getElementById('rightRiverParticles');
+    DOM.rightPinsGroup = document.getElementById('rightPinsGroup');
+    DOM.leftPinsGroup = document.getElementById('leftPinsGroup');
+    DOM.hudExpectedVal = document.getElementById('hudExpectedVal');
+    DOM.hudRealityVal = document.getElementById('hudRealityVal');
+    DOM.hudDropAnomaly = document.getElementById('hudDropAnomaly');
+    DOM.hudSalinityAnomaly = document.getElementById('hudSalinityAnomaly');
 
-    // Table & Modal
-    actionTableBody: document.getElementById('actionTableBody'),
-    btnOpenQr: document.getElementById('btnOpenQr'),
-    btnCloseQr: document.getElementById('btnCloseQr'),
-    qrModal: document.getElementById('qrModal')
-  };
+    // Aquifer X-Ray Elements
+    DOM.xrayBadgeStatus = document.getElementById('xrayBadgeStatus');
+    DOM.xrayWaterFill = document.getElementById('xrayWaterFill');
+    DOM.xrayWaterLine = document.getElementById('xrayWaterLine');
+    DOM.xrayWaterLabel = document.getElementById('xrayWaterLabel');
+    DOM.xraySewagePlume = document.getElementById('xraySewagePlume');
+    DOM.xrayDilutionArrows = document.getElementById('xrayDilutionArrows');
+    DOM.xrayRiverBedWater = document.getElementById('xrayRiverBedWater');
 
-  // --- 2. 60FPS COUNT-UP ODOMETER ANIMATION ---
-  function animateOdometer(el, start, end, duration = 400, decimals = 0, suffix = "") {
+    // 4 KPI Cards
+    DOM.kpiSalinityVal = document.getElementById('kpiSalinityVal');
+    DOM.kpiSalinityPill = document.getElementById('kpiSalinityPill');
+    DOM.vialFill = document.getElementById('vialFill');
+    DOM.sparklineDot = document.getElementById('sparklineDot');
+    DOM.sparklineLine = document.getElementById('sparklineLine');
+    DOM.sparklineArea = document.getElementById('sparklineArea');
+
+    DOM.kpiDepletionVal = document.getElementById('kpiDepletionVal');
+    DOM.kpiDepletionPill = document.getElementById('kpiDepletionPill');
+    DOM.ringDepletion = document.getElementById('ringDepletion');
+
+    DOM.kpiSewageVal = document.getElementById('kpiSewageVal');
+    DOM.kpiSewagePill = document.getElementById('kpiSewagePill');
+    DOM.ringSewage = document.getElementById('ringSewage');
+
+    DOM.kpiWardsVal = document.getElementById('kpiWardsVal');
+    DOM.kpiWardsPill = document.getElementById('kpiWardsPill');
+    DOM.ringWards = document.getElementById('ringWards');
+
+    // Leaderboard
+    DOM.leaderboardList = document.getElementById('leaderboardList');
+
+    // QR Modal
+    DOM.btnOpenQr = document.getElementById('btnOpenQr');
+    DOM.btnCloseQr = document.getElementById('btnCloseQr');
+    DOM.qrModal = document.getElementById('qrModal');
+  }
+
+  // ==========================================================================
+  // 2. 60FPS CUBIC ODOMETER COUNT-UP ANIMATION
+  // ==========================================================================
+  function animateOdometer(el, start, end, duration = 380, decimals = 0, suffix = "") {
     if (!el) return;
     const startTime = performance.now();
 
     function frame(now) {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Ease out cubic
+      // Cubic ease-out
       const ease = 1 - Math.pow(1 - progress, 3);
       const current = start + (end - start) * ease;
 
-      el.textContent = (decimals > 0 ? current.toFixed(decimals) : Math.round(current)) + suffix;
+      el.textContent = (decimals > 0 ? current.toFixed(decimals) : Math.round(current).toLocaleString()) + suffix;
 
       if (progress < 1) {
         requestAnimationFrame(frame);
       } else {
-        el.textContent = (decimals > 0 ? end.toFixed(decimals) : Math.round(end)) + suffix;
+        el.textContent = (decimals > 0 ? end.toFixed(decimals) : Math.round(end).toLocaleString()) + suffix;
       }
     }
 
     requestAnimationFrame(frame);
   }
 
-  // --- 3. DUAL MAP PINS WITH SONAR SHOCKWAVES ---
-  function renderMapPins() {
-    if (!DOM.leftPinsGroup || !DOM.rightPinsGroup) return;
+  // ==========================================================================
+  // 3. HTML5 CANVAS MAP SHADER ENGINE (STRIP EXTERIOR WHITE + INVERT LABELS)
+  // ==========================================================================
+  function initMapShaders() {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
 
-    // Left Baseline Pins
-    DOM.leftPinsGroup.innerHTML = WARDS_DATA.map(w => `
-      <g class="borewell-pin pin-baseline" data-id="${w.id}" transform="translate(${w.x}, ${w.y})">
-        <circle class="pin-ring" cx="0" cy="0" r="10" />
-        <circle class="pin-core" cx="0" cy="0" r="5" />
-        <title>${w.name} (${w.taluk})&#10;Baseline TDS: ${w.baseTds} mg/L&#10;Depth: ${(w.depth - 7).toFixed(1)}m bgl</title>
-      </g>
-    `).join('');
+    img.onload = function () {
+      processCanvasShader('canvasLeftMap', img);
+      processCanvasShader('canvasRightMap', img);
+    };
+
+    img.onerror = function () {
+      console.warn("Canvas shader fallback: image loading error, fallback active.");
+    };
+
+    // Load user's cleaned Tiruppur 6-Taluk map
+    img.src = "image_8454d9.jpg";
+  }
+
+  function processCanvasShader(canvasId, img) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    canvas.width = img.naturalWidth || 748;
+    canvas.height = img.naturalHeight || 1024;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+
+    try {
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+
+        // 1. Exterior White / Light Margin Pixels -> 100% Transparent
+        if (r > 236 && g > 236 && b > 236) {
+          data[i + 3] = 0;
+        }
+        // 2. Black Taluk Text Labels & Dark Boundaries -> Invert to Ice-White (#E2E8F0)
+        else if (r < 75 && g < 75 && b < 75) {
+          data[i] = 226;
+          data[i + 1] = 232;
+          data[i + 2] = 240;
+          data[i + 3] = 255;
+        }
+        // 3. Dotted Internal Boundaries / Medium Grey
+        else if (Math.abs(r - g) < 18 && Math.abs(g - b) < 18 && r < 165) {
+          data[i] = 203;
+          data[i + 1] = 213;
+          data[i + 2] = 225;
+          data[i + 3] = 255;
+        }
+        // 4. Pastel Taluk Fills -> Shift into deep slate-indigo hues (#162238 to #1E293B)
+        else {
+          const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+          const factor = lum / 255;
+          data[i] = Math.round(18 + factor * 14);     // Red 18-32
+          data[i + 1] = Math.round(28 + factor * 22); // Green 28-50
+          data[i + 2] = Math.round(44 + factor * 30); // Blue 44-74
+          data[i + 3] = 245;
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+
+      // Hide fallback layer as shader rendered successfully
+      const viewport = canvas.closest('.map-viewport');
+      if (viewport) {
+        const fallback = viewport.querySelector('.tiruppur-map-img');
+        if (fallback) fallback.style.display = 'none';
+      }
+    } catch (err) {
+      // If local origin security prevents getImageData, CSS filter handles transparency
+      console.warn("Canvas getImageData origin restricted, using CSS filter fallback:", err);
+      canvas.style.display = 'none';
+      const viewport = canvas.closest('.map-viewport');
+      if (viewport) {
+        const fallback = viewport.querySelector('.tiruppur-map-img');
+        if (fallback) fallback.style.display = 'block';
+      }
+    }
+  }
+
+  // ==========================================================================
+  // 4. MAP PINS & EXPANDING SONAR SHOCKWAVES
+  // ==========================================================================
+  function renderMapPins() {
+    if (DOM.leftPinsGroup) {
+      DOM.leftPinsGroup.innerHTML = WARDS_DATA.map(w => `
+        <g class="borewell-node" data-id="${w.id}" transform="translate(${w.x}, ${w.y})">
+          <circle class="node-ring" cx="0" cy="0" r="9" />
+          <circle class="node-core" cx="0" cy="0" r="4.5" />
+          <title>${w.name} (${w.taluk})&#10;2025 Baseline TDS: ${w.baseTds} mg/L&#10;Depth: ${(w.depth - 9.4).toFixed(1)}m bgl</title>
+        </g>
+      `).join('');
+    }
 
     updateRightMapPins();
   }
@@ -235,45 +352,49 @@
   function updateRightMapPins() {
     if (!DOM.rightPinsGroup) return;
 
-    const isShock = state.ensoValue >= 1.0;
+    const isShock = state.ensoValue >= 0.8;
     const isSevere = state.ensoValue >= 1.8;
 
     DOM.rightPinsGroup.innerHTML = WARDS_DATA.map(w => {
       const isCorridor = w.distNoyyalKm <= 1.5;
-      const pinClass = isShock && isCorridor ? 'pin-shock' : 'pin-baseline';
+      const isShockNode = isShock && isCorridor;
+      const nodeClass = isShockNode ? 'borewell-node node-shock' : 'borewell-node';
 
       const currentTds = isShock ? (isSevere ? w.shockTds : Math.round(w.baseTds * 1.45)) : w.baseTds;
       const currentDepth = isShock ? (isSevere ? w.depth : (w.depth - 4.5).toFixed(1)) : (w.depth - 9.4).toFixed(1);
 
       return `
-        <g class="borewell-pin ${pinClass}" data-id="${w.id}" transform="translate(${w.x}, ${w.y})">
-          <circle class="sonar-ring sonar-ring-1" cx="0" cy="0" r="6" />
-          <circle class="sonar-ring sonar-ring-2" cx="0" cy="0" r="6" />
-          <circle class="pin-ring" cx="0" cy="0" r="10" />
-          <circle class="pin-core" cx="0" cy="0" r="5" />
-          <title>${w.name} (${w.taluk})&#10;2026 Salinity: ${currentTds} mg/L&#10;Depth: ${currentDepth}m bgl&#10;Status: ${w.status}</title>
+        <g class="${nodeClass}" data-id="${w.id}" transform="translate(${w.x}, ${w.y})">
+          ${isShockNode ? `
+            <circle class="sonar-wave sonar-wave-1" cx="0" cy="0" r="6" />
+            <circle class="sonar-wave sonar-wave-2" cx="0" cy="0" r="6" />
+          ` : ''}
+          <circle class="node-ring" cx="0" cy="0" r="9" />
+          <circle class="node-core" cx="0" cy="0" r="4.5" />
+          <title>${w.name} (${w.taluk})&#10;Distance to Noyyal: ${w.distNoyyalKm} km&#10;TDS: ${currentTds} mg/L (${w.surgePct})&#10;Water Table: ${currentDepth}m bgl</title>
         </g>
       `;
     }).join('');
 
-    attachPinHoverEvents();
+    attachPinEvents();
   }
 
-  function attachPinHoverEvents() {
-    document.querySelectorAll('.borewell-pin').forEach(pin => {
-      pin.addEventListener('click', () => {
-        const id = pin.getAttribute('data-id');
+  function attachPinEvents() {
+    document.querySelectorAll('.borewell-node').forEach(node => {
+      node.addEventListener('click', () => {
+        const id = node.getAttribute('data-id');
         highlightWard(id);
       });
     });
   }
 
-  // --- 4. CONTINUOUS SIMULATION ENGINE (DRIVEN BY ENSO ANOMALY) ---
+  // ==========================================================================
+  // 5. CONTINUOUS SIMULATION ENGINE (DRIVEN BY ENSO ANOMALY)
+  // ==========================================================================
   function applySimulation(enso, triggerSource = 'slider') {
     state.ensoValue = enso;
     state.elNinoActive = enso > 0.2;
 
-    // Severity category
     if (enso < 0.6) {
       state.severity = 'normal';
     } else if (enso < 1.8) {
@@ -282,7 +403,6 @@
       state.severity = 'severe';
     }
 
-    // Normalized progress 0 to 1
     const p = Math.min(Math.max(enso / 2.4, 0), 1);
 
     // Target Telemetry Values
@@ -291,30 +411,82 @@
     const targetSewage = +(42.0 + (78.4 - 42.0) * p).toFixed(1);
     const targetWards = Math.round(5 + (14 - 5) * p);
 
-    // 1. Update Trigger Button & Label
-    if (DOM.btnToggleShock) {
+    // 1. Update Top Nav Status Orb
+    if (DOM.statusOrb) {
       if (state.elNinoActive) {
-        DOM.btnToggleShock.classList.remove('inactive');
-        DOM.btnToggleShock.innerHTML = `<span class="btn-bolt">⚡</span> EL NIÑO SHOCK ACTIVE (+${enso.toFixed(1)}°C)`;
+        DOM.statusOrb.classList.add('shock');
       } else {
-        DOM.btnToggleShock.classList.add('inactive');
-        DOM.btnToggleShock.innerHTML = `<span class="btn-bolt">⚡</span> TRIGGER EL NIÑO SHOCK`;
+        DOM.statusOrb.classList.remove('shock');
+      }
+    }
+
+    // 2. Update Floating Dock Controls
+    if (DOM.btnElNinoToggle) {
+      if (state.elNinoActive) {
+        DOM.btnElNinoToggle.classList.remove('inactive');
+        DOM.btnElNinoToggle.innerHTML = `<span style="font-size:14px">⚡</span> EL NIÑO EFFECT ACTIVE (+${enso.toFixed(1)}°C)`;
+      } else {
+        DOM.btnElNinoToggle.classList.add('inactive');
+        DOM.btnElNinoToggle.innerHTML = `<span style="font-size:14px">⚡</span> APPLY EL NIÑO EFFECT`;
       }
     }
 
     if (DOM.ensoValTag) {
       let label = "Normal Trend";
       if (state.severity === 'moderate') label = "Moderate El Niño";
-      if (state.severity === 'severe') label = "Severe El Niño Shock";
+      if (state.severity === 'severe') label = "Severe El Niño";
       DOM.ensoValTag.textContent = `+${enso.toFixed(1)}°C (${label})`;
-      DOM.ensoValTag.style.color = state.severity === 'normal' ? 'var(--accent-cyan)' : (state.severity === 'moderate' ? 'var(--accent-amber)' : 'var(--accent-crimson)');
+      DOM.ensoValTag.style.color = state.severity === 'normal' ? 'var(--accent-glacier)' : 'var(--accent-amber)';
     }
 
     if (triggerSource !== 'slider' && DOM.ensoSlider) {
       DOM.ensoSlider.value = enso;
     }
 
-    // 2. Animate Odometer KPIs
+    // 3. Update Center Map Header & HUD Comparison Chips
+    if (DOM.rightMapTag) {
+      if (state.severity === 'normal') {
+        DOM.rightMapTag.textContent = "Expected Trend";
+        DOM.rightMapTag.className = "bklit-badge badge-baseline";
+        DOM.rightMapMetricPill.innerHTML = `Depth: <strong>19.2m bgl</strong> &bull; TDS: <strong>1,550 mg/L</strong>`;
+      } else if (state.severity === 'moderate') {
+        DOM.rightMapTag.textContent = "Moderate El Niño";
+        DOM.rightMapTag.className = "bklit-badge badge-shock";
+        DOM.rightMapMetricPill.innerHTML = `Depth: <strong>${targetDepth}m bgl</strong> &bull; TDS: <strong>${targetSalinity.toLocaleString()} mg/L</strong>`;
+      } else {
+        DOM.rightMapTag.textContent = "Severe El Niño Shock";
+        DOM.rightMapTag.className = "bklit-badge badge-shock";
+        DOM.rightMapMetricPill.innerHTML = `Depth: <strong>${targetDepth}m bgl</strong> &bull; TDS: <strong>${targetSalinity.toLocaleString()} mg/L</strong>`;
+      }
+    }
+
+    if (DOM.hudRealityVal) {
+      DOM.hudRealityVal.textContent = `${targetDepth}m · ${targetSalinity.toLocaleString()} mg/L`;
+      DOM.hudRealityVal.style.color = p > 0.5 ? 'var(--accent-coral)' : 'var(--accent-amber)';
+    }
+    if (DOM.hudDropAnomaly) {
+      DOM.hudDropAnomaly.textContent = `▼ -${(targetDepth - 19.2).toFixed(1)}m Drop`;
+    }
+    if (DOM.hudSalinityAnomaly) {
+      DOM.hudSalinityAnomaly.textContent = `▲ +${((targetSalinity - 1550) / 1550 * 100).toFixed(1)}% Salinity Surge`;
+    }
+
+    // 4. Update Center Map Ambient Heat Aura & River Flow
+    if (DOM.rightMapHeatAura) {
+      DOM.rightMapHeatAura.style.opacity = (p * 0.42).toFixed(3);
+    }
+
+    if (DOM.rightMapRiver && DOM.rightRiverParticles) {
+      if (p > 0.4) {
+        DOM.rightMapRiver.className = 'river-stream-base river-stream-shock';
+        DOM.rightRiverParticles.className = 'river-particle-track river-particle-track-shock';
+      } else {
+        DOM.rightMapRiver.className = 'river-stream-base';
+        DOM.rightRiverParticles.className = 'river-particle-track';
+      }
+    }
+
+    // 5. Update KPI Cards with Odometer
     animateOdometer(DOM.kpiSalinityVal, state.currentValues.salinity, targetSalinity, 350, 0, " mg/L");
     animateOdometer(DOM.kpiDepletionVal, state.currentValues.depth, targetDepth, 350, 1, "m bgl");
     animateOdometer(DOM.kpiSewageVal, state.currentValues.sewage, targetSewage, 350, 1, "%");
@@ -325,123 +497,103 @@
     state.currentValues.sewage = targetSewage;
     state.currentValues.wards = targetWards;
 
-    // 3. Update Visual Water Sample Vial
-    if (DOM.vialLiquid) {
+    // Visual Water Clarity Vial & Mini Sparkline
+    if (DOM.vialFill) {
       if (targetSalinity >= 2000) {
-        DOM.vialLiquid.classList.add('toxic');
-        DOM.kpiSalinityPill.className = "kpi-impact-pill pill-crimson";
-        DOM.kpiSalinityPill.textContent = `▲ +${((targetSalinity - 1550) / 1550 * 100).toFixed(1)}% Spike (Exceeds BIS 2,000 mg/L)`;
+        DOM.vialFill.classList.add('concentrated');
+        DOM.kpiSalinityPill.className = "kpi-bottom-pill pill-coral";
+        DOM.kpiSalinityPill.textContent = `▲ +${((targetSalinity - 1550) / 1550 * 100).toFixed(1)}% vs. Expected`;
       } else if (targetSalinity > 1700) {
-        DOM.vialLiquid.classList.remove('toxic');
-        DOM.vialLiquid.style.background = 'rgba(245, 158, 11, 0.65)';
-        DOM.kpiSalinityPill.className = "kpi-impact-pill pill-amber";
-        DOM.kpiSalinityPill.textContent = `▲ +${((targetSalinity - 1550) / 1550 * 100).toFixed(1)}% Elevated Salinity`;
+        DOM.vialFill.classList.remove('concentrated');
+        DOM.vialFill.style.background = 'rgba(245, 158, 11, 0.65)';
+        DOM.kpiSalinityPill.className = "kpi-bottom-pill pill-amber";
+        DOM.kpiSalinityPill.textContent = `▲ +${((targetSalinity - 1550) / 1550 * 100).toFixed(1)}% vs. Expected`;
       } else {
-        DOM.vialLiquid.classList.remove('toxic');
-        DOM.vialLiquid.style.background = 'rgba(6, 182, 212, 0.45)';
-        DOM.kpiSalinityPill.className = "kpi-impact-pill";
-        DOM.kpiSalinityPill.textContent = "▲ Baseline Trend Creep";
+        DOM.vialFill.classList.remove('concentrated');
+        DOM.vialFill.style.background = 'rgba(56, 189, 248, 0.45)';
+        DOM.kpiSalinityPill.className = "kpi-bottom-pill";
+        DOM.kpiSalinityPill.textContent = "▲ +0.0% Baseline Trend";
       }
     }
 
-    // 4. Update Vertical Mini Depth Gauge
-    if (DOM.depthGaugeBar) {
-      const pct = Math.round(55 + (82 - 55) * p);
-      DOM.depthGaugeBar.style.height = `${pct}%`;
+    // Animate Mini Sparkline in Card 1
+    if (DOM.sparklineDot && DOM.sparklineLine && DOM.sparklineArea) {
+      const sparkY = Math.round(28 - 24 * p);
+      DOM.sparklineDot.setAttribute('cy', sparkY);
+      DOM.sparklineLine.setAttribute('d', `M 0 28 L 18 25 L 36 21 L 54 16 L 64 ${sparkY}`);
+      DOM.sparklineArea.setAttribute('d', `M 0 28 L 18 25 L 36 21 L 54 16 L 64 ${sparkY} L 64 32 L 0 32 Z`);
+      DOM.sparklineDot.setAttribute('fill', p > 0.5 ? '#f97316' : '#f59e0b');
+      DOM.sparklineLine.setAttribute('stroke', p > 0.5 ? '#f97316' : '#f59e0b');
+    }
+
+    // KPI 2: Water Table Radial Ring
+    if (DOM.ringDepletion) {
+      // Offset: 100 is 0%, 51.1 is 48.9%
+      const offset = 100 - (48.9 * p);
+      DOM.ringDepletion.style.strokeDashoffset = offset;
+      DOM.ringDepletion.style.stroke = p > 0.5 ? 'var(--accent-coral)' : 'var(--accent-amber)';
       if (p > 0.5) {
-        DOM.depthGaugeBar.classList.add('shock');
-        DOM.kpiDepletionPill.className = "kpi-impact-pill pill-crimson";
-        DOM.kpiDepletionPill.textContent = `▼ -${(targetDepth - 19.2).toFixed(1)}m Deeper (+${((targetDepth - 19.2)/19.2*100).toFixed(1)}% Faster Drop)`;
+        DOM.kpiDepletionPill.className = "kpi-bottom-pill pill-coral";
+        DOM.kpiDepletionPill.textContent = `▼ -${(targetDepth - 19.2).toFixed(1)}m Deeper (+48.9% Faster Drop)`;
       } else {
-        DOM.depthGaugeBar.classList.remove('shock');
-        DOM.kpiDepletionPill.className = "kpi-impact-pill";
+        DOM.kpiDepletionPill.className = "kpi-bottom-pill";
         DOM.kpiDepletionPill.textContent = "▼ Baseline Seasonal Range";
       }
     }
 
-    // 5. Update KPI 3 & 4 Pills
-    if (DOM.kpiSewagePill) {
+    // KPI 3: Untreated Sewage Radial Ring
+    if (DOM.ringSewage) {
+      const offset = 100 - targetSewage;
+      DOM.ringSewage.style.strokeDashoffset = offset;
+      DOM.ringSewage.style.stroke = p > 0.5 ? 'var(--accent-coral)' : 'var(--accent-amber)';
       if (p > 0.5) {
-        DOM.kpiSewagePill.className = "kpi-impact-pill pill-crimson";
-        DOM.kpiSewagePill.textContent = `▲ +${((targetSewage - 42.0)/42.0*100).toFixed(1)}% (Zero Monsoon Dilution)`;
+        DOM.kpiSewagePill.className = "kpi-bottom-pill pill-coral";
+        DOM.kpiSewagePill.textContent = `▲ +${((targetSewage - 42.0) / 42.0 * 100).toFixed(1)}% Seepage Surge`;
       } else {
-        DOM.kpiSewagePill.className = "kpi-impact-pill";
+        DOM.kpiSewagePill.className = "kpi-bottom-pill";
         DOM.kpiSewagePill.textContent = "▲ 42% Baseline Seepage";
       }
     }
 
-    if (DOM.kpiWardsPill) {
+    // KPI 4: Critical Wards Radial Ring
+    if (DOM.ringWards) {
+      const offset = 100 - ((targetWards / 60) * 100);
+      DOM.ringWards.style.strokeDashoffset = offset;
+      DOM.ringWards.style.stroke = p > 0.5 ? 'var(--accent-coral)' : 'var(--accent-amber)';
       if (p > 0.5) {
-        DOM.kpiWardsPill.className = "kpi-impact-pill pill-crimson";
-        DOM.kpiWardsPill.textContent = `▲ +${((targetWards - 5)/5*100).toFixed(0)}% Immediate Priority`;
+        DOM.kpiWardsPill.className = "kpi-bottom-pill pill-coral";
+        DOM.kpiWardsPill.textContent = `▲ +${((targetWards - 5) / 5 * 100).toFixed(0)}% Immediate Testing Priority`;
       } else {
-        DOM.kpiWardsPill.className = "kpi-impact-pill";
+        DOM.kpiWardsPill.className = "kpi-bottom-pill";
         DOM.kpiWardsPill.textContent = "Routine Monitoring Wards";
       }
     }
 
-    // 6. Update Right Map Aesthetics
-    if (DOM.rightMapTag) {
-      if (state.severity === 'normal') {
-        DOM.rightMapTag.textContent = "Expected Trend";
-        DOM.rightMapTag.className = "map-card-tag tag-baseline";
-        DOM.rightMapMetricPill.innerHTML = `Mean Depth: <strong>19.2m bgl</strong> | Trend TDS: <strong>1,550 mg/L</strong>`;
-      } else if (state.severity === 'moderate') {
-        DOM.rightMapTag.textContent = "Moderate El Niño";
-        DOM.rightMapTag.className = "map-card-tag";
-        DOM.rightMapTag.style.background = "var(--accent-amber-dim)";
-        DOM.rightMapTag.style.border = "1px solid rgba(245, 158, 11, 0.4)";
-        DOM.rightMapTag.style.color = "var(--accent-amber)";
-        DOM.rightMapMetricPill.innerHTML = `Mean Depth: <strong>${targetDepth}m bgl</strong> | TDS: <strong>${targetSalinity} mg/L</strong>`;
-      } else {
-        DOM.rightMapTag.textContent = "Severe El Niño Shock";
-        DOM.rightMapTag.className = "map-card-tag tag-shock";
-        DOM.rightMapTag.removeAttribute('style');
-        DOM.rightMapMetricPill.innerHTML = `Mean Depth: <strong>${targetDepth}m bgl</strong> | TDS: <strong>${targetSalinity} mg/L</strong>`;
-      }
-    }
+    // 6. Update Aquifer X-Ray
+    updateXray(p, targetDepth);
 
-    if (DOM.rightMapHeatAura) {
-      DOM.rightMapHeatAura.style.opacity = p * 0.95;
-    }
-
-    if (DOM.rightMapRiver && DOM.rightRiverParticles) {
-      if (p > 0.4) {
-        DOM.rightMapRiver.classList.add('river-path-shock');
-        DOM.rightRiverParticles.classList.add('river-flow-particles-shock');
-      } else {
-        DOM.rightMapRiver.classList.remove('river-path-shock');
-        DOM.rightRiverParticles.classList.remove('river-flow-particles-shock');
-      }
-    }
-
-    if (DOM.rightMapAnomalyCard) {
-      DOM.rightMapAnomalyCard.innerHTML = `
-        <div class="anomaly-row"><span class="anomaly-label">Expected '26</span><span class="anomaly-val">19.2m | 1,550 mg/L</span></div>
-        <div class="anomaly-row"><span class="anomaly-label">El Niño '26</span><span class="anomaly-val" style="color: ${p > 0.5 ? 'var(--accent-crimson)' : 'var(--accent-amber)'};">${targetDepth}m | ${targetSalinity} mg/L</span></div>
-        <div class="anomaly-penalty-pill" style="color: ${p > 0.5 ? 'var(--accent-crimson)' : 'var(--accent-amber)'};">
-          <span>▼ -${(targetDepth - 19.2).toFixed(1)}m Extra Drop</span>
-          <span>▲ +${((targetSalinity - 1550)/1550*100).toFixed(1)}% Salinity Surge</span>
-        </div>
-      `;
-    }
-
-    // 7. Update Live Underground Aquifer X-Ray Cutaway
-    updateXraySimulation(p, targetDepth);
-
-    // 8. Update Map Pins
+    // 7. Update Map Pins
     updateRightMapPins();
+
+    // 8. Update Chart.js Series
+    updateCharts(p, targetSalinity);
+
+    // 9. Update Leaderboard Bar Fills
+    updateLeaderboardBars(p);
   }
 
-  // --- 5. LIVE UNDERGROUND AQUIFER X-RAY CONTROLLER ---
-  function updateXraySimulation(p, depth) {
+  // ==========================================================================
+  // 6. LIVE UNDERGROUND AQUIFER X-RAY CUTAWAY (0m to 35m DEPTH)
+  // ==========================================================================
+  function updateXray(p, depth) {
     if (!DOM.xrayWaterFill || !DOM.xrayWaterLine || !DOM.xrayWaterLabel) return;
 
-    // Depth scales: 0m at Y=40, 35m at Y=240 -> Scale: ~5.7 pixels per meter
-    // 19.2m -> Y = 40 + (19.2 * 5.7) = 149
-    // 28.6m -> Y = 40 + (28.6 * 5.7) = 203
-    const targetY = Math.round(149 + (203 - 149) * p);
-    const targetHeight = Math.max(240 - targetY, 15);
+    // ViewBox: 0 0 340 380
+    // Ground level at Y=45 (0m). 35m at Y=315. Scale: ~7.71 px per meter.
+    // 19.2m -> Y = 45 + (19.2 * 7.71) = 193
+    // 28.6m -> Y = 45 + (28.6 * 7.71) = 265
+    const targetY = Math.round(193 + (265 - 193) * p);
+    const targetHeight = Math.max(380 - targetY, 20);
 
     DOM.xrayWaterFill.setAttribute('y', targetY);
     DOM.xrayWaterFill.setAttribute('height', targetHeight);
@@ -450,26 +602,28 @@
     DOM.xrayWaterLine.setAttribute('y2', targetY);
 
     DOM.xrayWaterLabel.setAttribute('y', targetY - 6);
-    DOM.xrayWaterLabel.textContent = `Water Table: ${depth.toFixed(1)}m bgl ${p > 0.5 ? '▼ CRITICAL DROP' : '• Baseline'}`;
+    DOM.xrayWaterLabel.textContent = `Water Table: ${depth.toFixed(1)}m bgl ${p > 0.5 ? '▼ CRITICAL DROP' : '• Normal'}`;
 
     if (p > 0.5) {
-      DOM.xrayWaterFill.setAttribute('fill', 'url(#waterGradSaline)');
-      DOM.xrayWaterLine.setAttribute('stroke', '#f43f5e');
-      DOM.xrayWaterLabel.setAttribute('fill', '#f43f5e');
+      DOM.xrayWaterFill.setAttribute('fill', 'url(#xrayWaterGradSaline)');
+      DOM.xrayWaterLine.setAttribute('stroke', '#f97316');
+      DOM.xrayWaterLabel.setAttribute('fill', '#f59e0b');
+
       if (DOM.xrayBadgeStatus) {
-        DOM.xrayBadgeStatus.className = 'xray-badge-status';
-        DOM.xrayBadgeStatus.textContent = 'EL NIÑO SHOCK: SEWAGE PLUME PENETRATING INTAKE';
+        DOM.xrayBadgeStatus.className = 'bklit-badge badge-shock';
+        DOM.xrayBadgeStatus.textContent = 'SEWAGE PLUME DOMINATES INTAKE';
       }
-      if (DOM.xrayRiverBedWater) DOM.xrayRiverBedWater.setAttribute('fill', '#701a75');
-      if (DOM.xraySewagePlume) DOM.xraySewagePlume.style.opacity = Math.min(p * 1.1, 1);
-      if (DOM.xrayDilutionArrows) DOM.xrayDilutionArrows.style.opacity = Math.max(1 - p * 1.5, 0);
+      if (DOM.xrayRiverBedWater) DOM.xrayRiverBedWater.setAttribute('fill', '#f59e0b');
+      if (DOM.xraySewagePlume) DOM.xraySewagePlume.style.opacity = Math.min(p * 1.15, 1);
+      if (DOM.xrayDilutionArrows) DOM.xrayDilutionArrows.style.opacity = Math.max(1 - p * 1.8, 0);
     } else {
-      DOM.xrayWaterFill.setAttribute('fill', 'url(#waterGradCyan)');
-      DOM.xrayWaterLine.setAttribute('stroke', '#06b6d4');
-      DOM.xrayWaterLabel.setAttribute('fill', '#06b6d4');
+      DOM.xrayWaterFill.setAttribute('fill', 'url(#xrayWaterGradGlacier)');
+      DOM.xrayWaterLine.setAttribute('stroke', '#38bdf8');
+      DOM.xrayWaterLabel.setAttribute('fill', '#38bdf8');
+
       if (DOM.xrayBadgeStatus) {
-        DOM.xrayBadgeStatus.className = 'xray-badge-status normal';
-        DOM.xrayBadgeStatus.textContent = 'EXPECTED 2026: NORMAL RECHARGE & DILUTION';
+        DOM.xrayBadgeStatus.className = 'bklit-badge badge-baseline';
+        DOM.xrayBadgeStatus.textContent = 'NORMAL MONSOON RECHARGE';
       }
       if (DOM.xrayRiverBedWater) DOM.xrayRiverBedWater.setAttribute('fill', '#0284c7');
       if (DOM.xraySewagePlume) DOM.xraySewagePlume.style.opacity = 0;
@@ -477,137 +631,98 @@
     }
   }
 
-  // --- 6. CORPORATION ACTION TABLE & CLICK-TO-LOCATE ---
-  function renderActionTable() {
-    if (!DOM.actionTableBody) return;
-
-    DOM.actionTableBody.innerHTML = WARDS_DATA.slice(0, 6).map(w => `
-      <tr data-id="${w.id}">
-        <td class="tbl-rank">#0${w.rank}</td>
-        <td class="tbl-zone">${w.name}</td>
-        <td class="tbl-dist">${w.distNoyyalKm} km</td>
-        <td class="tbl-tds">${w.shockTds} mg/L <span style="font-size: 10px; color: var(--accent-crimson);">(${w.surgePct})</span></td>
-        <td><span class="action-badge ${w.badgeClass}">${w.status}</span></td>
-      </tr>
-    `).join('');
-
-    DOM.actionTableBody.querySelectorAll('tr').forEach(row => {
-      row.addEventListener('click', () => {
-        const id = row.getAttribute('data-id');
-        highlightWard(id);
-      });
-    });
-  }
-
-  function highlightWard(id) {
-    state.activeWardId = id;
-    const ward = WARDS_DATA.find(w => w.id === id);
-
-    // Highlight row
-    DOM.actionTableBody.querySelectorAll('tr').forEach(r => {
-      if (r.getAttribute('data-id') === id) {
-        r.classList.add('active-row');
-      } else {
-        r.classList.remove('active-row');
-      }
-    });
-
-    // Pulse & highlight map pin
-    document.querySelectorAll('.borewell-pin').forEach(pin => {
-      const pinId = pin.getAttribute('data-id');
-      const core = pin.querySelector('.pin-core');
-      const ring = pin.querySelector('.pin-ring');
-
-      if (pinId === id) {
-        pin.style.transform = 'scale(1.5)';
-        core.setAttribute('r', '8');
-        ring.setAttribute('r', '18');
-        ring.style.stroke = '#ffffff';
-        ring.style.strokeWidth = '2px';
-      } else {
-        pin.style.transform = 'scale(1)';
-        core.setAttribute('r', '5');
-        ring.setAttribute('r', '10');
-        ring.style.strokeWidth = '1.2px';
-      }
-    });
-  }
-
-  // --- 7. CHART.JS PROOFS ---
+  // ==========================================================================
+  // 7. BKLIT SPLINE & PILL-BAR CHARTS INITIALIZATION
+  // ==========================================================================
   function initCharts() {
-    Chart.defaults.color = '#94a3b8';
-    Chart.defaults.font.family = "'Inter', sans-serif";
-
-    // Chart 1: Trajectory Divergence Line Chart
+    // 1. Chart 1: Bklit Dual-Gradient Spline Area Chart
     const ctxDiv = document.getElementById('chartDivergence');
     if (ctxDiv) {
-      state.charts.divergence = new Chart(ctxDiv, {
+      const ctx = ctxDiv.getContext('2d');
+
+      // Create Solar-Amber vertical gradient
+      const amberGrad = ctx.createLinearGradient(0, 0, 0, 220);
+      amberGrad.addColorStop(0, 'rgba(245, 158, 11, 0.35)');
+      amberGrad.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
+
+      state.charts.divergence = new Chart(ctx, {
         type: 'line',
         data: {
           labels: ['Summer 2023', 'Summer 2024', 'Summer 2025', 'Summer 2026'],
           datasets: [
             {
-              label: "Expected '26 (Past Trend)",
-              data: [1380, 1420, 1480, 1550],
-              borderColor: '#94a3b8',
-              borderDash: [5, 4],
+              label: "Expected Trend ('26)",
+              data: [1320, 1380, 1420, 1550],
+              borderColor: '#38bdf8',
               borderWidth: 2,
-              pointRadius: 4,
-              pointBackgroundColor: '#94a3b8',
-              tension: 0.2
+              borderDash: [5, 5],
+              pointBackgroundColor: '#38bdf8',
+              pointRadius: 3,
+              tension: 0.35,
+              fill: false
             },
             {
-              label: "Moderate El Niño '26",
-              data: [1380, 1420, 1480, 2280],
+              label: "El Niño Reality ('26)",
+              data: [1320, 1380, 1420, 2940],
               borderColor: '#f59e0b',
-              borderWidth: 2.2,
+              borderWidth: 2.5,
+              pointBackgroundColor: '#f97316',
+              pointBorderColor: '#ffffff',
+              pointBorderWidth: 1.5,
               pointRadius: 4,
-              pointBackgroundColor: '#f59e0b',
-              tension: 0.25
-            },
-            {
-              label: "Severe El Niño '26",
-              data: [1380, 1420, 1480, 2940],
-              borderColor: '#f43f5e',
-              borderWidth: 2.6,
-              pointRadius: 5,
-              pointBackgroundColor: '#f43f5e',
-              backgroundColor: 'rgba(244, 63, 94, 0.08)',
-              fill: true,
-              tension: 0.25
+              pointHoverRadius: 6,
+              tension: 0.4,
+              backgroundColor: amberGrad,
+              fill: true
             }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
           plugins: {
             legend: {
+              display: true,
               position: 'top',
+              align: 'end',
               labels: {
-                boxWidth: 12,
-                font: { size: 10.5, family: "'Inter', sans-serif" },
-                color: '#cbd5e1'
+                boxWidth: 10,
+                boxHeight: 10,
+                color: '#94a3b8',
+                font: { family: "'JetBrains Mono', monospace", size: 10 }
               }
             },
             tooltip: {
+              backgroundColor: '#11192b',
+              borderColor: 'rgba(148, 163, 184, 0.25)',
+              borderWidth: 1,
+              titleFont: { family: "'Inter', sans-serif", size: 12 },
+              bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
+              padding: 10,
               callbacks: {
-                label: (c) => `${c.dataset.label}: ${c.raw} mg/L TDS`
+                label: function (context) {
+                  return ` ${context.dataset.label}: ${context.parsed.y} mg/L TDS`;
+                }
               }
             }
           },
           scales: {
             x: {
-              grid: { color: 'rgba(255, 255, 255, 0.04)' },
-              ticks: { font: { size: 10 } }
+              grid: { color: 'rgba(148, 163, 184, 0.06)' },
+              ticks: { color: '#64748b', font: { family: "'JetBrains Mono', monospace", size: 10 } }
             },
             y: {
               min: 1000,
-              max: 3200,
-              grid: { color: 'rgba(255, 255, 255, 0.04)' },
+              max: 3300,
+              grid: { color: 'rgba(148, 163, 184, 0.08)' },
               ticks: {
+                color: '#64748b',
                 font: { family: "'JetBrains Mono', monospace", size: 10 },
-                callback: v => v + ' mg/L'
+                callback: v => `${v} mg/L`
               }
             }
           }
@@ -615,25 +730,31 @@
       });
     }
 
-    // Chart 2: Noyyal Proximity vs Salinity Surge Grouped Bar Chart
+    // 2. Chart 2: Bklit Grouped Pill-Bar Chart
     const ctxProx = document.getElementById('chartProximity');
     if (ctxProx) {
-      state.charts.proximity = new Chart(ctxProx, {
+      const ctx = ctxProx.getContext('2d');
+
+      state.charts.proximity = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: ['<0.5 km', '0.5–1.5 km', '1.5–3.0 km', '>3.0 km'],
           datasets: [
             {
-              label: 'Expected Trend (% TDS Increase)',
-              data: [12.4, 10.1, 6.5, 3.2],
-              backgroundColor: '#334155',
-              borderRadius: 3
+              label: 'Expected Trend',
+              data: [9.2, 8.5, 5.4, 3.1],
+              backgroundColor: 'rgba(56, 189, 248, 0.45)',
+              borderColor: '#38bdf8',
+              borderWidth: 1,
+              borderRadius: 4
             },
             {
-              label: 'El Niño Stress (% TDS Surge)',
-              data: [97.4, 90.6, 28.4, 8.5],
-              backgroundColor: '#f43f5e',
-              borderRadius: 3
+              label: 'El Niño Reality',
+              data: [97.4, 90.6, 28.4, 8.0],
+              backgroundColor: 'rgba(245, 158, 11, 0.85)',
+              borderColor: '#f97316',
+              borderWidth: 1,
+              borderRadius: 4
             }
           ]
         },
@@ -642,30 +763,43 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
+              display: true,
               position: 'top',
+              align: 'end',
               labels: {
-                boxWidth: 12,
-                font: { size: 10.5 },
-                color: '#cbd5e1'
+                boxWidth: 10,
+                boxHeight: 10,
+                color: '#94a3b8',
+                font: { family: "'JetBrains Mono', monospace", size: 10 }
               }
             },
             tooltip: {
+              backgroundColor: '#11192b',
+              borderColor: 'rgba(148, 163, 184, 0.25)',
+              borderWidth: 1,
+              titleFont: { family: "'Inter', sans-serif", size: 12 },
+              bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
+              padding: 10,
               callbacks: {
-                label: (c) => `${c.dataset.label}: +${c.raw}%`
+                label: function (context) {
+                  return ` ${context.dataset.label}: +${context.parsed.y}% TDS Increase`;
+                }
               }
             }
           },
           scales: {
             x: {
               grid: { display: false },
-              ticks: { font: { size: 10 } }
+              ticks: { color: '#64748b', font: { family: "'JetBrains Mono', monospace", size: 10 } }
             },
             y: {
+              min: 0,
               max: 110,
-              grid: { color: 'rgba(255, 255, 255, 0.04)' },
+              grid: { color: 'rgba(148, 163, 184, 0.08)' },
               ticks: {
+                color: '#64748b',
                 font: { family: "'JetBrains Mono', monospace", size: 10 },
-                callback: v => '+' + v + '%'
+                callback: v => `+${v}%`
               }
             }
           }
@@ -674,9 +808,131 @@
     }
   }
 
-  // --- 8. EVENT LISTENERS ---
-  function initEvents() {
-    // Slider Dragging
+  function updateCharts(p, targetSalinity) {
+    if (state.charts.divergence) {
+      state.charts.divergence.data.datasets[1].data[3] = targetSalinity;
+      state.charts.divergence.update('none');
+    }
+
+    if (state.charts.proximity) {
+      // Dynamic scaling of shock bars
+      state.charts.proximity.data.datasets[1].data = [
+        +(9.2 + (97.4 - 9.2) * p).toFixed(1),
+        +(8.5 + (90.6 - 8.5) * p).toFixed(1),
+        +(5.4 + (28.4 - 5.4) * p).toFixed(1),
+        +(3.1 + (8.0 - 3.1) * p).toFixed(1)
+      ];
+      state.charts.proximity.update('none');
+    }
+  }
+
+  // ==========================================================================
+  // 8. BKLIT HORIZONTAL PROGRESS LEADERBOARD
+  // ==========================================================================
+  function renderLeaderboard() {
+    if (!DOM.leaderboardList) return;
+
+    DOM.leaderboardList.innerHTML = WARDS_DATA.slice(0, 5).map(w => `
+      <div class="leaderboard-item" data-id="${w.id}">
+        <div class="lb-left">
+          <span class="lb-rank-badge">#${w.rank}</span>
+          <div class="lb-name-group">
+            <span class="lb-name">${w.name}</span>
+            <span class="lb-dist">${w.distNoyyalKm} km to Noyyal</span>
+          </div>
+        </div>
+
+        <div class="lb-bar-track">
+          <div class="lb-bar-fill" id="bar-${w.id}" style="width: ${w.barPct}%;"></div>
+        </div>
+
+        <div class="lb-right">
+          <span class="lb-tds-num" id="tds-${w.id}">${w.shockTds.toLocaleString()} mg/L</span>
+          <span class="lb-action-tag ${w.actionClass}">[${w.action}]</span>
+        </div>
+      </div>
+    `).join('');
+
+    DOM.leaderboardList.querySelectorAll('.leaderboard-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const id = item.getAttribute('data-id');
+        highlightWard(id);
+      });
+    });
+  }
+
+  function updateLeaderboardBars(p) {
+    WARDS_DATA.slice(0, 5).forEach(w => {
+      const bar = document.getElementById(`bar-${w.id}`);
+      const tds = document.getElementById(`tds-${w.id}`);
+      if (bar) {
+        const currentBar = Math.round(15 + (w.barPct - 15) * p);
+        bar.style.width = `${currentBar}%`;
+      }
+      if (tds) {
+        const currentVal = Math.round(w.baseTds + (w.shockTds - w.baseTds) * p);
+        tds.textContent = `${currentVal.toLocaleString()} mg/L`;
+      }
+    });
+  }
+
+  function highlightWard(id) {
+    state.activeWardId = id;
+
+    // Highlight row in leaderboard
+    document.querySelectorAll('.leaderboard-item').forEach(item => {
+      if (item.getAttribute('data-id') === id) {
+        item.classList.add('selected');
+      } else {
+        item.classList.remove('selected');
+      }
+    });
+
+    // Pulse corresponding pin on Center Map
+    document.querySelectorAll('.borewell-node').forEach(node => {
+      if (node.getAttribute('data-id') === id) {
+        node.style.transform = 'scale(1.85)';
+        setTimeout(() => { node.style.transform = ''; }, 1200);
+      }
+    });
+  }
+
+  // ==========================================================================
+  // 9. QR PITCH MODAL HANDLERS
+  // ==========================================================================
+  function initQrModal() {
+    if (!DOM.qrModal) return;
+
+    if (DOM.btnOpenQr) {
+      DOM.btnOpenQr.addEventListener('click', () => {
+        DOM.qrModal.classList.add('active');
+      });
+    }
+
+    if (DOM.btnCloseQr) {
+      DOM.btnCloseQr.addEventListener('click', () => {
+        DOM.qrModal.classList.remove('active');
+      });
+    }
+
+    DOM.qrModal.addEventListener('click', (e) => {
+      if (e.target === DOM.qrModal) {
+        DOM.qrModal.classList.remove('active');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && DOM.qrModal.classList.contains('active')) {
+        DOM.qrModal.classList.remove('active');
+      }
+    });
+  }
+
+  // ==========================================================================
+  // 10. EVENT LISTENERS & BOOTSTRAP
+  // ==========================================================================
+  function attachControls() {
+    // ENSO continuous slider scrub
     if (DOM.ensoSlider) {
       DOM.ensoSlider.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value);
@@ -684,60 +940,30 @@
       });
     }
 
-    // Toggle Button Click
-    if (DOM.btnToggleShock) {
-      DOM.btnToggleShock.addEventListener('click', () => {
-        if (state.elNinoActive) {
+    // El Niño toggle button (toggles between 0.0 and 2.4)
+    if (DOM.btnElNinoToggle) {
+      DOM.btnElNinoToggle.addEventListener('click', () => {
+        if (state.ensoValue > 0.4) {
           applySimulation(0.0, 'button');
         } else {
           applySimulation(2.4, 'button');
         }
       });
     }
-
-    // QR Modal
-    if (DOM.btnOpenQr) {
-      DOM.btnOpenQr.addEventListener('click', () => {
-        DOM.qrModal.style.display = 'flex';
-      });
-    }
-
-    if (DOM.btnCloseQr) {
-      DOM.btnCloseQr.addEventListener('click', () => {
-        DOM.qrModal.style.display = 'none';
-      });
-    }
-
-    if (DOM.qrModal) {
-      DOM.qrModal.addEventListener('click', (e) => {
-        if (e.target === DOM.qrModal) {
-          DOM.qrModal.style.display = 'none';
-        }
-      });
-    }
-
-    // Keyboard support
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && DOM.qrModal && DOM.qrModal.style.display === 'flex') {
-        DOM.qrModal.style.display = 'none';
-      }
-    });
   }
 
-  // --- BOOTSTRAP ---
-  function init() {
+  // DOMContentLoaded initialization
+  document.addEventListener('DOMContentLoaded', () => {
+    initDOM();
+    initMapShaders();
     renderMapPins();
-    renderActionTable();
+    renderLeaderboard();
     initCharts();
-    initEvents();
-    applySimulation(2.4, 'init'); // Start in high-impact shock mode for live pitch demo
-    console.log("Hydro-Simulation Command Center Initialized.");
-  }
+    initQrModal();
+    attachControls();
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+    // Trigger default state: Severe El Niño (+2.4°C)
+    applySimulation(2.4, 'init');
+  });
 
 })();
