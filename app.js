@@ -292,7 +292,7 @@
   }
 
   // ==========================================================================
-  // 4. HTML5 CANVAS MAP SHADER ENGINE (STRIP EXTERIOR WHITE + INVERT LABELS)
+  // 4. HTML5 CANVAS MAP SHADER ENGINE (HIGH-CONTRAST TALUK BOUNDARIES)
   // ==========================================================================
   function initMapShaders() {
     const img = new Image();
@@ -307,7 +307,8 @@
       console.warn("Canvas shader fallback: image loading error, fallback active.");
     };
 
-    img.src = "image_8454d9.jpg";
+    // Load pre-processed high-contrast dark map with 2px bright boundary lines
+    img.src = "assets/tiruppur-dark-processed.png";
   }
 
   function processCanvasShader(canvasId, img) {
@@ -319,59 +320,11 @@
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
 
-    try {
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imgData.data;
-
-      for (let i = 0; i < data.length; i += 4) {
-        const r = data[i];
-        const g = data[i + 1];
-        const b = data[i + 2];
-
-        // 1. Exterior White Margins -> Transparent
-        if (r > 236 && g > 236 && b > 236) {
-          data[i + 3] = 0;
-        }
-        // 2. Black Taluk Text Labels & Boundaries -> Ice-White (#E2E8F0)
-        else if (r < 75 && g < 75 && b < 75) {
-          data[i] = 226;
-          data[i + 1] = 232;
-          data[i + 2] = 240;
-          data[i + 3] = 255;
-        }
-        // 3. Dotted Boundaries
-        else if (Math.abs(r - g) < 18 && Math.abs(g - b) < 18 && r < 165) {
-          data[i] = 203;
-          data[i + 1] = 213;
-          data[i + 2] = 225;
-          data[i + 3] = 255;
-        }
-        // 4. Pastel Taluk Fills -> Slate-Indigo (#162238 to #1E293B)
-        else {
-          const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-          const factor = lum / 255;
-          data[i] = Math.round(18 + factor * 14);
-          data[i + 1] = Math.round(28 + factor * 22);
-          data[i + 2] = Math.round(44 + factor * 30);
-          data[i + 3] = 245;
-        }
-      }
-
-      ctx.putImageData(imgData, 0, 0);
-
-      const viewport = canvas.closest('.map-viewport');
-      if (viewport) {
-        const fallback = viewport.querySelector('.tiruppur-map-img');
-        if (fallback) fallback.style.display = 'none';
-      }
-    } catch (err) {
-      console.warn("Canvas getImageData origin restricted, using CSS filter fallback:", err);
-      canvas.style.display = 'none';
-      const viewport = canvas.closest('.map-viewport');
-      if (viewport) {
-        const fallback = viewport.querySelector('.tiruppur-map-img');
-        if (fallback) fallback.style.display = 'block';
-      }
+    // Canvas rendered successfully, hide fallback img
+    const viewport = canvas.closest('.map-viewport');
+    if (viewport) {
+      const fallback = viewport.querySelector('.tiruppur-map-img');
+      if (fallback) fallback.style.display = 'none';
     }
   }
 
@@ -499,7 +452,7 @@
   function resetTopLeftHudToSummary() {
     state.activeWardId = null;
     if (DOM.hudStationDossier) DOM.hudStationDossier.classList.remove('active');
-    if (DOM.hudSummaryMode) DOM.hudSummaryMode.style.display = 'block';
+    if (DOM.hudSummaryMode) DOM.hudSummaryMode.style.display = 'flex';
 
     document.querySelectorAll('.leaderboard-item').forEach(item => {
       item.classList.remove('selected');

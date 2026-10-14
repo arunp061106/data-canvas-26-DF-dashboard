@@ -323,7 +323,7 @@ html, body {
   z-index: 1;
 }
 
-/* CSS Fallback Map Layer (when canvas shader is loading/fallback) */
+/* CSS Map Layer (Displays high-contrast dark map with crisp ice-white lines) */
 .tiruppur-map-img {
   position: absolute;
   top: 0;
@@ -332,8 +332,6 @@ html, body {
   height: 100%;
   object-fit: contain;
   display: block;
-  filter: invert(0.92) hue-rotate(180deg) brightness(0.85) contrast(1.18);
-  mix-blend-mode: lighten;
   pointer-events: none;
   user-select: none;
   z-index: 0;
@@ -460,53 +458,80 @@ html, body {
   100% { r: 28px; opacity: 0; stroke-width: 0.5px; }
 }
 
-/* Floating Glass HUD Comparison Chips */
-.floating-hud-chips {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(17, 25, 43, 0.94);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--border-card);
-  border-radius: 8px;
-  padding: 8px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  z-index: 10;
-  pointer-events: none;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-}
-
-.hud-line {
+/* Sleek Horizontal Telemetry Bar (Relocated Above Map Viewport — Zero Map Obstruction) */
+.map-sub-telemetry-bar {
+  padding: 8px 14px;
+  background: rgba(22, 34, 56, 0.65);
+  border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
+  min-height: 38px;
+  transition: all 0.2s ease;
+  z-index: 10;
 }
 
-.hud-label {
+.sub-telemetry-chips {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.sub-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.sub-chip-label {
   color: var(--text-slate);
 }
 
-.hud-val {
-  font-weight: 600;
+.sub-chip-val {
+  font-weight: 700;
   color: var(--text-primary);
 }
 
-.hud-anomaly-tag {
-  margin-top: 3px;
-  padding-top: 3px;
-  border-top: 1px solid var(--border-subtle);
+.sub-chip-anomaly {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--accent-amber);
   display: flex;
-  flex-direction: column;
-  gap: 1px;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Station Dossier Mode in Sub-Bar */
+.sub-dossier-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sub-dossier-bar.active {
+  display: flex;
+}
+
+/* Vector Taluk Boundary Lines */
+.taluk-boundary-line {
+  fill: none;
+  stroke: rgba(226, 236, 248, 0.85);
+  stroke-width: 1.8px;
+  stroke-dasharray: 4 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  filter: drop-shadow(0 0 2px rgba(226, 236, 248, 0.4));
 }
 
 /* Floating Bklit Control Dock (Anchored at Bottom-Center of Map 2) */
@@ -1253,26 +1278,6 @@ html, body {
 
 .node-shock .pill-val {
   fill: var(--accent-amber);
-}
-
-/* Enhanced Floating HUD in Left-Top Corner */
-.floating-hud-chips {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  max-width: 270px;
-  width: calc(100% - 20px);
-  background: rgba(17, 25, 43, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-card);
-  border-radius: 9px;
-  padding: 9px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  z-index: 15;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hud-station-dossier {
